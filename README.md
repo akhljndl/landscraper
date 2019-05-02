@@ -32,7 +32,7 @@ __What is being done now?:__
 
 __Why is this difficult?__
 
-* Captial and time intensive
+* Capital and time intensive
 * Both the newly developed technology and the field to which it corresponds are dynamic
 * We suffer from: analysis paralysis, emotional bias, decision fatigue
 
