@@ -1,10 +1,6 @@
 
 # landscraper - doing the dirty work for intellectual property (IP) decisions
 
-__Contributer: Akhil Jindal__ | https://github.com/akhil-jindal/
-
----
-
 See the [wiki](https://github.com/akhil-jindal/landscraper/wiki) for more information on ___landscraper___ and it's current status in development.
 
 ### Introduction <a name="introduction"></a>
