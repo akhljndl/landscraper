@@ -1,0 +1,4172 @@
+Device and method for facilitating secure communications over a cellular network 
+US-10198257-B2
+Trilliant Networks, Inc.
+2019-02-05
+https://patents.google.com/patent/US10198257B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+This application is a continuation of U.S. application Ser. No. 14/218,211, filed Mar. 18, 2104, which is a continuation of U.S. Pat. No. 8,856,323, issued Oct. 7, 2014, which claims benefit of priority to U.S. Provisional Patent Application No. 61/441,375 filed Feb. 10, 2011, all of which are titled âDEVICE AND METHOD FOR FACILITATING SECURE COMMUNICATIONS OVER A CELLULAR NETWORKâ, and all of which are incorporated herein by reference in their entirety.
+BACKGROUND
+Field of Embodiments
+The embodiments described herein are generally directed to improved communications between HAN devices and head-end systems utilizing a communications hub function over a WAN such as a cellular network.
+Summary of Related Art
+ FIG. 1a  sets forth an exemplary system for communicating data between service providers, e.g., utility services providers (electricity, gas, solar etc.), and meters, e.g., smart meters and/or other in-home devices (hereafter IHDs) capable of providing utility related data (referred to herein as Reporting Devices). The IHDs could also include energy consuming devices such as HVAC units, pool pumps and the like and energy producing units such as solar devices. More particularly, the system 10 includes Reporting Devices 15, communication hubs (hereafter Comms Hubs) 20, wide area network (WAN) 25, head-end system (hereafter HES) 30 and back-end customer system (hereafter BES) 35. More particularly, the Comms Hub coordinates communication between the HES and the Reporting Devices. In a preferred embodiment, there is a single Comms Hub per subscriber premise. For multi-dwelling units, a single Comms Hub may operate such that it appears to be multiple Comms Hubs, i.e., the single Comms Hub is able to group information to/from particular dwellings within the multi-dwelling unit. For example, as shown in FIG. 1, Premise A includes Reporting Devices 15A and Comms Hub 20A, Premise B includes Reporting Devices 15B and Comms Hub 20B and Premise C includes Reporting Devices 15C and Comms Hub 20C. The Comms Hub 20 could be a stand-alone component or, alternatively, integrated with one of the Reporting Devices 15.
+In order to track utility use data and provide such data or information related thereto to the service provider and/or the subscriber, there must be communications from the Reporting Devices. Traditionally, such information had to be takes directly from the meter, i.e., a person had to walk up to the meter(s) at the subscriber premise and literally read the meter. Technology progressed and the process was arguably improved through the use of stand-off or drive by meter reading, whereby a person could take readings using, e.g., RF communications, from a truck driving by and/or walking by a premise. Currently, technology has advanced to the point where meter readings can be communicated remotely using WANs, e.g., cellular networks, without the need tor a person to physically view or approach the individual meters or the subscriber premises. While this system and process is promising, there are some implementation hurdles due to the need to scale to millions, potentially billions, of subscriber premises and reporting devices. WAN bandwidth is not unlimited, and it is clearly susceptible to overload. This degree of scaling presents challenges to the communication and processing processes as described further herein.
+Referring back to FIG. 1, the current process for managing communications between the Reporting Devices 15 and the HES 30 is burdensome both on the WAN and the processing power of the components. Currently, Reporting Devices 15 are configured to report usage, alarm and other utility related data, to their respective Comms Hubs 20. For example, individual Reporting Devices 15 may be programmed to report readings to the Comms Hub 20 which records the reported information at half-hour intervals and the Comms Hub in turn reports the totality of the collected and recorded information at a predetermined time to the HES in a batch process. The details of the local data reporting process within the Premise is not the subject of this patent application. Descriptions of such processes are known and available to those skilled in the art and described in the Attachments hereto which are incorporated by reference in their entirety. Using known batch processes, even if the Comms Hub reports data to the HES during off-peak cell usage times, the shear volume of communications can either overwhelm a network, such as a cell network or become prohibitively expensive, i.e., use of the cell is often subject to per call or per message tariffs.
+By way of specific example, current processes for using system 10 of FIG. 1 require the following steps as shown in FIG. 1b . In the prior art process, when the HES wants to get info from Comms Hub, the HES sends a Short Message Service (âSMSâ), Message #1 (M#1) which tells the Comms Hub to wake up. When the Comms Hub wakes up, if establishes a high speed connection to the WAN, with instructions regarding where data from the Comms Hub needs to go M#2. In operation M#2 facilitates using the high speed data connection of the WAN cloud (e.g., GPRS on GSM, CDMA2000 or the like), establishment of 2-way data communication between the Comms Hub and the HES. The WAN cloud mobile operator sets up an IP address for the Comms Hub so that is can communicate in both directions with the HES across the cell phone data network and the IP virtual LAN (IP-VLAN) to the HES. Accordingly, the connection for both WAN's cellular data network and IP network are established. The HES next sends an information request using the IP network to the Comms Hub M#3. In certain limited circumstances, the Comms Hub may send an acknowledgement message to the HES to acknowledge receipt of the information request M#4. Otherwise, the Comms Hub sends a response to the HES information request (M#3) which is M#5. The HES sends an acknowledgement message to the Comms Hub to acknowledge receipt of the response to the information request (M#5) which is M#6.
+Accordingly, under the prior art messaging process, the HES must send an SMS message every time it wants to wake up a Comms Hub and wait for a reply to request information. Since the HES's request for meter read info from thousands and even millions of Comms Hubs, there are equally as many SMS messages to be sent each day. SMS messages are traditionally tariffed individually or tariffed with enough restrictions as to make their use precious. The SMS wakeup and response step takes time because SMS delivery can be slow and it takes time to set up the GPRS data network connection. This slows down the HES process and waists HES processing resources. As such, this wake up step is an expensive step in the prior art process. Further, the handshake-based IP protocols, e.g., TCP/TLS, of the prior art process requires multiple messages within a single thread and real-time securitization which contributes to latency including decreased throughput, increased time on network, and increased processing time. There is a need in the art to utilize the existing infrastructure of FIG. 1a  in such a way that the SMS and IP message volume and latency are reduced/minimized, but there is no compromise in security.
+SUMMARY
+In accordance with an embodiment described herein, a process for communicating utility-related data over at least one network includes: collecting utility-related data at a hub device during a first predetermined period of time; securing the utility-related data at the hub device using digital envelopes during the first predetermined period of time; initiating by the hub device an autonomous wake up process during a second predetermined period of time; sending the secure utility-related data over a first network to a designated server via at least one User Datagram protocol (âUDPâ) message during the second predetermined period of time; and receiving an acknowledgement of receipt message of the at least one UDP message from the designated server.
+In accordance with an embodiment described herein, a process for communicating utility-related data over at least one network includes: collecting utility-related data from a first network at a hub device during a first predetermined period of time; securing the utility-related data at the hub device using digital envelopes during the first predetermined period of time; initiating by the hub device in autonomous wake up process during a second predetermined period of time; sending the secure utility-related data from the hub device over a second network to a designated server via at least one User Datagram protocol (âUDPâ) message during the second predetermined period of time; and receiving an acknowledgement of receipt message of the at least one UDP message from the designated server.
+
+BRIEF DESCRIPTION OF THE FIGURES
+ FIG. 1a  is a prior art network component architecture for use with the prior art communications processes described with respect to FIG. 1 b;  
+ FIG. 1b  is a prior art process for communication between components of FIG. 1 a;  
+ FIGS. 2a-2c  are network component architectures for use with the communications processes described in accordance with preferred embodiments;
+ FIGS. 3a-3b  are exemplary Comms Hub protocol stacks for the WAN and HAN networks in accordance with preferred embodiments;
+ FIG. 4a  is an exemplary GPRS connection process diagram;
+ FIG. 4b  is an exemplary SMS wake-up process diagram;
+ FIG. 5 is an exemplary Comms Hub to HES communication flow diagram;
+ FIG. 6 is an exemplary HES to Comms Hub DLMS objects communication flow diagram;
+ FIG. 7 is an exemplary SendDLMSCommand request and response format;
+ FIGS. 8a-8b  are exemplary SendDLMSCommand requests/responses byte streams;
+ FIG. 9 is as exemplary SendZCLCommand procedure request and response format;
+ FIGS. 10a-10b  are exemplary SendZCLCommand procedure requests/responses byte streams;
+ FIG. 11 is an exemplary digital envelope format;
+ FIG. 12 is an exemplary digital envelope header format;
+ FIG. 13 is an exemplary encoded digital envelope header byte stream;
+ FIG. 14 is an exemplary digital envelope payload format;
+ FIG. 15 is an exemplary encoded dlmsContent byte stream;
+ FIG. 16 is an exemplary encoded zclContent byte stream;
+ FIG. 17 is an exemplary CMS Data structure;
+ FIG. 18 is an exemplary encoded CMS Data byte stream;
+ FIG. 19 is an exemplary EncryptedData content type;
+ FIG. 20 is an exemplary encoded EncryptedData content type byte stream;
+ FIG. 21 is an exemplary EnvelopeData encryption structure;
+ FIG. 22 is an exemplary process for decrypting the DigitalEnvelopePayload included in an EncryptedData content type;
+ FIG. 23 is an exemplary SignedData content type definition;
+ FIG. 24 is an exemplary SignedData content type byte stream;
+ FIG. 25 is an exemplary process for constructing a SignedData structure;
+ FIG. 26 is an exemplary process for verifying signature of received Digital Envelopes;
+ FIG. 27 is an exemplary âSMS Wakeup Responseâ Digital Envelope byte stream;
+ FIG. 28 is an exemplary âSwitch GSM Network Testâ Digital Envelope byte stream;
+ FIG. 29 is an exemplary âCall-back responseâ Digital Envelope byte stream;
+ FIG. 30 is an exemplary âCommissionRequestâ Digital Envelope byte stream;
+ FIG. 31 is an exemplary âOTA Status Reportâ Digital Envelope byte stream;
+ FIG. 32 is an exemplary âOTA Image Request Alertâ Digital Envelope byte stream;
+ FIG. 33 is an exemplary âDecommissionRequestâ Digital Envelope byte stream;
+ FIG. 34 is an exemplary octet stream of a report or alarm Digital Envelope;
+ FIG. 35 is an exemplary âAcknowledgementâ Digital Envelope byte stream;
+ FIG. 36 is an exemplary Digital Envelope handshake during Comms Hub commissioning;
+ FIG. 37 is an exemplary Digital Envelope transmission with reason code;
+ FIG. 38 is an exemplary Digital Envelope transmission with no payload;
+ FIG. 39a  is an exemplary Manufacturing PKI certificate listing;
+ FIG. 39b  is an exemplary Operational PKI certificate listing;
+ FIG. 40 is an exemplary certificate structure;
+ FIGS. 41a-41b  show an exemplary encoded certificate byte stream;
+ FIG. 42 is an exemplary Comms Hub TLS handshake when a ChCommissioningState attribute is set to NOT_COMMISSIONED or DECOMMISSIONED;
+ FIG. 43 is an exemplary Comms Hub TLS handshake when a ChCommissioningState attribute is set to COMMISSIONED;
+ FIG. 44 is an exemplary UDP/DE push message flow;
+ FIG. 45 is an exemplary UDP/DE push message flow with request from HES:
+ FIG. 46 is an exemplary OTA Image download process flow;
+ FIG. 47 is an exemplary OTA activation process flow;
+ FIG. 48 is an exemplary OTA abort process flow;
+ FIG. 49 is an exemplary âZigBee Device OTA downloadâ process flow;
+ FIGS. 50a-50b  show an exemplary commissioning message flow between the Comms Hub and the HES;
+ FIGS. 51a-51b  show an exemplary e-meter commissioning message flow between the Comms Hub and the HES;
+ FIGS. 52a-52b  show an exemplary g-meter commissioning message flow between the Comms Hub and the HES;
+ FIGS. 53a-53b  show an exemplary IHD commissioning message flow between the Comms Hub and the HES;
+ FIG. 54 shows an exemplary Comms Hub decommissioning message flow;
+ FIG. 55 shows an exemplary e-meter decommissioning message flow;
+ FIG. 56 shows an exemplary g-meter decommissioning message flow;
+ FIG. 57 shows an exemplary IHD decommissioning message flow;
+ FIG. 58 shows exemplary application data flows between the clusters of the Comms Hub, E-meter, G-meter and IHD;
+ FIG. 59 shows an exemplary communication flow from a sleepy g-meter;
+ FIG. 60 shows an exemplary communication flow from a sleepy g-meter to an IHD using the Comms Hub as a proxy;
+ FIG. 61 shows an exemplary communication flow from Comms Hub to e-meter;
+ FIG. 62 shows an exemplary communication flow from HES to e-meter;
+ FIG. 63 shows an exemplary communication flow from HES to IHD; and
+ FIG. 64 shows au exemplary Inter-PAN commissioning flow from HHT to Comms Hub.
+
+DESCRIPTION OF THE PREFERRED EMBODIMENTS
+This document includes the following acronyms and terms as defined in the tables set forth below:
+
+
+
+ 
+ 
+
+ 
+ 
+
+
+
+ 
+ 
+
+
+ 
+Description
+
+
+ 
+ 
+
+
+
+
+ 
+
+
+
+
+Acronym
+ 
+
+
+ACSE
+Association Control Service Element (DLMS UA)
+
+
+APDU
+Application Protocol Data Unit
+
+
+API
+Application Programming Interface
+
+
+APS
+Application Protocol Sub-layer (ZigBee)
+
+
+ASE
+Application Service Element (DLMS UA)
+
+
+CBKE
+Certificate Based Key Establishment (ZigBee)
+
+
+COSEM
+Companion Specification for Energy Meters
+
+
+ 
+(DLMS UA)
+
+
+DE
+Digital Envelope
+
+
+DLMS
+Device Language Message Specification (DLMS
+
+
+ 
+UA)
+
+
+DLMS UA
+DLMS Users Association
+
+
+DNS
+Domain Name Server (IETF)
+
+
+DST
+Daylight Savings Time (local time)
+
+
+EUI
+Extended Unique Identifier
+
+
+GPRS
+General Packet Radio Service (DLMS UA)
+
+
+GSM
+Global System for Mobile Communications (IEC)
+
+
+HAN
+Home Area Network
+
+
+HES
+Head End System
+
+
+HHT
+Hand Held Terminal
+
+
+IC
+Interface Class (DLMS UA) (standards group)
+
+
+IEEE
+Institute of Electrical and Electronics Engineers
+
+
+ 
+(standards group)
+
+
+IETF
+Internet Engineering Task Force (standards group)
+
+
+IHD
+In-Home Device
+
+
+IP
+Internet Protocol (IETF)
+
+
+IPv4
+Internet Protocol Version 4 (IETF)
+
+
+ISMI
+International Mobile Subscriber Identity
+
+
+MAC
+Medium Access Control (IEEE)
+
+
+MLD
+Management Logical Device (DLMS UA)
+
+
+MSE
+Manufacturer Specified Extension (additional
+
+
+ 
+ZigBee clusters)
+
+
+MSIN
+Mobile Subscriber Identification Number (part of
+
+
+ 
+IMSI)
+
+
+OTA
+Over The Air
+
+
+PAN
+Personal Area Network (IEEE)
+
+
+PPP
+Point to Point Protocol (IETF)
+
+
+RPC
+Remote Procedure Call
+
+
+SMS
+Short Message Service (IETF)
+
+
+TCP
+Transmission Communication Protocol (IETF)
+
+
+TLS
+Transport Layer Security (IETF)
+
+
+TOU
+Time Of Use
+
+
+UDP
+User Datagram Protocol (IETF)
+
+
+UTC
+Coordinated Universal Time
+
+
+WAN
+Wide Area Network
+
+
+WPDU
+Wrapper Protocol Data Unit (DLMS UA)
+
+
+xDLMS
+Extended Device Language Message Specification
+
+
+ 
+(DLMS UA)
+
+
+ZCL
+ZigBee Cluster Library
+
+
+ZGD
+ZigBee Gateway Device
+
+
+Term
+
+
+Application
+DLMS/COSEM Application Service Elements:
+
+
+Service Element
+ACSE and xDLMS
+
+
+Association Control
+DLMS/COSEM application layer service that
+
+
+Service Element
+controls the association of client application
+
+
+ 
+processes
+
+
+channel mask
+Channels available for use by the HAN devices
+
+
+cluster
+A related set of attributes and methods
+
+
+Comms Hub
+Communications hub that connects to the
+
+
+ 
+WAN and the HAN networks. It reports
+
+
+ 
+metering information and manages the
+
+
+ 
+metering and in-home devices.
+
+
+E-meter
+Electricity meter
+
+
+EUI-64
+The 64 bit, IEEE administered EUI used to
+
+
+ 
+identify devices and as the MAC address
+
+
+G-meter
+Gas meter
+
+
+Interface Class
+(COSEM) an Interface Class (IC) is a generic
+
+
+ 
+format of a COSEM object specifying
+
+
+ 
+attributes, their data types, and the method for
+
+
+ 
+the server and client
+
+
+Inter-PAN
+Limited functionality connection established
+
+
+ 
+without forming a network
+
+
+MAC address
+The 64 bit globally unique address assigned to
+
+
+ 
+each IEEE802 device, which includes the HAN
+
+
+ 
+devices. The address is structured, and it
+
+
+ 
+identifies the manufacturer
+
+
+Management
+DLMS/COSEM element that reveals the
+
+
+Logical Device
+internal protocol structure of a physical device
+
+
+mobile operator
+WAN GSM/GPRS system operator (e.g.,
+
+
+ 
+Vodafone)
+
+
+PAN coordinator
+(IEEE802.15.4) the controller of the
+
+
+ 
+IEEE802.15.4 network
+
+
+push
+A Comms Hub initiated message to the Head
+
+
+ 
+End System
+
+
+short address
+The 16 bit IEEE802.15.4 address assigned to a
+
+
+ 
+device on joining the HAN network
+
+
+smart meter network
+The WAN and HAN networks and Comms
+
+
+ 
+Hub that provides communication services to
+
+
+ 
+the Head End System and HAN devices
+
+
+ 
+
+
+
+
+
+The following documents ere incorporated herein by reference in their entirety: âUCAIug Home Area Network System Requirements Specification: A Work Product of the OpenHAN Task Force formed by the SG Systems Working Group under the Open Smart Grid (OpenSG) Technical Committee of the UCA International Users Group,â Version 2.0âAug. 30, 2010; âZigBee Smart Energy Profile Specification;â ZigBee Profile; 0x0109; Revision 16, version 1.1, Mar. 23, 2011, Document 075356r16; ZigBee Smart Energy Test Specification, May 2008 ZigBee Document 075384r17; ZigBee Cluster Library Specification, ZigBee Document 075123r02ZB; and Institute of Electrical and Electronics Engineers, Inc., IEEE Std. 802.15.4â2003 & 2006, IEEE Standard tor Information TechnologyâTelecommunications and Information Exchange between SystemsâLocal and Metropolitan Area NetworksâSpecific RequirementsâPart 15.4: Wireless Medium. Access Control (MAC) and Physical Layer (PHY) Specifications for Low Rate Wireless Personal Area Networks (WANs); âNetwork Specificationâ Version 1.00, ZigBee Document 02130r10; âDraft Smart Energy Profile Specificationâ ZigBee Document 105638r08ZB Rev. 1.0 Ver. 0.9 Jul. 20, 2010; âZigBee SE 1.x Extensions for UKâ Revision 1.0, filename: Zigbee_SE1.x_Extensions_UK_rep1.doc. Date: 23 Nov. 2010; âZigBee Over-The_Air Upgrading Clusterâ ZigBee Document 095264r18, Rev. 18, Version 1.0, Mar. 14, 2010; and âNetwork Device: Gateway Specificationâ Version 1.0, ZigBee Document 075468r35, Rev 35, Mar. 23, 2011. Further, many of these documents and the subject matter therein is updated periodically and those updates are appreciated by one skilled in the art and considered to be included herein.
+As shown in the figures and discussed further herein, the Comms Hub acts as a coordinator and gateway between the WAN and HAN. Accordingly, the Comms Hub processor or processors are configured with necessary programming, e.g., firmware, in order to interface with the separate networks.
+ FIG. 2a  illustrates, generally, the network component architecture 10â² for use with the communications processes described in the preferred embodiments. While the underlying component infrastructure is similar to that of FIG. 1a , there are additions thereto as illustrated for facilitating the improved communications processes. More particularly, the HES 30â² includes one or more task processors 30 a, 30 b, . . . , 30 x for performing individual tasks as described herein. In addition, the HES includes at least UDP and DE processing functionality 32 as described below. Similarly, Comms Hub 20A, Comms Hub 20B and Comms Hub 20C include at least UDP and DE processing functionality 22A, 22B and 22C to facilitate to the processes described herein.
+A more particular exemplary implementation of the general network component architecture 10â² is illustrated in FIGS. 2b and 2c . The exemplary smart meter system of FIGS. 2b and 2c  implement a mix of DLMS and ZigBee objects. One skilled in the art recognizes that these are exemplary objects and the architecture may be expanded to accommodate other protocols as well. In these deployments a Comms Hub 20A is in communication with one G-meter 15A1, one E-meter 15A2 and an IHD 15A3. Deployments with multiple meters use the same ZigBee Gateway structure in the Comms Hub. The COSEM communication profiles for use on IPv4 networks provide the HES with the ability to communicate with the DLMS objects of the different Application Processes (AP) of an IP addressed node, i.e., the Comms Hubs (as shown in FIG. 2b ). The DLMS protocol, supported on IP port 4059 of the Comms Hub cannot be used natively to access the DLMS objects implemented by HAN nodes such as the E-meters or the HHT. This protocol also cannot be used to access the ZigBee ZCL objects implemented by the Comms Hub or any of the different ZigBee HAN nodes. The ZigBee Gateway protocol is used to communicate DLMS messages to the DLMS HAN devices as shown in FIG. 2 c.  
+As is understood by those skilled in the art, the ZigBee Gateway specification implements remote interactions with ZigBee devices. Use ZigBee Gateway protocol accesses both DLMS and ZCL objects on the Comms Hub and any of the devices on the ZigBee network.
+ FIGS. 3a and 3b  illustrate exemplary Comms Hub protocol stacks for the WAN and HAN networks. For the WAN stack, the GSM WAN network connects the HES to the Comms Hub. The WAN stack uses either SMS or GPRS to access the higher layers. SMS is used when the HES initiates contact with the Comms Hub. The SMS tells the Comms Hub to set up a WAN connection to communicate with the HES. SMS is used sparingly to minimize its impact on the mobile operator's WAN and reduce the operational costs of the smart meter network. The Comms Hub is not requited to send SMS messages.
+The GPRS protocol is used to gain access to the mobile data network and to frame the data transmissions over the WAN. It is a connection-oriented protocol, and the connection is initiated by the Comms Hub. The data transmitted over the GPRS connection uses the IPv4 Network Layer and an IETF Transport Layer protocol. The IP transport port numbers are used to direct messages to different devices. The DLMS/COSEM TCP and UDP port 4059 is used for the Comms Hub's DLMS physical device client application process. The ZigBee Gateway Device's (ZG) IP port assignment, 17756, allows the HES to communicate directly with the ZigBee clusters in the Comms Hub. These clusters include the control clusters for the E-meter(s), the IHD(s), and G-meter(s).
+TCP/TLS is used at the IP transport layer for HES initiated communications and UDF/DE for push messages from the Comms Hub.
+WAN messages use TLS security protocol for TCP and digital envelope security for UDP. The digital envelop layer is above the transport layer and below the xDLMS layer and the ZigBee APS layer.
+TCP/TLS DLMS messages use the DLMS/COSEM transport layer wrapper. This wrapper identities the source and destination client application processes within the device.
+The DLMS/COSEM application sub-layer Association Control Service Element provides services for the client application processes. These services include setting up the association of the client application processes between devices. The xDLMS services include get, set, action, event notification, and trigger event notification.
+The ZigBee ZCL and Grip layer is used by the ZigBee Gateway described further below. The ZigBee Gateway allows the HES to communicate with the DLMS and ZigBee objects in the HAN devices and Comms Hub.
+The following paragraphs summarize various examples of the paths that messages may take either up or down through the stacks illustrated in FIGS. 3a and 3b . These listings represent general flows through the stack, not steps, and are intended to be exemplary. Further, additional stack/layer details, message flows, and message formats are described throughout the specification.
+In a first use case, a HES to Comms Hub stack sequence flow for a TCP DLMS get message sent to an E-meter by the HES through the Comms Hub communication layers includes the following flows (the WAN registration is already established); GPRS; IPv4 (destination address=the Comms Hub IP address); IP transport destination port (set to the ZigBee gateway, 17756); TCP (session established with the Comms Hub); TLS (decrypted at the Comms Hub using the TLS session key); ZigBee Gateway Grip header procedure call, sendDLMScommand, addressed to the E-meter's MAC address and ZigBee DLMS Tunnel cluster; (the Comms Hub places DLMS message in a ZigBee tunnel payload); ZigBee APS (set to the cluster source and destination IDs=Tunnel cluster); ZigBee Network (tunnel end point's short address=target E-meter address); Data Link Layer (destination address short address=target E-meter address); and PHY (IEEE802.15.4 radio).
+In a second use case, a Comms Hub to HES stack sequence for a push using UDP/DE for a DLMS message sent to the HES by the Comms Hub includes the following flows: DLMS physical device application process constructs a message (the Comms Hub push aggregator message); xDLMS (send a set.request to the Head End System); DLMS/COSEM Push format: source application process tag, DLMS attributes (class ID, instance ID, attribute ID, value); Digital Envelope (encrypt and sign using certificates); UDP protocol; IP transport layer destination port (set to HES's IP transport port for the push messages, 54059); IPv4 (set to the HES's IP address); PPP; and GPRS.
+In a third use case, a HES to Comms Hub stack sequence flow for a TCP ZigBee PutPrice cluster message sent to the Comms Hub Price cluster by the HES includes the following flows: GPRS; PPP; IPv4 (set to the Comms Hub's IP address); IP transport destination port (set to the gateway 17756 port); TCP (session established with the Comms Hub); TLS (decrypted at the Comms Hub using the TLS session key); ZigBee Gateway Grip header procedure call, PutPrice (addressed to Price cluster ID); and Price cluster payload.
+More specifically, communications with the WAN may require registration with a GSM circuit switched network using either the 900 MHz or 1800 MHz band utilizing one or both of an external and internal antenna. This registration with the GSM circuit switched network does not create a connection to the HES.
+The Head End System interface to the SMS service uses GDSP call (e.g., Vodafone API call: submitSMS( )). This call has the payload: UserName, Password, Head End System IP Address, source trusted number and token ID. Message flows are described further below.
+The GPRS interface allows the Comms Hub to identity the mobile operator networks that are available, to connect to the selected network, and to disconnect from the network. Connections are established, either by scheduled or ad hoc activities in the Comms Hub or as a result of an SMS wakeup from the Head End System. GPRS connections are not kept open by the Comms Hub. Referring generally to FIG. 4a , each time the Comms Hub has a group of messages to send to or receive from the Head End System; it establishes the GPRS attachment and activates the PDP (Packet Data Protocol) context. At the end of the message exchange, the Comms Hub deactivates the PDP context and detaches from GPRS. The mobile operator authenticates the Comms Hub with the IMSI (International Mobile Security Identity) information stored in the SIM (Subscriber Identity Module) and transmitted during PDP activation process.
+The payload of the SMS Wakeup Message sent from the HES has the comma separated, text based, order sensitive payload fields: <control>, <TokenId>, <ip_address>, <domain_name>. Additional details are found in Table 0 below.
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+TABLE 0
+
+
+ 
+
+
+Name
+Type
+Range
+Description
+
+
+ 
+
+
+
+
+<Control>
+Text hex string
+two characters
+Control flags for SMS fields
+
+
+<TokenId>
+Hex integer
+00000000 to
+SMS token ID assigned by the Head
+
+
+ 
+string
+FFFFFFFF
+End System. Present if selected by the
+
+
+ 
+ 
+ 
+control flag
+
+
+<IpAddress>
+IP address
+000.000.000.000
+IP address of the Head End System
+
+
+ 
+(format: four
+to
+processor requesting the response.
+
+
+ 
+bytes, each
+255.255.255.255
+Present if selected by the control flag
+
+
+ 
+byte an IPV4
+
+
+ 
+subaddress =
+
+
+ 
+w.x.y.z)
+
+
+<DomainName>
+Character
+Up to 139
+Fully qualified domain name of the
+
+
+ 
+string
+characters
+Head End System processor requesting
+
+
+ 
+ 
+ 
+the response. Present if selected by the
+
+
+ 
+ 
+ 
+control flag
+
+
+<PortNum>
+16 bit integer
+full
+The destination port number to be used
+
+
+ 
+ 
+ 
+by the SMS Wakeup Response,
+
+
+ 
+ 
+ 
+(This port payload option is only used in
+
+
+ 
+ 
+ 
+the development phase and is not
+
+
+ 
+ 
+ 
+supported by customer firewalls)
+
+
+ 
+
+
+
+
+
+Control is a Text hex byte that encodes the test control Hag hits to be used after selecting the network as follows: bit 0 set to 1 if the token ID is present (This value will always be present, if the test is requested); bit 1 set to 1 if the destination IP Address of a particular Head End System processor is present; bit 2 set to 1 if the fully qualified domain name of a particular HES process is present (Note that if both the IP address and the domain name are both present, then only the domain name is used. If neither is provided, the Comms Hub uses the configured domain name); bit 3 set to 1 if the port number of the Head End System process is included; bits 4-7 reserved and set to 0 (Example: â05â test string sets the flag bits for the token ID, and domain name).
+TokenId is the Token ID of the command assigned by the Head End System for inclusion with the push SMS wakeup response message sent by the Comms Hub. ip_address is destination IP address of the target Head End System to be used by the Comms Hub for the SMS wakeup response message. DomainName is the destination fully qualified domain name of the target Head End System to be used by the Comms Hub for the SMS wakeup response message. The limit on the size of the domain name is based on the maximum SMS size of 160 characters and the characters needed to transmit the comma delimitated control, TokenId, and request_time fields, PortNum is the HES port number to be used as the destination port in the IP transport layer of the SMS Response message. Used during development only.
+The message flow diagram for the SMS wakeup is shown in FIG. 4b . The Head End system sends the SMS wakeup API call using the Comms Hub's IMSI. This message sent by the mobile operator uses a trusted number as the source. The Comms Hub is configured to accept SMS messages from only trusted numbers which are configured by the Head End System and stored in non-volatile memory. The Head End System's wakeup message uses the mobile operator's API call submitSMS(payload). The payload includes, a control field that indicates what fields are present, the Head End System's IP address field, the Head End System's fully qualified domain name field and Head End System IP transport port field, the token ID field and the response protocol field. If the IP address or the domain name and port are not present, the Comms Hub uses the configured Head End System IP address and port. In the cases where the fully qualified domain name is used, the Comms Hub does a DNS lookup to get the HES IP address. The Token ID in the Comms Hub response links it to the SMS to the wakeup message that generated it.
+The Comms Hub may not be able to always connect to the preferred mobile operator. When this happens the mobile operator sends the SMS message to the alternate mobile system the Comms Hub is registered on.
+In accordance with a preferred process, SMS messages are minimized by programming the Comms Hubs to wake up at random times within a predetermined window of time to initiate data pushes to the HES. The Comms Hub messages are secured in advance of wake up and are pushed in bulk. More specifically, the messages can be secured by the CommsHub using Digital Envelopes (DE) before sending (discussed further below). DE uses RSA PKCS7 and IETF number as is known in the art. The securing step need not be performed on the fly, i.e., in real time. Accordingly, securitization at the Comms Hub does not contribute to the latency budget of the push process and utilizes the Comms Hub's limited processing power during an off-peak use time. After random, autonomous wake up during the predetermined window, the Comms Hub pushes multiple previously DE secured messages in bulk to the HES using UDP (User Datagram Protocol). UDP does not use handshakes or other negotiations like those of TCP and other IP protocols. Accordingly, the number of messages required to communicate between the HES and the Comms Hub is reduced. Further, UDP is a stateless protocol, treating each request independently, and not as a string, thus reducing latency, etc. that necessarily comes with allocating processing and memory capacity to tracking and completing related requests.
+Referring to FIG. 5, the initial message in the improved communication process is a UDP bulk message push from the Comms Hub to the HES UDP#1. Since we do want some acknowledgement of receipt of the push messages by the HES, the HES sends an acknowledgement message in the form of a UDP push UDP_ACK#2, wherein the HES's UDP push includes bulk acknowledgements corresponding to each of the individual messages in UDP#1. There are UDP#1 sequence numbers that are matched with UDP_ACK#2. Accordingly, comparing FIG. 1b  and FIG. 5, the present embodiment reduces the number of messages to complete the reporting of data from the Comms Hub to the HES from 6 to 2 and eliminates the need for SMS messaging. Additional description of the two-message push embodiment is found with reference to FIG. 44.
+The UDP messages include header information that optimizes the HES processing. During the time in which the HES is receiving an acknowledging the Comms Hub UDP#1 push messages, the HES is dedicating all processing resources to receipt, ACK and storage of the UDP#1 push messages. The processing of the UDP#2 push messages by the HES occurs later in most cases. Accordingly, in order to determine at the time of receipt what is in the UDP#1 push messages for storage and acknowledgement purposes, the UDP#1 headers include a reason code. In operation, after stripping of IP headers, the HES comes to a header section that allows the HES to determine where to store for future processing, e.g., this is an electric meter push, store in bucket A; this is a gas meter push, store in bucket B, this is an alarm, store in bucket C and add to UDP_ACK#2 instructions for Comms Hub to call the HES during next off-peak processing window of time. The DE security offers threes types of security encryption/privacy, authentication, is the sending device's identity confirmed, and integrity, has the message been changed. Accordingly using DE, different parts of the UDP can have various levels of security. For example, the reason code does not need (and likely would not want) privacy encryption, but integrity protection would likely be used. Whereas the primary message data would require privacy encryption and integrity protection.
+Additionally, every UDP_ACK#2 scuds current clock configuration of the HES which is synchronized with outside world. Accordingly, this facilitates Comms hub clock synchronization which in turn synchronizes Reporting Devices using other existing protocols.
+The presently described embodiment still allows for the HES to use SMS wake up messages and TCP/TLS sessions for longer conversation between the HES and the Comms Hub, which is reserved for non-standard/single thread messages. This may be required when there is an issue and the HES needs to speak with Comms Hub. Additional description found herein with reference to FIG. 45. For all Comms Hub initiated pushes, the preferred embodiment described herein is utilized.
+IPv4 is used as the network layer tor the WAN. One skilled in the art recognizes that this does not preclude migrating to IPv6 or other related upgrades in the future. The Comms Hub receives a dynamic IPv4 address and DNS addresses when PDP context is activated. The Head End System uses TCP/TLS and UDP/DE protocols to communicate with the Comms Hub.
+Similarly, communications with HAN devices follow recognized standards such as IEEE802.15.4 for the radio and MAC interface and ZigBee specifications, e.g., ZigBee Network, ZigBee APS and ZigBee application clusters, the current specifications of which are known to those skilled in the art and incorporated herein by reference. By way of example, HAN devices may use the Direct Sequence Spread Spectrum (DSSS) radio operating in the 2.4 GHz band. Additionally, the Comms Hub and the Hand Held Terminal (HHT) may form a temporary point-to-point connection for commissioning and service activities. See further description herein and U.S. patent application Ser. No. 13/296,552 filed on Nov. 15, 2011, entitled âMETHOD FOR SECURELY COMMUNICATING ACROSS MULTIPLE NETWORKS USING A SINGLE RADIO,â which is incorporated herein by reference in its entirety
+In a particular embodiment, in order to address individual devices on the HAN (including the Comms Hub), the devices must be identified. Accordingly, each HAN device has an identifier, e.g., EUI-64 identifier, assigned to it by the manufacturer. This identifier is used as the HAN long device address. ZigBee devices select a short, 16 bit HAN short device address.
+The Comms Hub selects a random 16 bit PAN-ID. The PAN-ID differentiates one Comms Hub network from another Comms Hub network in the neighborhood. The PAN ID can be read by the HES.
+Similarly for WAN Addressing the Comms Hub has a 15 digit IMSI that contains the Mobile Country Code, the Mobile Network Code and the MSIN. The MSIN is the individual subscriber identifier of the Comms Hub. The IMSI is used to authenticate the Comms Hub to the mobile operator. The IMSI is used by the HES to address SMS messages to a Comms Hub. The Comms Hub has an IP address, e.g., IPv4 address, which is used by the IP Network layer of the WAN protocol stack, to communicate with the HES. The HES has one or more IP addresses, e.g., IPv4 addresses, and one or more fully qualified domain names. The multiple addresses and the domain name are used to load balance the network traffic and to differentiate energy service providers. The Comms Hub can be configured with the fully qualified domain name. It uses the domain name to call the DNS to resolve it into an IP address. When the HES sends a SMS message to the mobile operator's API, the operator sends the message from a trusted number. The trusted number is used by the Comms Hub to identify that the SMS message is from a qualified source. The Comms Hub is configured with up to three trusted numbers.
+Referring to FIG. 6 the HES may communicate with any Comms Hub DLMS objects through the COSEM IP port, 4059, or through ZigBee Gateway DLMS calls. The Comms Hub implements the gateway option. The HES uses a second port, the ZGD IP port 17756, to communicate with the Comms Hub ZigBee objects. The ZGD port is also used to communicate with the BAM devices. DLMS messages sent to the HAN devices use the ZigBee DLMS Tunnel cluster to transmit across the HAN, ZigBee ZCL devices used the native ZigBee protocol across the HAN.
+The ZigBee Gateway specification used by the HES implements Gateway Remote Interface Protocol (GRIP) Remote Procedure Calls (RPC) and the ZCL function category. The ZigBee Gateway components implemented by the Comms Hub are the GRIP Remote Procedure Calls and the ZigBee Cluster library (ZCL) functions. The ZCL interface of the ZigBee Gateway allows interaction with any ZigBee device including the Comms Hub itself through the use of EUI-64; ZigBee End Point supported on each device through the use of the End Point ID; Clusters implemented on each End Point through the use of the Cluster ID. This includes the ZigBee DLMS tunneling cluster to access DLMS objects on a remote ZigBee device; Classes within these Clusters through the use of the Class ID; and Attributes or Methods within these Classes through the use of the Attribute or Method ID.
+The Gateway Remote Interface Protocol (GRIP) is a lightweight Remote Procedure Call (RPC) protocol used for calling a remote function and retrieving the results between a Comms Hub and a Host Application. Each GRIP frame consists of the following components: a GRIP Header which comprises frame controls and RPC controls and a GRIP Payload which contains information specific to the frame type. The GRIP Frame Format is shown in Table 1.
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+
+ 
+ 
+
+
+
+TABLE 1
+
+
+ 
+
+
+Octet: 1
+1
+2
+1
+1
+0/2
+2
+0/2
+Variable
+
+
+ 
+
+
+
+
+Version
+Frame
+Transaction
+Function
+Function
+Manufacturer 
+Function
+RCP 
+RCP 
+
+
+ 
+control
+identifier
+domain
+category
+code
+identifier
+status
+payload
+
+
+
+
+General header
+RPC function identification fields
+RPC function payload
+
+
+
+
+GRIP Header
+GRIP Payload
+
+
+ 
+
+
+
+
+
+The GRIP Header is sub-divided into a general header and a RPC function identification fields. The fields of the GRIP header appear in a fixed order as listed below; the Version field is 8-bits in length and specifies the version of the GRIP used by the sender of the frame (value of the version shall be set to 0x00); the Frame control field is 8-bits in length, set to 0x01 if the frame is a request to a GRIP entity, set to 0x02 if the frame is a response to a prior request; the Transaction identifier which is used to match a frame of type response with a frame of type request on the same communication channel between the same entities and is selected by the originator of the request and shall be unique for this request until the response is received or the transaction failed; the Function domain which specifies the scope of the API used to identify the function (field shall be set to 0x01); the Function category field is 8-bits in length and specifies the category of an RPC function (this field may have the values shown in Table 2); the Manufacturer code field is 16-bits in length surd specifies the assigned manufacturer code for proprietary extensions to GRIP (field shall only be included in the frame if the function category field of the frame is set to 0x00); the Function identifier field is 16-bits in length and specifies a unique identifier for a function; the RPC status field specifies the status of the function which has been called in a prior request (The success value is unique and indicates that the prior request associated with this response was successfully received and well formatted, that the function in this request has been successfully performed and that the payload of the response contains the result of the function. It does not have any relation with the content of the function itself. This field is present only in frames of type response. The RPC status field may have the values shown in Table 3); and the payload field is of a variable number of octets in length and contains information specific to individual frame types.
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+ 
+TABLE 2
+
+
+ 
+ 
+
+
+ 
+Function category
+Value
+Description
+
+
+ 
+ 
+
+
+
+
+ 
+Manufacturer
+0x00
+Manufacturer extensions
+
+
+ 
+ZCL
+0x03
+Zigbee ZCL application layer
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+
+
+TABLE 3
+
+
+ 
+
+
+RPC status
+Value
+Description
+
+
+ 
+
+
+
+
+SUCCESS
+0x0000
+An RPC operation has been executed successfully
+
+
+CONNECTION_CLOSED
+0x0100
+The connection with a remote entity has been
+
+
+ 
+ 
+closed during an RPC operation
+
+
+RPC_TIMEOUT
+0x0101
+The maximum duration allowed for an RPC
+
+
+ 
+ 
+operation elapsed without returning the results of
+
+
+ 
+ 
+the function that was called
+
+
+TRANSACTION_ERROR
+0x0200
+A GRIP request is received with a âTransaction
+
+
+ 
+ 
+identifierâ which already matches a function
+
+
+ 
+ 
+being performed by the Next Higher Layer Entity
+
+
+ 
+ 
+on this entity
+
+
+FUNCTION_TIMEOUT
+0x0201
+The maximum duration allowed to wait for the
+
+
+ 
+ 
+execution of a function on the local entity where
+
+
+ 
+ 
+the function is performed elapsed
+
+
+UNSUPPORTED_FUNCTION
+0x0300
+The RPC header of a GRIP request which has
+
+
+ 
+ 
+been received refers to a function that is not
+
+
+ 
+ 
+supported by this entity
+
+
+BAD_PARAM_FORMAT
+0x0301
+The parameters received to execute the function
+
+
+ 
+ 
+have a bad format
+
+
+FUNCTION_ERROR
+0x0302
+Any error occurring in the Next Higher Layer
+
+
+ 
+ 
+Entity when attempting to perform the function
+
+
+ 
+ 
+and retrieve its results which differs from the
+
+
+ 
+ 
+UNSUPPORTED_FUNCTION and the
+
+
+ 
+ 
+BAD_PARAM_FORMAT error status.
+
+
+ 
+
+
+
+
+
+The SendDLMSCommand procedure is used to send and receive DLMS APDU in a generic manner. Table 4 shows the value assigned in the different fields of the GRIP protocol for the SendDLMSCommand request and response.
+
+
+
+ 
+ 
+ 
+
+
+
+TABLE 4
+
+
+ 
+
+
+GRIP frame field
+Request
+Response
+
+
+ 
+
+
+
+
+Version
+0x00
+0x00
+
+
+Transaction identifier
+Present
+Present
+
+
+Frame control
+0x01
+0x02
+
+
+Function domain
+0x01
+0x01
+
+
+Function category
+0x00
+0x00
+
+
+Manufacturer code
+0x10C7
+0x10C7
+
+
+Function identifier
+0x0000
+0x0000
+
+
+RPC status
+Not present
+Present
+
+
+RCP payload
+DlmsCommandParams
+DlmsCommandResults
+
+
+ 
+
+
+
+
+
+The SendDLMSCommand request and response is defined by the ASN.1 definitions as shown in FIG. 7. These structures are encoded using the Distinguished Encoding Rules (DER) as defined by the X.690 standard which is known to those skilled in the art.
+The DlmsCommandParams ASN.1 definition describes the structure of the RCP payload of a SendDLMSCommand request. The different fields supported by this structure are listed in Table 5.
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 5
+
+
+ 
+
+
+Name
+Status
+Type
+Valid Range
+Description
+
+
+ 
+
+
+
+
+timeout
+M
+32-bit
+0x00000000-0xffffffff
+Maximum period, in milliseconds,
+
+
+ 
+ 
+unsigned
+ 
+this procedure will block before
+
+
+ 
+ 
+integer
+ 
+returning a response. Set to 0xffffffff
+
+
+ 
+ 
+ 
+ 
+to disable this timeout, to wait for an
+
+
+ 
+ 
+ 
+ 
+infinite amount of time.
+
+
+address
+M
+64-bit
+Any 64-bit, IEEE
+The extended address of the target
+
+
+ 
+ 
+IEEE
+address
+device.
+
+
+ 
+ 
+address
+
+
+data
+M
+Octet String
+DLMS APDU
+This field contains the DLMS
+
+
+ 
+ 
+ 
+ 
+wrapper follow by the DLMS
+
+
+ 
+ 
+ 
+ 
+payload.
+
+
+ 
+
+
+
+
+
+The DlmsCommandResults ASN.1 definition describes the structure of the RCP payload of a SendDLMSCommand response. The different fields supported by this structure are in Table 6.
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 6
+
+
+ 
+
+
+Name
+Status
+Type
+Valid Range
+Description
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+status
+M
+8-bit unsigned
+0 to 255
+0x00
+SUCCESS, Indicates that a
+
+
+ 
+ 
+Integer
+ 
+ 
+function successfully completed.
+
+
+ 
+ 
+ 
+ 
+0x01
+TIMEOUT, Indicates that the
+
+
+ 
+ 
+ 
+ 
+ 
+amount of time to complete the
+
+
+ 
+ 
+ 
+ 
+ 
+processing task was longer than
+
+
+ 
+ 
+ 
+ 
+ 
+the amount of time limited by the
+
+
+ 
+ 
+ 
+ 
+ 
+timeout parameter
+
+
+ 
+ 
+ 
+ 
+0x02
+GENERAL ERROR, Indicates
+
+
+ 
+ 
+ 
+ 
+ 
+that a general error occurred and
+
+
+ 
+ 
+ 
+ 
+ 
+the function did not complete
+
+
+ 
+ 
+ 
+ 
+ 
+successfully.
+
+
+ 
+ 
+ 
+ 
+0x03
+PARAMETER_MISSING,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that one or more
+
+
+ 
+ 
+ 
+ 
+ 
+required parameters were
+
+
+ 
+ 
+ 
+ 
+ 
+missing from the request.
+
+
+ 
+ 
+ 
+ 
+0x04
+PARAMETER_INVALID_VALUE,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that one or more
+
+
+ 
+ 
+ 
+ 
+ 
+supplied parameters had an
+
+
+ 
+ 
+ 
+ 
+ 
+invalid value.
+
+
+ 
+ 
+ 
+ 
+0x05
+NETWORK_NOT_READY,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that the ZigBee
+
+
+ 
+ 
+ 
+ 
+ 
+interface is not in a state to
+
+
+ 
+ 
+ 
+ 
+ 
+process the request.
+
+
+ 
+ 
+ 
+ 
+0x06
+EMPTY, Indicates that there are
+
+
+ 
+ 
+ 
+ 
+ 
+no results to be retrieved.
+
+
+ 
+ 
+ 
+ 
+0x07
+NOT_ALLOWED, Indicates that
+
+
+ 
+ 
+ 
+ 
+ 
+the action requested by the
+
+
+ 
+ 
+ 
+ 
+ 
+function is not allowed
+
+
+ 
+ 
+ 
+ 
+0x08
+MEMORY_ERROR, Indicates
+
+
+ 
+ 
+ 
+ 
+ 
+that the function has not been
+
+
+ 
+ 
+ 
+ 
+ 
+successfully completed due to a
+
+
+ 
+ 
+ 
+ 
+ 
+memory error
+
+
+ 
+ 
+ 
+ 
+0x09
+APS_FAILURE, Indicates a
+
+
+ 
+ 
+ 
+ 
+ 
+specific APS error
+
+
+ 
+ 
+ 
+ 
+0x0A
+NETWORK_FAILURE,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates a network error.
+
+
+
+
+data
+M
+Octet String
+DLMS APDU
+This field contains the DLMS wrapper
+
+
+ 
+ 
+ 
+ 
+follow by the DLMS payload.
+
+
+ 
+
+
+
+
+
+The SendZCLCommand procedure is invoked by a Host Application to send an arbitrary DLMS APDU to or through the Comms Hub. Upon invocation of the SendZCLCommand procedure, the Comms Hub shall ignore supplied parameters that are neither mandatory nor optional. Next the Comms Hub shall validate that all mandatory parameters are supplied. If one or more mandatory parameters are not supplied then it shall return a Status result of PARAMETER_MISSING. Next the Comms Hub shall validate that all supplied parameters have a valid value. If one or more parameters have an invalid value then it shall return a Status result of PARAMETER_INVALID_VALUE. The Comms Hub shall then assemble the DIMS request and forward it to the specified destination. On reception of the corresponding DLMS response, the Comms Hub assembles the SendZCLCommand response and forwards it to the Host Application. The Host Application operates in a synchronized mode. This means that the Host Application, after the transmission of it request, block until the reception of a response. A TIMEOUT stems shall be returned by the Comms Hub if the total time of the processing task exceeds the timeout value specified in the SendZCLCommand request.
+The byte streams set forth in FIGS. 8a  (request) and 8 b (response) show typical, but exemplary SendDLMSCommand requests/responses. Not all possible fields are shown and some optional fields might be removed. The byte stream is represented in the left column and the right column contains a short description. Value âxxâ represents an octet and the value âxx . . . â represents an octet string. Fields defined in are encoded in DER as tag, length and value as defined by the X.690 standard.
+The SendZCLCommand procedure is used to send and receive ZCL commands in a generic manner. Table 7 shows the value assigned to the different fields of the GRIP protocol for the SendZCLCommand request and response.
+
+
+
+ 
+ 
+ 
+
+
+
+TABLE 7
+
+
+ 
+
+
+GRIP frame field
+Request
+Response
+
+
+ 
+
+
+
+
+Version
+0x00
+0x00
+
+
+Transaction identifier
+Present
+Present
+
+
+Frame control
+0x01
+0x02
+
+
+Function domain
+0x01
+0x01
+
+
+Function category
+0x03
+0x03
+
+
+Manufacturer code
+Not present
+Not present
+
+
+Function identifier
+0x0300
+0x0300
+
+
+RPC status
+Not present
+Present
+
+
+RCP payload
+ZCLCommandParams
+ZCLCommandResults
+
+
+ 
+
+
+
+
+
+The SendZCLCommand procedure request and response is defined by the ASN.1 definitions shown in FIG. 9. These structures are encoded using the Distinguished Encoding Rules (DER) as defined by the X.690 standard ZCLCommandParams.
+The ZCLCommandParams ASN.1 definition describes the structure of the RCP payload of a SendZCLCommand request. The different fields supported by this structure are in Table 8.
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 8
+
+
+ 
+
+
+Name
+Status
+Type
+Valid Range
+Description
+
+
+ 
+
+
+
+
+timeout
+M
+32-bit
+0x00000000-0xffffffff
+Maximum period, in milliseconds,
+
+
+ 
+ 
+unsigned
+ 
+this procedure will block before
+
+
+ 
+ 
+integer
+ 
+returning a response. Set to 0xffffffff
+
+
+ 
+ 
+ 
+ 
+to disable this timeout, to wait for an
+
+
+ 
+ 
+ 
+ 
+infinite amount of time.
+
+
+dstAddress-mode
+O
+Integer
+0x00-0xff
+The addressing mode used for the
+
+
+ 
+ 
+ 
+ 
+DestinationAddress parameter.
+
+
+ 
+ 
+ 
+ 
+0x02 = 16-bit address
+
+
+ 
+ 
+ 
+ 
+0x03 = 64-bit extended address
+
+
+ 
+ 
+ 
+ 
+If this parameter is omitted then it is
+
+
+ 
+ 
+ 
+ 
+assumed that a binding table entry
+
+
+ 
+ 
+ 
+ 
+exists in the Comms Hub that
+
+
+ 
+ 
+ 
+ 
+determines the destination.
+
+
+dst-address
+O
+Address
+As specified by
+If this parameter is omitted then it is
+
+
+ 
+ 
+ 
+the
+assumed that a binding table entry
+
+
+ 
+ 
+ 
+DstAddrMode
+exists in the Comms Hub that
+
+
+ 
+ 
+ 
+parameter
+determines the destination.
+
+
+dst-endpoint
+O
+Endpoint ID
+Any valid
+The identifier for the endpoint on the
+
+
+ 
+ 
+ 
+endpoint ID
+destination device to which the ZCL
+
+
+ 
+ 
+ 
+ 
+command is directed.
+
+
+ 
+ 
+ 
+ 
+If this parameter is omitted then it is
+
+
+ 
+ 
+ 
+ 
+assumed that a binding table entry
+
+
+ 
+ 
+ 
+ 
+exists in the Comms Hub that
+
+
+ 
+ 
+ 
+ 
+determines the destination endpoint.
+
+
+profileID
+O
+16-bit
+Any valid profile
+The ZigBee application profile under
+
+
+ 
+ 
+Integer
+ID
+which the contents of this ZCL
+
+
+ 
+ 
+ 
+ 
+command are to be interpreted.
+
+
+clusterID
+M
+16-bit
+Any cluster ID
+The cluster identifier associated to the
+
+
+ 
+ 
+Integer
+ 
+ZCL command to send.
+
+
+src-endpoint
+O
+Endpoint ID
+Any valid
+The source endpoint on the ZigBee
+
+
+ 
+ 
+ 
+endpoint ID
+Gateway for ZCL command.
+
+
+txoption
+M
+Bitmap
+0000 xxxx
+The transmission options for the
+
+
+ 
+ 
+ 
+(Where x can be
+ASDU to be transferred. These are a
+
+
+ 
+ 
+ 
+0 or 1)
+bitwise OR of one or
+
+
+ 
+ 
+ 
+ 
+more of the following:
+
+
+ 
+ 
+ 
+ 
+0x01 = Security enabled transmission
+
+
+ 
+ 
+ 
+ 
+0x02 = Use NWK key
+
+
+ 
+ 
+ 
+ 
+0x04 = Acknowledged transmission
+
+
+ 
+ 
+ 
+ 
+0x08 = Fragmentation permitted
+
+
+radius
+O
+Integer
+Any number up
+The distance, in hops, that a
+
+
+ 
+ 
+ 
+to the maximum
+transmitted frame will be allowed to
+
+
+ 
+ 
+ 
+radius of the
+travel through the network.
+
+
+ 
+ 
+ 
+network.
+
+
+zcl-header
+M
+Octet String
+ZCLHeader
+General ZCL Frame Format as
+
+
+ 
+ 
+ 
+ 
+defined in Zigbee Cluster Library
+
+
+ 
+ 
+ 
+ 
+Specification incorporated herein by
+
+
+ 
+ 
+ 
+ 
+reference
+
+
+zcl-payload
+M
+Octet string
+Any valid ZCL
+Frame payload as defined in Zigbee
+
+
+ 
+ 
+ 
+command
+Cluster Library Specification
+
+
+ 
+ 
+ 
+ 
+incorporated herein by reference
+
+
+ 
+
+
+
+
+
+The ZCLCommandResults ASN.1 definition describes the structure of the RCP payload of a SendZCLCommand response. The different fields supported are in Table 9.
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 9
+
+
+ 
+
+
+Name
+Status
+Type
+Valid Range
+Description
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+status
+M
+8-bit
+ 
+0x00
+SUCCESS, Indicates that a
+
+
+ 
+ 
+unsigned
+ 
+ 
+function successfully
+
+
+ 
+ 
+Integer
+ 
+ 
+completed.
+
+
+ 
+ 
+ 
+ 
+0x01
+TIMEOUT, Indicates that the
+
+
+ 
+ 
+ 
+ 
+ 
+amount of time to complete
+
+
+ 
+ 
+ 
+ 
+ 
+the processing task was longer
+
+
+ 
+ 
+ 
+ 
+ 
+than the amount of time
+
+
+ 
+ 
+ 
+ 
+ 
+limited by the Timeout
+
+
+ 
+ 
+ 
+ 
+ 
+parameter
+
+
+ 
+ 
+ 
+ 
+0x02
+GENERAL ERROR,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that a general error
+
+
+ 
+ 
+ 
+ 
+ 
+occurred and the function did
+
+
+ 
+ 
+ 
+ 
+ 
+not complete successfully.
+
+
+ 
+ 
+ 
+ 
+0x03
+PARAMETER_MISSING,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that one or more
+
+
+ 
+ 
+ 
+ 
+ 
+required parameters were
+
+
+ 
+ 
+ 
+ 
+ 
+missing from the request.
+
+
+ 
+ 
+ 
+ 
+0x04
+PARAMETER_INVALID_VALUE,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that one or
+
+
+ 
+ 
+ 
+ 
+ 
+more supplied parameters had
+
+
+ 
+ 
+ 
+ 
+ 
+an invalid value.
+
+
+ 
+ 
+ 
+ 
+0x05
+NETWORK_NOT_READY,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that the ZigBee
+
+
+ 
+ 
+ 
+ 
+ 
+interface is not in a state to
+
+
+ 
+ 
+ 
+ 
+ 
+process the request.
+
+
+ 
+ 
+ 
+ 
+0x06
+EMPTY, Indicates that there
+
+
+ 
+ 
+ 
+ 
+ 
+are no results to be retrieved.
+
+
+ 
+ 
+ 
+ 
+0x07
+NOT_ALLOWED, Indicates
+
+
+ 
+ 
+ 
+ 
+ 
+that the action requested by
+
+
+ 
+ 
+ 
+ 
+ 
+the function is not allowed
+
+
+ 
+ 
+ 
+ 
+0x08
+MEMORY_ERROR,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates that the function has
+
+
+ 
+ 
+ 
+ 
+ 
+not been successfully
+
+
+ 
+ 
+ 
+ 
+ 
+completed due to a memory
+
+
+ 
+ 
+ 
+ 
+ 
+error
+
+
+ 
+ 
+ 
+ 
+0x09
+APS_FAILURE, Indicates a
+
+
+ 
+ 
+ 
+ 
+ 
+specific APS error
+
+
+ 
+ 
+ 
+ 
+0x0A
+NETWORK_FAILURE,
+
+
+ 
+ 
+ 
+ 
+ 
+Indicates a network error
+
+
+
+
+aps-status
+M
+Status
+Any valid status
+The Status reported by APSDE-
+
+
+ 
+ 
+Enumeration
+ 
+DATA.indication that delivered the
+
+
+ 
+ 
+ 
+ 
+ZCL command.
+
+
+ 
+ 
+ 
+ 
+Note that if this parameter has any
+
+
+ 
+ 
+ 
+ 
+other value than SUCCESS then
+
+
+ 
+ 
+ 
+ 
+none of the optional parameters
+
+
+ 
+ 
+ 
+ 
+below are delivered.
+
+
+rxtime
+O
+Integer
+Implementation
+A time indication for the received
+
+
+ 
+ 
+ 
+specific
+packet based on the local clock.
+
+
+dst-endpoint
+O
+Endpoint ID
+Any valid
+The endpoint on the Comms Hub to
+
+
+ 
+ 
+ 
+endpoint
+which the ZCL command was
+
+
+ 
+ 
+ 
+ 
+directed.
+
+
+srcAddress-
+O
+Integer
+0x00-0xff
+The addressing mode for the source
+
+
+mode
+ 
+ 
+ 
+address used.
+
+
+ 
+ 
+ 
+ 
+0x02 = 16-bit short address
+
+
+ 
+ 
+ 
+ 
+0x03 = 64-bit extended address
+
+
+src-address
+O
+Address
+As specified by
+The ZCL response command frame
+
+
+ 
+ 
+ 
+the Source-
+was sent from this address.
+
+
+ 
+ 
+ 
+AddressMode
+
+
+src-
+O
+64-bit
+Any 64-bit,
+The extended address of the source
+
+
+ieeeAddress
+ 
+IEEE
+IEEE
+device if it is known in the Comms
+
+
+ 
+ 
+address
+address
+Hub address manager tables.
+
+
+src-
+O
+Octet String
+ 
+This field is not supported.
+
+
+aliasAddress
+
+
+src-endpoint
+O
+Endpoint ID
+Any valid
+An identifier for the endpoint on the
+
+
+ 
+ 
+ 
+endpoint ID
+sending device that issued the
+
+
+ 
+ 
+ 
+ 
+command.
+
+
+profileID
+O
+16-bit Integer
+Any valid
+An identifier for the profile under
+
+
+ 
+ 
+ 
+ZigBee profile
+which this command is to be
+
+
+ 
+ 
+ 
+ID
+interpreted.
+
+
+clusterID
+O
+16-bit Integer
+Any valid
+An identifier for the cluster under
+
+
+ 
+ 
+ 
+cluster ID.
+which this command is to be
+
+
+ 
+ 
+ 
+ 
+interpreted.
+
+
+zcl-header
+O
+Octet String
+ 
+General ZCL Frame Format as
+
+
+ 
+ 
+ 
+ 
+defined in Zigbee Cluster Library
+
+
+ 
+ 
+ 
+ 
+Specification, ZigBee Document
+
+
+ 
+ 
+ 
+ 
+075123r03ZB section 2.3.1.
+
+
+zcl-payload
+O
+Octet string
+Any valid ZCL
+Frame payload as defined in Zigbee
+
+
+ 
+ 
+ 
+command
+Cluster Library Specification,
+
+
+ 
+ 
+ 
+ 
+ZigBee Document 075123r03ZB
+
+
+ 
+ 
+ 
+ 
+section 2.3.1.
+
+
+ 
+
+
+
+
+
+The SendZCLCommand procedure is invoked by a host application to send an arbitrary ZCL frame to or through the Comms Hub. Upon invocation of the SendZCLCommand procedure, the Comms Hub shall ignore supplied parameters that are neither mandatory nor optional. Next the Comms Hub shall validate that all mandatory parameters are supplied. If one or more mandatory parameters are not supplied then it shall return a Status result of PARAMETER_MISSING. Next the Comms Hub shall validate that all supplied parameters have a valid value. If one or more parameters have an invalid value then it shall return a Status result of PARAMETER_INVALID_VALUE. The Comms Hub shall then assemble the ZCL request and forward it to the specified destination. On reception of the corresponding ZCL response, the Comms Hub assembles the ZCLCommandResults and forwards it to the Host Application. The Host Application operates in a synchronized mode. This means that the Host Application, after the transmission of it request block until the reception of a response. A TIMEOUT status shall be returned by the Comms Hub if the total time of the processing task exceeds the timeout value specified in the SendZCLCommand request.
+The byte streams set forth in FIGS. 10a  (request) and 10 b (response) show typical, but exemplary SendZCLCommand requests/responses. The byte streams shows in this section are just examples, not all possible fields are shown and some optional fields might be removed. The byte stream is represented in the led column and the right column contains a short description. Value âxxâ represents an octet and the value âxx . . . â represents an octet string. Fields defined in ASN.1 are encoded in DER as tag, length and value as defined by the X690 standard.
+Digital Envelopes are used to transfer information between the HES and the Comms Hub without establishing a TLS session. Digital Envelopes are transferred using UDP datagram. Each Digital Envelope consists of: A mandatory header as defined by the DigitalEnvelopHeader ASN.1 definition; An optional DigitalEnvelopPayload encoded as a CMS Data content type if not encrypted or as a CMS EnvolopedData content type if encrypted; and A mandatory signature encoded as a CMS SignedData. FIG. 11 is illustrative of these combinations.
+The Digital Envelope Header is defined by this ASN.1 syntax shown in FIG. 12.
+The Digital Envelop Header supports the following fields: Digital Envelope version number (0x01: Current version as defined in this section); reasonCode which identifies the purpose and type of message sent (see Table 10 below); commsHubMacAddress including MAC address of the sending Comms Hub; sequenceNumber including Unique number assigned to each Digital Envelope sent by the Comms Hub (For Acknowledgements Digital envelope sends by the Head End System, this field is set to the sequence number of the Digital Envelope acknowledged); deviceMacAddress including MAC address of the device that supplied the data included in the Digital Envelope (For example, a daily meter report by the Comms Hub uses the meter's MAC address in the deviceMacAddress field as does an alarm report associated with this meter. This field is not present for information directly reported by the Comms Hub); tokenId present in a âSMS wakeup responseâ or a âCallback responseâ Digital Envelope if a taken ID has been provided in the corresponding SMS wakeup or with a callback previously setup in an âAcknowledgmentâ Digital Envelope; pushCertificateSN including Serial number of the Push certificate currently available in the Comms Hub (This information is required by the HES to sign the acknowledgment with the appropriate key); currentTime including Current UTC time of the HES; timezoneID including Identifier of the timezone where this Comms Hub is installed (This information is required by the HES to return, the appropriate DST information; field is available in the Digital Envelop only if previously configured); callbackTime which is an Optional field set if a callback to a service is required (This option is used by the Head End system to postpone the processing of a transaction with the Comms Hub outside to data acquisition period); callbackTokenId which is an Optional field used in conjunction with the callbackTime (When set, this identifier is included in the âCallback Responseâ Digital Envelop; field can be used by the service processing a callback to retrieve the initial reason of this scheduled call; callbackIpAddress which is an Optional field used in conjunction with the callbackTime (The requestor of a callback may use this field to specify the IP address of the service waiting For the callback or the requestor may set the domainName field or rely on the default address setting of the Comms Hub); callbackDomainName which is an Optional field used in conjunction with the callbackTime (The requestor of a callback may use this field to specify the fully qualified domain name of the service waiting for the callback or the requestor may set the IP Address field or rely on the default address setting of the Comms Hub); callbackPortNum which is an Optional field used in conjunction with the callbackTime (The requestor of a callback may use this field to specify the IP port of the service waiting for the callback); dstStart including Start date and time of the current or next Daylight Saving Time period; and dstEnd including End date and time of the current or next Daylight Saving Time period (The dstStart and dstEnd are updated once a year prior to the Daylight Saving Time period).
+
+
+
+ 
+ 
+
+
+
+ 
+TABLE 10
+
+
+ 
+ 
+
+
+
+
+ 
+0x06: SMS Wakeup Response
+
+
+ 
+0x07: Switch GSM Network Test
+
+
+ 
+0x08: Callback Response
+
+
+ 
+0x09: Commission Request
+
+
+ 
+0x0A: OTA Status Report
+
+
+ 
+0x0B: OTA Image Request Alert
+
+
+ 
+0x0C: Decommission Request
+
+
+ 
+0x11: E-Meter Report
+
+
+ 
+0x12: G-Meter Report
+
+
+ 
+0x13: IHU Report
+
+
+ 
+0x14: Comms Hub Report
+
+
+ 
+0x21: E-Meter High Priority Report
+
+
+ 
+0x22: G-Meter High Priority Report
+
+
+ 
+0x23: IHU High Priority Report
+
+
+ 
+0x24: Comms Hub High Priority Report
+
+
+ 
+0x31: E-Meter Alarm
+
+
+ 
+0x32: G-Meter Alarm
+
+
+ 
+0x33: IHU Alarm
+
+
+ 
+0x34: Comms Hub Alarm
+
+
+ 
+0xFF: Acknowledgement
+
+
+ 
+ 
+
+
+
+
+
+The Digital Envelop Header is encoded using the Distinguished Encoding Rules (DER). An exemplary byte stream is shown in FIG. 13.
+Digital Envelop Payload is defined by the ASN.1 syntax shown in FIG. 14. Each DigitalEnvelopePayload is composed of zero, one or more PayloadContent. Each PayloadContent transport has either DLMS or ZCL content.
+The dlmsContent data structure is used to include in a Digital Envelop a list of DLMS attributes. Each dlmsContent contains: sourceAP which is Application Process at the origin of this information; destinationAP which is Application Process within the Head End System responsible of processing this Information (This field is optional, when not included this information is processed by the default Head End System Application Process); dlmsAttributes which is Sequence of one or more DLMS attributes, each one encoded as shown in Table 11 below.
+
+
+
+ 
+ 
+
+
+
+ 
+TABLE 11
+
+
+ 
+ 
+
+
+
+
+ 
+class-id: DLMS Interface Class identifier
+
+
+ 
+instance-id: DLMS OBIS code
+
+
+ 
+attribute-id: DLMS attribute identifier
+
+
+ 
+value: DLMS attribute value encoded in A-XER
+
+
+ 
+ 
+
+
+
+
+
+The dlmsContent is encoded using the Distinguished Encoding Rules (DER) as shown in FIG. 15.
+The zclContent data structure is used to send ZCL commends or ZCL attributes in a Digital Envelope. ZCL attributes are encoded using the standard ZCL âReport attributesâ command, carrying one or multiple attributes. Attributes reported by the âReport attributesâ command shall all originate from the same End Point, Cluster and all been either standard or manufacturer. When attributes from different End Points and/or Clusters need to be transferred, multiple ZclContent are included in the same Digital Envelope. Each zclContent contains: clusterIdentifier which is ZigBee Cluster ID at the origin of this information; sourceEndpoint which is Endpoint at the origin of this information; destinationEndpoint which is Endpoint within the Head End System responsible of processing tins in formation (This field is optional, when not included this information is processed by the default process); zclCommands including one or more ZCL commands as defined in the ZigBee Cluster Library each ZCL command has the format as shown in Table 12.
+
+
+
+ 
+
+
+
+TABLE 12
+
+
+ 
+
+
+
+
+frameControl: ZigBee ZCL âFrame Controlâ field.
+
+
+manufactureCode: ZigBee âManufacture Codeâ field, present only if the
+
+
+âManufacturer Specificâ flag within the âFrame Controlâ field is set.
+
+
+transactionSeqNum: ZigBee ZCL âTransaction Sequence Numberâ field.
+
+
+This field is not processed and can be set to any value.
+
+
+commandId: ZigBee ZCL Command ID.
+
+
+commandContent: ZCL command payload.
+
+
+ 
+
+
+
+
+
+Each zclContent is encoded using the Distinguished Encoding Rules (DER) as shown in FIG. 16.
+The CMS Data content type is used to carry a DigitalEnvelopePayload when not encrypted. The structure of the CMS Data is defined in RFC 5652 using the ASN.1 syntax as shown in FIG. 17. The CMS Data content type is encoded using the Distinguished Encoding Rules (DER) as shown in FIG. 18.
+The CMS Encrypted Data content type is used to carry an encrypted DigitalEnvelopePayload. The structure of the CMS EncryptedData is defined in RFC 5652 and relies on data types and Object Identifiers (OID) defined in a variety of other standards. The equivalent ANS.1 definition describes EncryptedData content type options used and is shown in FIG. 19. The CMS EncryptedData content type is encoded using the DER encoding rules. The CMS EncryptedData content type produces the byte stream as shown in FIG. 20. This process uses the AES-128 CBC mode as described in RFC 3565.
+The EnvelopeData encryption structure is shown in FIG. 21. The steps of the encryption process include
+  1. A ContentInfo structure containing an EncryptedData is constructed. 2. A shared secret is created using the ECDH key derivation function. 3. Shared secret<-ECDH (Source private key, Target public key) 4. The BAS-128 key is created using the first 16 bytes of the shared secret. 5. A Random Number Generator is used to create a 16 bytes Initial Vector (IV) 6. The DigitalEnvelopePayload is encrypted using AES-129-CBC algorithm. EncryptedContent<-AES-128-CBC(EAS-128 key, IV, DigitalEnvelopePayload) 7. The output of the AES-128-CBC algorithm in placed in the EncryptedContent field. 
+The DigitalEnvelopePayload included in an EncryptedData content type is decrypted as shown in FIG. 22. The steps of the decryption process include:
+  1. A shared secret is created using the ECDH key derivation function. 2. Shared secret<-ECDH Target private key, Source public key) 3. The EAS-128 key is created using the first 16 bytes of the shared secret. 4. The IV field and the EncryptedContent are extracted from the EnvelopeData 5. The DigitalEnvelopePayload is decrypted using the AES-128-CBC function. DigitalEnvelopePayload<-AES-128-CBC(EAS-128, IV, EncryptedContent) 
+The CMS SignedData content type is used to sign Digital Envelopes. This digital signature is used to verify the integrity of a Digital Envelope and authenticate the source of this information. The structure of the CMS SignedData is defined in RFC 5652 and relies on data types and Object Identifiers (OID) defined in a variety of other standards. The ASN.1 definition shown in FIG. 23 describes the SignedData content type used. CMS SignedData content type is encoded using the Distinguished Encoding Rule(DER). When used with the ECDSA signing algorithm, the Prime256v1 elliptic curve and the SHA256 message digest, the CMS SignedData content type produce the byte stream shown in FIG. 24.
+The Signed Data structure is constructed as follows and shown in FIG. 25:
+  1. The issuer field of the SignedData structure just created is set to the issuer distinguish name and serial number of the certificate associated to the private key used for signing. 2. A SHA256 message digest is computed on the DigitalEnvelopHeader and Data content type or EnvelopedData content type if present. 3. The ECDSA signature is computed using the private key corresponding to the issuer distinguish name and serial number used in step #2 and the result of the message digest computed in step #3. 4. The signature computed is set in the SignatureValue field of the signature data structure. ECSA signatures are composed of two fields (r, s), these values are encoded in BER accordingly to the âEcdsa-Sig-Valueâ ASN.1 syntax. 
+The signature of each Digital Envelope received is verified in accordance with the following process and shown in FIG. 26;
+  1. The Serial Number and Issuer distinguished name of the certificate are extracted from the SignedData structure received. 2. The certificate corresponding to the Serial Number and Issuer Distinguished Name just extracted is located. 3. A SHA2S6 message digest is computed on the DigitalEnvelopHeader and EnvelopedData received. 4. The ECDSA verification algorithm is invoked using the public key of the certificate located in step #2 and the message digest computed in step #3. 5. The certificate used to verify the signature of the Digital Envelope might need to be authenticated with certificate(s) higher in the chain of trust. This process is not described in this section. 
+Digital Envelopes are used to implement different interactions between the Comms Hub and the HES. The reasonCode field included in the header identifies both the purpose of the envelope and the type of information carried. The different reason codes supported are summarized in Table 13 below which identifies digital envelope types and contents (y=mandatory and o=conditional). For each type there is information for: The optional header fields included; The presence of a payload and its format (DLMS or ZCL); The presence of certificates and/or certificate revocation list (CRL) in the signedData element of the digital envelops; The public key used in conjunction with the Comms Hub private key to derive a share secret used for encrypting the payload. On reception, the HES use its corresponding private key and the Comms Hub public key to obtain the same share secret; and The Comms Hub private key used for key derivation and signing.
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 13
+
+
+ 
+
+
+
+
+ 
+Digital
+Digital
+Digital
+ 
+Digital
+Digital
+Digital
+ 
+
+
+ 
+Envelop
+Envelop
+Envelop
+Digital
+Envelop
+Envelop
+Envelop
+Digital
+
+
+ 
+Header.
+Header.
+Header.
+Envelop
+Header.
+Header.
+Header.
+Envelop
+
+
+ 
+reason
+sequence
+device
+Header.
+push
+timezone 
+current
+Header.
+
+
+Description
+Code
+Num
+MacAd
+tokenId
+Certificat
+ID
+Time
+callback . . .
+
+
+ 
+
+
+SMS Wakeup 
+0x06
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Response
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Switch GSM 
+0x07
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Network Test
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Call-back Response
+0x08
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Commission Request
+0x09
+y
+o
+ 
+ 
+ 
+ 
+ 
+
+
+OTA Status Report
+0x0A
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+OTA Image Request 
+0x0B
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Alert
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Decommission 
+0x0C
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Request
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+E-Meter Report
+0x11
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+G-Meter Report
+0x12
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+IHU Report
+0x13
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+Comms Hub Report
+0x14
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+E-Meter High 
+0x21
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+G-Meter High 
+0x22
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+IHU High Priority 
+0x23
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Comms Hub High 
+0x24
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+E-Meter Alarm
+0x31
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+G-Meter Alarm
+0x32
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+IHU Alarm
+0x33
+y
+y
+ 
+y
+y
+ 
+ 
+
+
+Comms Hub Alarm
+0x34
+y
+ 
+ 
+y
+y
+ 
+ 
+
+
+Acknowledgement 
+0xFF
+y
+ 
+ 
+ 
+ 
+y
+ 
+
+
+(Commission request)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Acknowledgement
+0xFF
+y
+ 
+ 
+ 
+ 
+y
+o
+
+
+ 
+
+
+ 
+Digital
+Digital
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+ 
+Envelop
+Envelop
+ 
+ 
+Encrypted
+ 
+Public
+Private key 
+
+
+ 
+Payload.
+Payload.
+Signed
+ 
+Data 
+ 
+key use
+use for key
+
+
+ 
+dlms
+zcl
+Data.
+Signed
+content 
+ 
+for key
+derivation 
+
+
+Description
+Content(
+Content(s)
+certificates
+Data.crls
+type
+Payload
+derivation
+and signing
+
+
+ 
+
+
+SMS Wakeup 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Operator 
+
+
+Response
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Switch GSM 
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+Network Test
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Call-back Response
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Commission Request
+o
+o
+y
+ 
+ 
+ 
+ 
+Manufacturer 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+OTA Status Report
+ 
+y
+ 
+ 
+ 
+ 
+ 
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+OTA Image Request 
+ 
+y
+ 
+ 
+ 
+ 
+ 
+Operator 
+
+
+Alert
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Decommission 
+ 
+ 
+y
+ 
+ 
+ 
+ 
+Operator 
+
+
+Request
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+E-Meter Report
+y
+o
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+G-Meter Report
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+IHU Report
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Comms Hub Report
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+E-Meter High 
+y
+o
+ 
+ 
+Y
+y
+Push
+Operator 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+G-Meter High 
+ 
+y
+ 
+ 
+Y
+y
+Push
+Operator 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+IHU High Priority 
+ 
+y
+ 
+ 
+Y
+y
+Push
+Operator
+
+
+Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Comms Hub High 
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+Priority Report
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+E-Meter Alarm
+y
+o
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+G-Meter Alarm
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+IHU Alarm
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Comms Hub Alarm
+ 
+y
+ 
+ 
+y
+y
+Push
+Operator 
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Device
+
+
+Acknowledgement 
+ 
+ 
+y
+o
+ 
+ 
+ 
+Commissioning
+
+
+(Commission request)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Acknowledgement
+ 
+ 
+ 
+o
+ 
+ 
+ 
+Push
+
+
+ 
+
+
+
+
+
+The âSMS Wakeup Responseâ Digital Envelope is sent by the Comms Hub each time a SMS Wakeup Message is received. This envelope is sent just after the successful establishment of a GPRS connection to advertise the availability of the Comms Hub on the IP network to the HES. The byte stream of the âSMS Wakeup Responseâ Digital Envelope is represented in FIG. 27.
+The âSwitch GSM Network Testâ Digital Envelope is sent by the Comms Hub in response to a successful SelectGsmNetwork command. The payload of this Digital Envelope contains a SwitchGsmNetworkTest command. The byte stream of the âSwitch GSM Network Testâ Digital Envelope is represented in FIG. 28.
+The HES has the option to include in any of its Digital Envelope Acknowledgment a callback time. At this configured time, the Comms Hub establishment of a GPRS connection and sends a âCall-back Responseâ Digital Envelope to advertise the availability of the Comms Hub on the IP network. The byte stream of the âCall-back responseâ Digital Envelope is represented in FIG. 29.
+The âCommission Requestâ Digital Envelope is sent by the Comms Hub to initiate its commissioning or the commissioning of a ZigBee Device. The payload of this Digital Envelope contains a âCommissionRequestâ command. The byte stream of the âCommissionRequestâ Digital Envelope is represented in FIG. 30.
+The âOTA Status Reportâ Digital Envelope is sent by the Comms Hub each time the status of the OTA process of one of its associated ZigBee Device change. The payload of this Digital Envelope contains an âOTAStatusReportâ command. The byte stream of the âOTA Status Reportâ Digital Envelope is represented in FIG. 31.
+The âOTA Image Request Alertâ Digital Envelope is sent by the Comms Hub to alter the Head End System when there is either a new image transfer required or all the image transfers are complete. The Head End System, initiates a TCP/TLS session in response to this alert. The byte stream of the âOTA Image Request Alertâ Digital Envelope is represented in FIG. 32.
+The âDecommission Requestâ Digital Envelope is sent by the Comms Hub to initiate its decommissioning or the decommissioning of an associated Zigbee Device. The payload of this Digital Envelope contains a âDecommissionRequestâ command. The byte stream of the âDecommission Requestâ Digital Envelope is represented in FIG. 33.
+Daily reports and real time alarms are transferred using a Digital Envelope with a reason code in the 0x10 to 0x3F range. The payload of these Digital Envelopes is specific to the type of device, the configuration of this device and the type of alarm reported. The octet stream of a report or alarm Digital Envelope is represented in FIG. 34.
+The âAcknowledgmentâ Digital Envelope is sent by the Head End System each time it receives a Digital Envelope form the Comms Hub. The byte stream of the âAcknowledgmentâ Digital Envelope is represented in FIG. 35. The value sequenceNumber field within the âAcknowledgmentâ Digital Envelope mirrors the sequenceNumber of the Digital Envelope acknowledged. The absence of the currentTime field shall not be processed as an error by the Comms Hub. The callback fields are present in the Digital Envelope only if the HES needs to communicate with the Comms Hub later daring that day. The dstStart and dstEnd are provided by the HES to keep those attributes up to date. These values are changed once a year. The âAcknowledgeâ Digital Envelope of a âCommissioning Requestâ Digital Envelope contains the Commissioning and Manufacturer certificates. These certificates are included in the CMS SignedData certificate field. When the Head End System need to update Comms Hubs CRL, the new CRL is included in the CMS signedData crls field.
+The Digital Envelope (DE) handshake in FIG. 36 corresponds to the exchange of Digital Envelopes during the commissioning of the Comms Hub, when the ReasonCode is set to âCommission requestâ and the deviceMacAddress is absent or equal to the MAC address of the Comms Hub. The HES dynamically selects the correct Commissioning certificate based on the Manufacturer Device certificate received. The Commissioning certificate use by the HES is issued from the Manufacturer Root certificate configured in the Comms Hub during its manufacturing.
+The handshake in FIG. 37 corresponds to the transmission of a DE with a Reason Code between 0x10 and 0x3F including: E-meter report, G-meter report, IHU report, Comms Hub report, E-meter high priority report, G-meter high priority report, IHU high priority report, Comms Hub high priority report, E-meter alarm, G-meter alarm, IHU alarm, and Comms Hub alarm. As well as transmission of a DE for Switch GSM Network Test, OTA Status Report, OTA Image Request Alert, Commission request of ZigBee devices, and Decommission request. These are payload DE message flows.
+The sequence in FIG. 38 is used to transmit a Digital Envelop message that has no payload. These messages have a Reason Code set to: SMS wakeup response or Callback response.
+The certificate management security infrastructure of the dual protocol WAN specification is based on two PKIs, the Manufacturing PKI and the Operational PKI.
+A Manufacturer PKI is created by each Comms Hub manufacturer and used to implement the following security services: Authentication of Comms Hubs daring their initial deployment, or redeployment and Authentication of the HES during the commissioning process.
+During the deployment process, the Head End System takes ownership of the Comms Hubs by configuring in them operator certificates. The Operational PKI is managed by the operator of the Comms Hubs and is used to implement the following security services: Mutual authentication of Comms Hubs and the HES during a TLS handshake, Authentication of Digital Envelops sent by the Comms Hubs or the HES and Granting access rights.
+The Manufacturing PKI consists of four certificates as shown in FIG. 39a , These certificates are used as follows: The Manufacturer Root and Manufacturer are used to issue certificates and the Commissioning and Manufacturer Device are used for authentication during TLS handshakes and for Digital Envelops authentication.
+Manufacturing certificates are unmanaged, their lifetimes are indefinite and they never get replaced. However, the uses of these certificates are strictly controlled by the system responsible for the Comms Hubs commissioning. This system maintains a list of the serial numbers of the Comms Hub expected to be installed and shall reject any Comms Hub with a certificate serial number not on this list or a serial number already used.
+The Manufacturer Root certificate is the root of trust for the manufacturing PKI. It is used to issue Manufacturer and Commissioning certificates. The Manufacturer Root certificate has an indefinite lifetime; nevertheless this certificate may be replaced periodically. The replacement of the Manufacturer Root certificate has no impact on already issued Manufacturer Device certificates. When replaced, new Manufacturer certificates and the associated Commissioning certificate need to be reissued. The Manufacturer Root certificate is stored in the following locations; Manufacturer's Commercial CA (private Key); Manufacturing system, (public key); HES (public key) and Comms Hub (public key). The Manufacturer Root certificate is a self-signed X.509 certificate with the following content. The subject field is composed of: The commonName field set to âManufacturers Rootâ; The organizationName field set to the commercial name of the manufacturer; and The countryName field set to the country code where this manufacturer is located. The issuer field set to the same values as the subject field. The validity field is composed of: the notBefore field set to the issuing date of this certificate and the not After field set to notBefore plus 99 years. The basicConstraints extension {2 5 29 19}, with the cA field set to TRUE. The keyUsage extension {2 5 29 15}, with the keyCertSign and cRLSign fields set to TRUE.
+The Manufacturer certificate is issued by the Manufacturer Root for each manufacturing site. This certificate is used to issue a Manufacturer Device certificate for each Comms Hub manufactured at this site. The Manufacturer certificate has an indefinite lifetime; nevertheless this certificate may be replaced periodically. The replacement of the Manufacturer certificate has no impact on already issued Manufacturer Device certificates. When replaced, the associated private key may be deleted to reduce the risk of compromise. The Manufacturer certificate is stored in the following locutions: Manufacturing system (private key); HES (public key) and Comms Hub (public key). The Manufacturer Root certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to a unique name assigned to this manufacturing site; The organizationUnitName field set to âManufacturerâ; The organizationName field set to the commercial name of the manufacturer; and The countryName field set to the country code where this manufacturer is located. The issuer field is set to the subject field of the Manufacturers Root certificate. The validity field is composed of the notBefore field set to the issuing date of this certificate and the notAfter field set to notBefore plus 99 years. The basicConstraints extension {2 5 29 19}, with the cA field set to TRUE. The keyUsage extension {2 5 29 15}, with the keyCertSign field set to TRUE.
+The Manufacturer Device certificate is issued by the Manufacturer located on each site of manufacturing. This certificate is used to authenticate the Comms Hub during TLS handshakes and any Digital Envelop transmitted by the Comms Hub prior to its commissioning. The Manufacturer Device certificate has an indefinite lifetime and is not expected to be replaced during the lifetime of a Comms Hub. The Manufacturer Device certificate is stored in the following locations: Comms Hub (private Key); Manufacturing system (public key); and HES (public key). The Manufacturer Device certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to serial number assigned to this Comms Hub; The organizationUnitName field set âManufacturer Deviceâ; The organizationName field set to the commercial name of the manufacturer; and The countryName field set to the country code where this manufacturer is located. The issuer field is set to the subject field of the Manufacturer certificate. The validity field composed of: the notBefore field set to the issuing date of this certificate and the notAfter field set to notBefore plus 99 years. The keyUsage extension {2 5 29 15}, with the digitalSignature and the keyAgreement fields set to TRUE.
+The Commissioning certificate is issued by the Manufacturer Root to the operator. The manufacturer also responsible for providing the list of the serial numbers of the Comms Hubs manufactured for this operator. This list should be used by the operator to limit which Comms Hubs is accepted in its system. The Commissioning certificate may have a limited or unlimited lifetime. If the lifetime is limited, the manufacturer should support issuing of new Commissioning certificates for each Manufacturer Root created for the Comms Hubs lifetime to allow their re-deployment. The Commissioning certificate is stored in the HES (private Key). The Commissioning certificate is a X.509 certificate with the following content. The subject field composed of The commonName field set to name of this operator; The organizationUnitName field set to âCommissioningâ; The organizationName field set to the commercial name of the manufacturer; The countryName field set to the country code where this manufacturer is located. The issuer field is set to the subject field of the Manufacturer Root certificate. The validity field composed of the notBefore field set to the issuing date of this certificate and the notAfter field set to notBefore plus 99 years. The keyUsage extension {2 5 29 15}, with the digitalSignature and the keyAgreement fields set to TRUE.
+The Operational PKI consists of the eight certificates as shown in FIG. 39b . These certificates are used as follows: The Operator's Root, Enterprise and Operator certificates are used to issue certificates; The Server and Operator Device certificates are used for authentication during TLS handshakes following commissioning; The Push and Operator Device certificates are used for Digital Envelops authentication; and The Authorization Signing certificate is used to sign command(s) or to grant privileges during TLS session. Privileges are granted by signing an Authorization certificate for a specific validity period and a set of privileges.
+Operational certificates are managed because they are intended to be used continuously over a potentially long period of time, during which there is a need to renew their security.
+The Operator's Root certificate is the roof of trust for the operational PKI. It is used to issue Enterprise and Operator certificates. The lifetime of the Operator's Root certificate might be, e.g., 10 years. When the Operator's Root certificate is updated, all the Comms Hubs need to be configured with a new chain of certificates issued for that new Operator Root. During the update process, the Head End System shall be able to establish a TLS session with either set of certificates. The set of certificates used by the Head End System depends of the certificates returned by the Comms Hub during the TLS handshake. The Operator's Root certificate is stored in the following locations: Operator's Commercial CA (private Key); HES (public key); Comms Hub (public key). The Operator's Root certificate is a self-signed X.509 certificate with the following content. The subject field composed of: The commonName field set to âOperator's Rootâ; The organizationName field set to the operator name and The countryName field set to the country code where this operator is located. The issuer field set to the same values as the subject field. The validity field is composed of: the notBefore field set to the issuing date of this certificate and the notAfter field set to notBefore plus the Operator's Root certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to TRUE. The keyUsage extension {2 5 29 15}, with the keyCertSign and cRLSign fields set to TRUE.
+The Operator certificate is issued by the Operator's Root. This certificate is used to issue an Operator Device certificate for each Comms Hub and the Authorization Signing certificate. The lifetime of the Operator's certificate might be, e.g., five years. When the Operator certificate is updated, all the Comms Hubs need to be configured with a new Operator certificate and an Operator Device certificate issued from it. The Operator certificate is stored in the following locations: Operator's Commercial CA (private Key); Head End System (public key); and Comms Hub (public key). The Operator certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to âOperatorâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Operator's Root certificate. The validity field composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Operator certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to TRUE. The keyUsage extension {2 5 29 15}, with the keyCertSign field set to TRUE.
+The Operator Device certificate is issued for each Comms Hub by the Operator. This certificate is used to authenticate the Comms Hub during the TLS handshake and to sign Digital Envelopes sent by the Comms Hub. The lifetime of the Operator Device certificate might be, e.g., 2 years. The update of the Operator Root, Operator and Operator Device certificate should be coordinated to avoid a discrepancy in there expiration dates. To avoid a higher layer certificate with an expiration prior to a lower layer certificate, the Operator certificate should be updated 2 years prior of its expiration and the Operator Root should be updated 5 years prior of its expiration. The Operator certificate is stored in the following locations: Comms Hub (private key); Operator's Commercial CA (public Key); and Head End System (public key). The Operator Device certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to the serial number assigned to this Comms Hub; The organizationUnitName field set to âOperator Deviceâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Operator's certificate. The validity field composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Operator Device certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to FALSE. The keyUsage extension {2 5 29 15}, with the digitalSignature and keyAgreement fields set to TRUE. The extKeyUsage extension {2 5 29 37}, with the KeyPurposeId field set to serverAuth {1 3 6 1 5 5 7 3 1}.
+An Enterprise certificate is issued by the Operator's Root. This certificate is used to issue a Server certificate used during the TLS handshake with the Head End System and the Push certificate used to encrypt Digital Envelops and sign Digital Envelop acknowledgments. The lifetime of the Enterprise certificate might be 5 years. When the Enterprise certificate is updated, new Server and the Push certificates need to be issued for the Head End System. The new Push certificate also needs to be distributed to all the Comms Hubs. During the distribution process, the Head End System should continue using the old Push certificate for Comms Hub not yet updated. The Enterprise certificate is stored in the following locations: Operator's Commercial CA (private Key); Head End System (public key); and Comms Hub (public key). The Enterprise certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to âEnterpriseâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Operator's Root certificate. The validity field is composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Enterprise certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to TRUE. The keyUsage extension {2 5 29 15}, with the keyCertSign field set to TRUE.
+The Server certificate is issued by the Operator. This certificate is used to authenticate the Head End System during TLS handshakes. The lifetime of the Server certificate might be 5 years. The update of the Server certificate should be coordinated with the Enterprise and Operator Root certificates to avoid a certificate higher in the PKI hierarchy with an expiration date prior to a certificate lower in this hierarchy. The update of the Server certificate has no impact on the configuration of the Comms Hub since the trust anchor uses during the TLS handshake is the Operator Root. The Server certificate is stored in the following locations: Head End System (Private key) and Operator's Commercial CA (public Key). The Server certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to the name assigned to the HES; The organizationUnitName field set to âServerâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Enterprise certificate. The validity field composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Server certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to FALSE. The keyUsage extension {2 5 29 15}, with the keyAgreement field set to TRUE. The extKeyUsage extension {2 5 29 37}, with the KeyPurposeId field set to clientAuth {1 3 6 1 5 5 7 3 2}.
+The Push certificate is issued by the Operator. This certificate is used to sign digital Envelops sent by the Head End System and for key derivation (ECDH) during the encryption and decryption process. The lifetime of the Push certificate might be 5 years. The update of the Push certificate should be coordinated with the Enterprise and Operator Root certificates to avoid a certificate higher in the PKI hierarchy with an expiration date prior to a certificate lower in this hierarchy. When updated, the Push certificate needs to be distributed to all the Comms Hubs to enable the encryption of Digital Envelops using this new public key. During the upgrade process, the Head End System shall be able to transfer Digital Envelops with Comms Hubs still using the old Push certificate and Comms Hubs configured with the new Push certificate. The Push certificate is stored in the following locations: Head End System (Private key); Operator's Commercial CA (public Key) and the Comms Hub (public key). The Server certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to the name assigned to the HES; The organizationUnitName field set to âPushâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Enterprise certificate. The validity field is composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Push certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to FALSE. The keyUsage extension {1 2 5 29 15}, with the digitalSignature and keyAgreement fields set to TRUE.
+An Authorization Signing certificate is issued by the Operator. This certificate is used to either sign commands or to sign the Authorization certificate. Authorization certificates are transferred during an already establish TLS session to acquired access rights. The lifetime of the Authorization Signing certificate might be 5 years. When updated, the Authorization Signing certificate needs to be distributed to all the Comms Hubs to enable the authentication of commands or Authorization certificates, Comms Hubs shall store and use at least two Authorization certificates. This allows the distribution of a new Authorization certificate while still using the old one on all the Comms hubs. The Authorization Signing certificate is stored in the following locations: Head End System (Private key) and Operator's Commercial CA (public Key). The Authorization Signing certificate is a X.509 certificate with the following content. The subject field composed of: The commonName field set to the name assigned to the HES; The organizationUnitName field set to âAuthorization Signingâ; The organizationName field set to the operator name; and The countryName field set to the country code where this operator is located. The issuer field is set to the subject field of the Operator certificate. The validity field is composed of: The notBefore field set to the issuing date of this certificate and The notAfter field set to notBefore plus the Authorization Signing certificate lifetime. The basicConstraints extension {2 5 29 19}, with the cA field set to FALSE. The keyUsage extension {2 5 29 15}, with the keyCertSign field set to TRUE.
+The Authorization certificate is issued by the Operator. This certificate is used to grant privileges on an already establish TLS session. It is recommended that lifetime of the Authorization certificate is very limited, a day or a week. It is also recommended that it target a specific device or group of devices. The Authorization certificate is a X.509 Attribute Certificate as defined by RFC5755. The exact content of this certificate needs to be defined to align with the DLMS authorization levels.
+All certificates used by the Dual Protocol WAN specification comply with the X.509 standard. The X.509 standard supports multiple options and extensions and FIG. 40 describes the equivalent ANS.1 definition for the general structure of a certificate and the specific options and extensions used. When encoded using the Distinguished Encoding Rules (DER), certificates produce the byte stream shown, in FIGS. 41a to 41b . This byte stream is just an example; more extensions can be added and some optional fields might be removed. The mandatory content of each certificate is defined in the âFormatâ paragraph of each certificate. The byte stream is represented in the left column; the right column contains a short description. Value âxxâ represents an octet and the value âxx . . . â represents an octet string.
+The IETF Transport Layer Security (TLS) protocol is used to secure TCP sessions. The TLS protocol supports a number of cipher suite. The Comms Hub, as a minimum, shall support the cipher suite TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256. The different components of this cipher suite are listed in Table 14.
+
+
+
+ 
+ 
+ 
+
+
+
+ 
+TABLE 14
+
+
+ 
+ 
+
+
+
+
+ 
+Asymmetric key generation
+ECC curve secp256r1
+
+
+ 
+Symmetric key agreement
+ECDHE
+
+
+ 
+Symmetric cipher
+AES-128
+
+
+ 
+Symmetric cipher mode
+GCM
+
+
+ 
+Hash function
+SHA-256
+
+
+ 
+Signature
+ECDSA/SHA-256
+
+
+ 
+ 
+
+
+
+
+
+Each TLS session start by a handshake during which authentication and share symmetrical key derivation are performed. The logic implemented during this handshake depends of the value of the ChCommissioningState attribute of the Comms Hub Control cluster.
+When the ChCommissioningState attribute is set to NOT_COMMISSIONED or DECOMMISSIONED, the Comms Hub shall perform the TLS handshake shown in FIG. 42. Invalid TLS credentials from either the Head End System or the Comms Hub result in the abortion of the TLS session establishment.
+When the ChCommissioningState attribute is set to COMMISSIONED, the Comms Hub shall perform the Normal TLS handshake shown in FIG. 43. Invalid TLS credentials from either the Head End System or the Comms Hub result in the abortion of the TLS session establishment.
+The Comms Hub initiates communications to the Head End System when it has a scheduled message to send or when there is an event to report in real-time. The first step in initiating any communication to the Head End System is to connect to the WAN. The actual implementation of the flows is specific to the interfaces provided by the GSM modem vendor and is a design issue. Some aspects of the interaction with the mobile operator may also be specific to that operator.
+The Comms Hub initiates communications with the Head End System when it has information to send. A Comms Hub initiated communication is called a Push. A Push can be triggered by a scheduled operation such as a meter usage report or by an alarm/event that has to be reported in real-time. Reported events include the installation of firmware upgrades. A push schedule can be either one-time or reoccurring. Schedules are either set by the Comms Hub or by ZigBee commands and attributes or by COSEM scheduling. ICs from the Head End System. Daily meter usage reports shall be scheduled by the Comms Hub to occur at a random time in a transmission window. The push operation uses the UDF/DF protocols in the WAN stack.
+A simple UDP/DE push message flow example is shown in FIG. 44. At the start of the process Comms Hub has a scheduled or real-time report to transmit to the Head End System. In a cellular WAN it starts off by opening a GPRS and PDP connection with the mobile operator's system which is not shown here. If needed the Comms Hub does a DNS look up to resolve the Head End System's fully qualified domain name into an IP address using DNS. When that is done, the Comms Hub sends a Push message that contains the message to the Head End System's IP address. This message is secured by a digital envelope described above. In this example, the Head End System has no messages for the Comms Hub so it sends a simple Push ACK message to the Comms Hub with no callback time. If there is a call back time the Comms Hub uses that information to either keep the data connection up or schedule a latter connection. For a cellular WAN system; If the Comms Hub is also finished communicating, it terminates the PDP and GPRS WAN connections as described below.
+There are cases where the Head End System receives a Push message said wants to continue communicating to the Comms Hub. This may occur when the Push message is an alarm, and the Head End System needs to react to it by getting or setting parameters. This case may also occur when the Head End System has information to send like a firmware image. In these cases, the Head End System either wants the Comms Hub to keep the data connection up, or it wants the Comms Hub to callback at a scheduled time. The Head End System communicates what it wants in the Push ACK message. This acknowledgement message's callback time field can have a time value or the stay-awake value, ânowâ.
+The example shown in FIG. 45 shows a case where the Head End System asks the Comms Hub to stay awake. The push operation is the same as that in FIG. 44. However, when the Head End System sends its Push ACK message, it asks the Comms Hub not to close the WAN connection by setting the callback time to ânowâ. The Head End System then initiates a TCP connection and sets op a TLS session to continue to communicate with the Comms Hub. Data connection stays open until the TLS and TCP sessions are closed. After this, the Comms Hub terminates the PDP and GPRS WAN connections if it is using a cellular WAN.
+The Comms Hub's Push messages and the Head End System's Push ACK messages use the Digital Envelope header formats described shove. The Push messages contain all the protocol specific parameters necessary to identify the sender and the destination application processes. The Push payload is used to send the value(s) of attribute(s) that make up the upstream report. The Push ACK has no payload.
+The Comms Hub keeps the GPRS connection closed for most of the time. The Comms Hub only opens it for short periods when data is pushed upstream. Therefore, when the Head End System needs to initiate communications with the Comms Hub, it has to send a message using SMS to tell the Comms Hub to establish a GPRS connection. This is the SMS wakeup message. The SMS wakeup message is a short message that tells the Comms Hub to wake up. It is a Class 0 message with no storage in the SIM. No information or acknowledgement is sent back to the Head System by the Comms Hub using SMS.
+The Head End System propagates its clock to the entire smart meter network. The Head End System periodically distributes clock information to each Comms Hub using one of the DLMS Clock setting methods such as preset_adjustment_time. The Head End System also keeps the Comms Hub daylight savings configuration current with the local time by setting the enable, disable, start, end, and deviation parameters using the DLMS Clock setting methods. The clock synchronization can be incorporated as needed in the scheduled push operation in either the TCP message exchange or the UDP/DE acknowledgement message.
+The Comms Hub and HAN devices receive firmware image upgrades from the Head End System. For the HAN devices the image is transferred via the Comms Hub. The Head End System downloads firmware via the WAN to all the HAN devices. The firmware image is first transferred to the Comms Hub and from there the image is transferred to the targeted devices. The WAN transfer to the Comms Hub uses the OTA image transfer process flow in FIGS. 46 and 47. The HAN transfer from the Comms Hub to the HAN devices uses the ZigBee OTA Upgrade cluster and its methods. The Comms Hub may store each firmware image in non-volatile memory until all the devices needing it have successfully downloaded it and verified its integrity.
+The firmware activation time can be controlled by the Comms Hub using the ZigBee OTA Upgrade cluster's Upgrade End Response message. The activation time sent by this message can immediately activate the firmware or set a time for its activation. The Comms Hub maintains a log of the progress of each firmware image upgrade that can be read by the Head End System. The security of the firmware updates is protected by digital certificates signed by the manufacturer.
+The OTA process is divided in two parts to simplify its description, the OTA image transfer is described in this section and the OTA activation is described below. The first part of the OTA Upgrade process consists of the downloading images from the Head End System and distributing them to each ZigBee device. This process consists of the following steps per FIG. 46. The OTA download process is triggered by the Head End System with the transmission of a new Image Set to the OTA Upgrade server in the Comms Hub. The Head End System requests a data connection using the SMS Wakeup message. The Comms Hub establishments a data connection and sends a Push message after which the Head End System sets up a TCP session and the Comms Hub a TLS connection. The transmission by the Head End System of an Image Set, the transfer is performed using the WriteImageSet command. On reception of the WriteImageSet command, the OTA Upgrade server selects a first image file to be downloaded and update its Image Transfer Status. The Comms Hub compares the Image Set information just received against the version of each Image Type registered on its network. It then starts downloading each image file from the Head End System. The download from the Head End System to the OTA Upgrade server is done using the OTA Upgrade server's âNextImageTransferResponseâ command. The download of image files stops when no more space is available in the Comms Hub to receive more data. The Comms Hub then frees up space by transferring the image to each target device that requests it. When the Comms Hub is part of the upgrade, its Image file is always transferred first and is not erased for each subsequent downloads. Images files downloaded from the Head End System are transferred to ZigBee target devices using the standard OTA commands and processes as summarized herein.
+When the distribution of the Image files to the target devices is completed the OTA Upgrade sever downloads a second batch of Image files from the Head End System. This Comms Hub initiated service consist of: The transmission of the push âOTAStatusReportâ message; The establishment of a TLS session by the Head End System and the transmission of an âNextImageResponseâ command by the OTA Upgrade server; and On reception of the âNextImageTransferResponseâ command, the Head End System's OTA Upgrade client downloads the requested image file.
+The transmission by the Head End System of an Image Set using the WriteImageSet command and the OTA Upgrade server selection and update to its Image Transfer Status are repeated until all the image files are downloaded or the Set ID is aborted by the Head End System.
+The OTA activation represents the second and final part of the OTA upgrade process and is shown in FIG. 47. The second part of the OTA Upgrade process consists of the activation of the image files already distributed to the different ZigBee devices. This process consists of the following steps:
+  1. The Head End System can optionally re-schedule the activation time. This operation is performed using the WriteActivationTime command. This command can be sent to the OTA Upgrade server through a TLS session. 2. If the activation is sequenced, the âSynchronized Activation Flagâ is set to zero in the Activation Set.
+     a. The server selects a random activation time based on the current activation window received and waits until that moment. b. At activation time, the server selects the Image with the lowest associated âActivation Sequence Numberâ field and sends an âUpgrade End Responseâ with the âUpgrade timeâ field set to now (0x00000000). c. The OTS Upgrade server waits for the delay specified by the âImage Test Delayâ attribute and issues a âGetâ of the âCurrent File Versionâ attribute to verify the activation and adjust the OTAStatus information. d. If the Get returns the New File Version, the upgrade is successful and an OTAStatusReport is sent with the status=SUCCESS. e. If the Force Activation bit is set. The OTA Upgrade server repeats this operation on the following Image ordered base on the value of the âActivation Sequence Numberâ field independent of the success of the previous activation. 
+ 3. If the activation is synchronized, the âSynchronized Activation Flagâ is set to one in the Activation Set.
+     a. The server selects a random activation time based on the current activation window settings. b. For each device to be scheduled, the server sends an âUpgrade End Responseâ with the âUpgrade timeâ field set to the activation time, if one or more of these transmissions fail, a retry is done at each âActivationRetryPeriodâ until a successful transmission or until the activation time is exceeded. c. At activation time plus the value of the âImage Test Delayâ attribute, the server sends a âGetâ of the âCurrent File Versionâ attribute to verify the activation and adjust the OTAStatus information. 
+ 4. Independent of whether the activation is sequenced or synchronized, if one of the Images fail to activate, the server attempts to send a âUpgrade End Responseâ with the âUpgrade timeâ field set to now (0x00000000) at each reception of a âQuery Next Image Requestâ. These retries continue until the activation is successful, an AbortOtaProcess command is received of a new image file is downloaded for this Image. 
+The OTA Abort Process flow is shown in FIG. 48. The AbortOtaProcess starts by the reception of an AbortOtaProcess command imitated by the Head End System to the OTA Upgrade server.
+  1. On reception of the AbortOtaProcess command, the server sends an âUpgrade End Responseâ command with an âUpgrade timeâ set to Infinity (0xFFFFFFFF) to all clients with an OTAStatus set to ACTIVATION_SCHEDULED. 2. The server then updates all OTAStatus records to NORMAL. 3. Subsequently, if the server receives an âImage Block Requestâ for an Image with the status not set to âDownloadedâ, it returns an âImage Block Responseâ command with a âStatusâ field set to ABORT. 4. Also, if the server receives an âUpgrade End Requestâ for so Image with the states not set to âACTIVATION_SCHEDULEDâ, it returns a âDefault Responseâ command with a âStatus codeâ field set to ABORT. 
+The âZigBee Device OTA downloadâ process shown in FIG. 49 is implemented using the standard ZigBee OTA Upgrade cluster. Steps are as follows:
+  1. The Comms Hub transmits an ImageNotify message to the devices bound to the OTA Upgrade cluster. 2. Each target device that can match the information in the notification sends a QueryNextImage Request. 3. The Comms Hub Responds with a QueryNextImageResponse. 4. The target device then requests a block of the image file. 5. The Comms Hub responds with the first block. 6. Steps 4 and 5 are repeated until the entire image file is transferred to the target device. 7. When the target device has received the whole image file and verified the integrity of the data, it sends an UpgradeEndRequest. 8. The Comms Hub sends it UpgradeEndResponse with an activation time. 9. Steps 7 and 8 are repeated if the activation time is far enough in the future for the target device to timeout and resend the UpgradeEndRequest. 
+Commissioning is the process by which a HAN device registers with the Comms Hub and Head End System and the Comms Hub and device are configured. At the end of the commissioning process the device has joined the network, gotten its operational parameters and commenced operating. The commission process does not specify how the installer starts the commissioning and talks to the Comms Hub.
+The commissioning message flow between the Comms Hub and the Head End System is shown in FIGS. 50a and 50b . The process starts with an external stimulus to the Comms Hub that may be a button push or a command on an external interface. The commissioning process in steps that are illustrative of the behavior of the Head End System but not required. These behaviors include the tearing down of the TCP/TLS sessions between stages of the process and the generation of test messages to the installer. The Head End System may manage the TCP/TLS sessions to minimize the number open processes it has during periods where it is waiting for an action from the Comms Hub. The commission protocol supports this but does not require it. The Head End System's communication of the status of the commissioning process to the installer is also optional. The content of the messages and when they are sent is exemplified, hot not limited to the following:
+  1. The commission process is initiated by some out-of-scope stimulus that could a key pad entry or a message over the wireless network, or an optical port. The information communicated to the Comms Hub is the optional jobID of the commissioning task the installer has. 2. The Comms Hub then generates a Push message, CommissionRequest, which tells the Head End System that the Comms Hub is ready to be commissioned. This message contains the IMSI and MAC Address that identifies the Comms Hub. The ZigBee Comms Hub Control cluster has not been setup yet so the EndPoint ID is not assigned yet.
+     2.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described herein. 4. After the Head End System validates the Comms Hub IMSI, serial number and MAC address it sends a Commission command that tells the Comms Hub to setup the Comms Hub Control cluster.
+     4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 3.x The Head End System optionally ends the TCP IP session while it waits for the Comms Hub to setup the control cluster. 6. The Comms Hub sets up the Comms Hub Control cluster. 7. The Comms Hub sends a Push CommissionRequest message confirming the establishment of the cluster and assigning an EndPoint ID to the cluster.
+     7.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 8. to 8.x The Head End establishes the TCP/TLS session if it was torn down in step 5. 9. to 9.x The Head End System sends a series of configuration write operations to the Comms Hub attributes that have to be configured. These are typically attributes for which the default values do not exist or have to be changed. The configuration commands could include: ZCL Write attribute command(s); SetPrimaryOperator and SetRoamingOperator; SetFilter; ResetLog; SetTime; SetCertificates and SetCrl. 10. The Head Ends System sends a Commission message with the ReasonCode set to ChCommplete when the commission process has completed successfully.
+     10.1. The Comms Hub responds with the default ZCL response indicating that the configuration is successful. 
+ 11. to 11.x The Head End System ends the TCP session. 
+The exception processing for invalid IMSI, MAC address, Serial Number all cause the Head End System to send a Commission message that aborts the commission processes in the Comms Hub. The commissioning process is also aborted if the Comms Hub report it is not successful in steps 4.1 or 10.1 above.
+The commissioning message flow between the Comms Hub and the Head End System for commissioning an E-meter is shown in FIGS. 51a and 51b . The process shown in FIGS. 51a and 51b  is for an E-meter that is not integrated with the Comms Hub. An integrated device's commissioning process is similar to that of the Comms Hub described above.
+  1. The process starts with the installer collecting the MAC address and seral number from the E-meter and the installation MPAN.
+     1.1. The installer then communicates this information to the Comms Hub. This could be via the wireless network, a keypad, or an optical port. 
+ 2. The Comms Hub sends a Push CommissionRequest to the Head End System with the meter's MAC address, serial number and MPAN.
+     2.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x. The TCP and TLS sessions are setup by the Head End System, as described herein. 4. After the Head End System validates the E-meter's serial number and MAC address it sends a Commission command that tells the Comms Hub the E-meter's temporary link key and instructs the Comms Hub to setup the E-meter Control cluster.
+     4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.x The Head End System optionally ends the TCP IP session while it waits for the Comms Hub to setup the control cluster and the meter to join the network. 6. The Comms Hub sets up the E-meter Control cluster. 7. The installer decides if the installation is to continue. This may be based on information sent by the Head End System to the installer.
+     7.1. The installer tells the Comms Hub to proceed through some process. This could be via the wireless network, a keypad, or an optical port. 7.2. The installer tells the E-meter to start the ZigBee network joining process. 
+ 8. The E-meter locates the Comms Hub, joins the network and performs the ZigBee CBKE to get the network key and a link key to the hub. 9. The Comms Hub sends a Push CommissionRequest message that confirms the establishment of the control cluster and that the E-meter has a secure link key with the hub. The CommissionReguest message contains the EndPoint ID of the meter's control cluster.
+     9.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 10. to 10.x The Head End establishes the TCP/TLS session if it was torn down in step 5. 11. to 11.x The Head End System sends a series of configuration write operations to the E-meter using DLMS carried over the ZigBee Gateway protocol. The Comms Hub establishes a ZigBee DLMS tunnel if the E-meter is a DLMS device. 12. The Head Ends System sends a Commission message with the ReasonCode set to EmeterCommplete when the commission process has completed successfully.
+     12.1 The Comms Hub responds with the default ZCL response indicating that the configuration is successful. 
+ 13. to 13.x The Head End System ends the TCP session. 
+The exception processing for invalid MPAN, MAC address, Serial Number all cause the Head End System to send a Commission message that aborts the commission processes in the Comms Hub. The commissioning process is also aborted If the Comms Hub reports it is not successful in step 6.0 or if the E-meter fails to join the network and get its keys in steps 8.x. The installer can abort the process in step 7.1 if the Head End System sends information to the installer that is not correct.
+The commissioning message flow between the Comms Hub and the Head End System for commissioning a G-meter is shown in FIGS. 52a  and 52 b. 
+  1. The process starts with the installer collecting the MAC address and serial number from the G-meter and the installation MPRN.
+     1.1. The installer then communicates this information to the Comms Hub. This could be via the wireless network, a keypad, or an optical port. 
+ 2. The Comms Hub sends a Push CommissionRequest to the Head End System with the meter's MAC address, serial number and MPRN.
+     2.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay awake for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described in above. 4. After the Head End System validates the G-meter's serial number and MAC address it sends a Commission command that tells the Comms Hub the G-meter'temporary link key and instructs the Comms Hub to setup the G-meter Control cluster.
+     4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.x The Head End System optionally ends the TCP IP session while it waits for the Comms Hub to setup the control duster and the meter to join the network. 6. The Comms Hub sets up the G-meter Control cluster. 7. The installer decides if the installation is to continue. This may be based on information sent by the Head End System to the installer.
+     7.1. The installer tells the Comms Hub to proceed. This could be via the wireless network, a keypad, or an optical port. 7.2. The installer tells the G-meter to start the ZigBee network joining process. 
+ 8. The G-meter locates the Comms Hub, joins the network and performs the ZigBee CBKE to get the network key and a link key to the hub. 9. to 9.z The G-meter and the Comms Hub populates the initial meter information in the meter mirror clusters 10. The Comms Hub sends a Push CommissionRequest message that confirms the establishment of the control cluster and that the G-meter has a secure link key with the hub. The CommissionRequest message contains the EndPoint ID of the meter's control cluster.
+     10.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 11. to 11.x The Head End establishes the TCP/TLS session if it was torn down in step 5. 12. to 12.y The Head End System sends a series of configuration write operations to the to the G-meter mirror using the ZigBee Gateway protocol. The Head End System also reads the information in the mirror that was populated by the G-meter in step 9. The configuration commands could include: ZCL Write commands to set G-meter Control cluster attributes; PutPrice commands to set the tariff; and PutMessage to sent text to the G-meter display. 13. The Head Ends System sends a Commission message with the ReasonCode set to GmeterCommplete when the commission process has completed successfully.
+     13.1. The Comms Hub responds with the delimit ZCL response indicating that the configuration is successful. 
+ 14. to 13.x The Head End System ends the TCP session. 
+15. to 15.x The G-meter reads the configuration data in the mirror clusters and receives configuration data through publish operations such as Publish TOU. These operations have to wait for the G-meter to be awake. The meter may either stay awake after step 7.2 or go to sleep and wake up at it's regularly scheduled time in step 15.0.
+The exception processing for invalid MPRN, MAC address, Serial Number all cause the Head End System to send a Commission message that aborts the commission processes in the Comms Hub. The commissioning process is also aborted if the Comms Hub reports it is not successful in step 6.0 or if the E-meter fails to join the network and get its keys in steps 8.x. The installer can abort the process in step 7.1 if the Head End System sends information to the installer that is not correct.
+The commissioning message flow between the Comms Hub and the Head End System for commissioning an IHD is shown in FIGS. 53a  and 53 b. 
+  1. The process starts with the installer collecting the MAC address and serial number from the IHD.
+     1.1 The installer then communicates this information to the Comms Hub. This could be via the wireless network, a keypad, or an optical port. 
+ 2. The Comms Hub sends a Push CommissionRequest to the Head End System with the IHD's MAC address, and serial number.
+     2.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 
+3. to 3.x The TCP and TLS sessions are setup by the Head End System as described in herein.
+  4. After the Head End System validates the IHD's serial number and MAC address it sends a Commission command that tells the Comms Hub the IHD's temporary link key and instructs the Comms Hub to setup the IHD Control cluster.
+     4.1 The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.x The Head End System optionally ends the TCP IP session while it waits for the Comms Hub to setup the control cluster and the meter to join the network. 6. The Comms Hub sets up the IHD Control cluster.
+     6.1. The installer tells the E-meter to start the ZigBee network joining process. 
+ 7. to 7.x The IHD locates the Comms Hub, joins the network and performs the ZigBee CBKE to get the network key and a link key to the hub. 8. The Comms Hub sends Push CommissionRequest message that confirms the establishment of the control cluster and that the IHD has a secure link key with the hub. The CommissionReguest message contains the EndPoint ID of the IHD's control cluster.
+     8.1. The Head End System acknowledges the CommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 9. to 9.x The Head End establishes the TCP/TLS session if it was torn down in step 5. 10. to 10.x The Head End System sends a series of configuration write operations to the Comms Hub using the ZigBee Gateway protocol. These are typical store and forward Put commands that configure the Comms Hub to generate ZigBee publish commands such are the Publish TOU command. The Head End System can also use RFC commands to directly configure and IHD attributes that need to be configured. 11. The Head Ends System sends a Commission message with the ReasonCode set to IHDComplete when the commission process has completed successfully.
+     11.1. The Comms Hun responds with the default ZCL response indicating that the configuration is successful. 
+ 12. to 12.x The Head End System ends the TCP session. 
+The exception processing for invalid MAC address and Serial Number all cause the Head End System to send a Commission message that aborts the commission processes in the Comms Hub. The commissioning process is also aborted if the Comms Hub reports it is not successful in step 6.0 or if the IHD fails to join the network and get its keys in steps 7.x.
+The decommissioning process removes sensitive data from the target device and the Comms Hub and then takes the device off the HAN network. The target device may or may not be in the factory default state after decommissioning, the decommission process may be initiated by either the Head End System or a service technician referred to as an installer in this section. The WAN specification does not specify how the installer starts the decommissioning and talks to the Comms Hub. The installer's interface and messaging protocol is outside of the scope of this WAN interface specification.
+The flow diagrams in FIGS. 54 through 57 show the decommissioning process initiated by an installer. The same processes are followed when the decommissioning is initiated by the Head End System. In the HES case, each decommissioning flow starts with the first Decommission command from the Head End System. Also in this case, all messaging to and from the installer will not be present.
+The Comms Hub decommissioning message flow between the Comms Hub and the Head End System is shown in FIG. 54.
+  1. The process can start with the installer initiating the decommissioning process or it can start with the Head End System initiating the decommissioning process in step 4. 2. The Comms Hub sends a Push DecommissionRequest to the Head End System with the Comms Hub ISMI MAC address, and serial number.
+     2.1 The Head End System acknowledges the DecommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described herein. 4. After the Head End System validates the Comms Hub's IMSI, serial number and MAC address it sends a Decommission command.
+     4.1 The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.x The Head End System reads the Comms Hub Control cluster and logs to archive data. It also removes any operator certificates and archives important mirrored data. The command formats are specified in the standard but selection of what to archive and remove is subject to the operator decommissioning policy. 6. The Head Ends System sends a Decommission message with the ReasonCode set to ChDecomComplete when the decommission process has completed successfully.
+     6.1. The Comms Hub responds with the default ZCL response indicating that the decommissioning is successful. 
+ 7. to 7.x The Head End System ends the TCP session. 8. The Comms Hub removes the Comms Hub Control cluster.
+
+The exception processing for invalid IMSI, MAC address, and Serial Number all cause the Head End System to send a Decommission message that aborts the decommission processes in the Comms Hub.
+ 
+The E-meter decommissioning message flow between the Comms Hub and the Head End System is shown in FIG. 55.
+  1. The process can start with the installer initiating the decommissioning process or it can start with the Head End System initiating the decommissioning process in step 4. 2. The Comms Hub send a Push DecommissionRequest to the Head End System with the E-meter's MAC address, and serial number.
+     2.1. The Head End System acknowledges the DecommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described in Section herein. 4. After the Head End System validates the E-meter's serial number and MAC address it sends a Decommission command to the Comms Hub.
+     4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.y The Head End System reads the E-meter's Control cluster and logs to archive data. It also establishes a connection to the E-meter to meter to retrieve meter data. The command formats are specified in the standard bet selection of what to archive and remove is subject to the operator decommissioning policy. 6. The Head Ends System sends a Decommission message with the ReasonCode set to EmeterDecomComplete when the decommission process has completed successfully.
+     6.1. The Comms Hub responds with the delimit ZCL response indicating that the decommissioning is successful. 
+ 7. to 7.x The Head End System ends the TCP session. 8. The Comms Hub removes the E-meter Control cluster. 
+The exception processing for invalid MAC address, and Serial Number cause the Head End System to send a Decommission message that aborts the decommission processes in the Comms Hub.
+The G-meter decommissioning message flow between the Comms Hub and the Head End System is shown in FIG. 56.
+  1. The process can start with the installer initiating the decommissioning process or it can start with the Head End System initiating the decommissioning process in step 4. 2. The Comms Hub sends a Push DecommissionRequest to the Head End System with the G-meter's MAC address, and serial number.
+     2.1. The Head End System acknowledges the DecommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described herein. 4. After the Head End System validates the G-meter's serial number and MAC address it sends a Decommission command to the Comms Hub. 4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 5. to 5.y The Head End System reads the G-meter's Control cluster and logs to archive data. It also archives the G-meter mirror data. The command formats are specified in the standard but selection of what to archive and remove is subject to the operator decommissioning policy. 6. The Head Ends System sends a Decommission message with the ReasonCode set to GmeterDecomComplete when the decommission process has completed successfully.
+     6.1. The Comms Hub responds with the default ZCL response indicating that the decommissioning is successful. 
+ 7. to 7.x The Head End System ends the TCP session. 8. The Comms Hub removes the G-meter Control cluster and mirrors.
+
+The exception processing for invalid MAC address, and Serial Number cause the Head End System to send a Decommission message that aborts the decommission processes in the Comms Hub.
+ 
+The IHD decommissioning message flow between the Comms Hub and the Head End System is shown in FIG. 57.
+  1. The process can start with the installer initiating the decommissioning process or it can start with the Head End System initiating the decommissioning process in step 4. 2. The Comms Hub sends a Push DecommissionRequest to the Head End System with the IHD's MAC address, and serial number.
+     2.1 The Head End System acknowledges the DecommissionRequest message and tells the Comms Hub to stay connected for more messages. 
+ 3. to 3.x The TCP and TLS sessions are setup by the Head End System as described herein. 4. After the Head End System validates the IHD's serial number and MAC address it sends a Decommission command to the Comms Hub.
+     4.1. The Comms Hub sends a ZCL default response acknowledging receipt. 
+ 5. to 5.y The Head End System reads the IHD's Control, cluster and logs to archive data. The command formats are specified in the standard but selection of what to archive and remove is subject to the operator decommissioning policy. 6. The Head Ends System sends a Decommission message with the ReasonCode set to IhdDecomComplete when the decommission process has completed successfully.
+     6.1. The Comms Hub responds with the default ZCL response indicating that the decommissioning is successful. 
+ 7. to 7.x The Head End System ends the TCP session. 8. The Comms Hub removes the IHD Control cluster.
+
+The exception processing for invalid MAC address, and Serial Number cause the Head End System to send a Decommission message that aborts the decommission processes in the Comms Hub
+ 
+The client application processes for the Comms Hub are organized as processes in ZigBee clusters. Each device in the HAN has a control cluster with the virtual devices attributes and the associated methods. The control clusters are defined by the cluster ID and endpoint ID. Meters of the same type have a common cluster ID. The Comms Hub has one control cluster that the HES uses to manage and monitor it. The Comms Hub clusters provide: control and monitoring for each HAN device: G-meter(s), E-meter(s), IHD(s) and the Comms Hub; OTA updates using the extensions to the OTA Upgrade cluster set up image sets for Comms Hub to download for each HAN device and provide firmware update for all the HAN devices; scheduling of the Comms Hub activities, such as pushing meter reports to the HES and getting E-meter data; Push message processing which is the process that collects meter information that is pushed at the scheduled time, e.g., includes events that are reported but don't have to be pushed to the HES in real-time; Communication stack management which configures the communication stack layers using the Comms Hub Control cluster attributes for TCP-UDP, IPv4, PPP setup, and GPRS modem setup; Security via the Security Control cluster that controls the WAN and HAN security, setting up certificates, updating keys and controlling white lists and black lists; Log maintenance via the Log Control cluster is used to configure events for logging and reporting and to manage the logs maintained for each of the HAN devices and the Comms Hub; Time management via the ZigBee Tune Control cluster manages the Comms Hub clock synchronization process with the HES and sets the parameters used by the ZigBee Time cluster used by the HAN devices; Device commissioning and decommissioning via the Commissioning Control cluster which defines the processes used by the Comms Hub to commission HAN devices (these processes are used by the HHT to initiate and monitor the commissioning and decommissioning actions and by the HES to control the commissioning of devices); Storage and forwarding of ZigBee Smart Energy information via extensions to the Smart Energy clusters which allow the HES to send tariff and price calculation information to the ZigBee meter and display devices.
+In the preferred embodiments described herein, the Comms Hub communicates with the HAN devices using the ZigBee network stack. These communications' application payloads can be either DEMS/COSEM payloads or ZigBee application payloads. There are two ZigBee network stacks; one stack with a full APS for HAN device communications, and one with Inter-PAN and a stub APS that is used only by the HHT. The HHT forms a simple point-to-point connection with the Comms Hub. The messages sent use the IEEE 802.15.4 physical layer, the data link layer, and the ZigBee network layer. At the network layer the HHT messages are diverted to a stub Application Protocol Sub-layer that provides an application interface, which allows transmission of messages without the formation of a HAN network.
+The HAN network architecture is based on the IEEE 802.15.4 physical layer using the 2.4 GHz DSSS radio, the IEEE 802.15.4â2006 MAC, the ZigBee network layer, the ZigBee Smart Energy Profile Specification, ELS cluster extensions, and relevant ZigBee application clusters. Detailed descriptions of these specifications are known to those skilled in the art and are thus considered part of this application. The application data flows between the clusters of the Comms Hub, E-meter, G-meter and IHD are shown in FIG. 58. Each cluster in a device has an interface for a client, a server, or both. The clusters communicate to the clusters of other devices using the ZigBee network stack.
+Most clusters communicate directly with their corresponding cluster in other devices. However, the G-meter is a battery operated device that keeps its radio turned off most of the time. It is configured to generate periodic metering messages to the Comms Hub. To support regular access to the G-meter data by the IHD, the Comms Hub provides a mirror cluster, the Gas Mirror. The Gas Mirror is baaed on the ZigBee Metering client. It presents the G-meter data to other HAN devices. The mirror allows battery devices to store data in the Comms Hub for other devices to retrieve. To accomplish this, the G-meter's Gas Metering server cluster is bound to the Gas Metering client cluster in the Comms Hub. The IHD then binds its Metering client cluster to the Comms Hub's Gas Metering Mirror server cluster that has the stored mirror information. Occasionally the G-meter is also required to get information stored in the Comms Hub. The Comms Hub indicates what information should be retrieved using the Notification status bits that are periodically read by the G-meter.
+The IHD may also bind its Meter client cluster to the E-meter's Electric Meter server cluster so that it can collect electrical usage data. The E-meter may implement ZigBee Clusters to support its communications on the ZigBee network and its DLMS communication to the HES using a ZigBee DLMS Tunnel to the Comms Hub.
+Various additional communication flows between the HES, Comms Hub and HAN devices are described below.
+Referring to FIG. 59, an exemplary communication for a gas meter (G-meter) is shown. The G-meter is a sleepy device that communicates only with the Comms Hub. It uses a data push model wherein at scheduled times, it transmits data to the Comms Hub or reads data from the Comms Hub. The Comms Hub does not initiate communications with the G-meter and it does not do unsolicited reads or writes. In FIG. 59, the G-meter initiates a scheduled transmission by turning on its radio and sending its Meter cluster data to the Comms Hub. The G-meter then reads the Notification register in the Comms Hub. The register has flags that tell the G-meter to gets different types of data or to just stay awake and receive commands from the Comms Hub. The first time this register has no flags set and the G-meter goes to sleep. The second time the G-meter wakes up it reads the Notification and sees the flag that asks it to stay awake. The Comms Hub then sends what every command it has ready after which the G-meter's radio goes to sleep. If any of the Notification register flag bits for operations are set, the G-meter can perform those operations now or later. The G-meter clears the Notification bits as operations are performed. The stay-awake flag in the Get Notification Flags Response remains active so long as the Comms Hub has commands to send to the G-meter.
+The Gas Mirror cluster in the Comms Hub acts like a proxy for the G-meter's Gas Meter cluster. The G-meter is a battery operated device that only turns its radio on when it needs to communicate with the Comms Hub. The Comms Hub cannot initiate communications with the G-meter. As shown in FIG. 60, the G-meter turns on its radio and sends its Gas Meter clusters data to the Comms Hub at scheduled intervals where it is stored in the Gas Mirror. This enables the IHD to retrieve gas usage data from the Comms Hub at any time as if it was communicating with the G-meter.
+The Comms Hub communicates with the E-meter using DLMS/COSEM. The COSEM messages are sent using the ZigBee DLMS Tunnel cluster. These communications are initiated by the Comms Hub to get meter usage data and management information for the E-meter. This process is shown in FIG. 61. The read operation is started by Comms Hub. It first establishes a tunnel with the E-meter and then does a DLMS association with the E-meter before doing any DLMS operations. The tunnel setup and association is not shown in FIG. 61. The read sequence shown is a simple two-way message transaction that may be repeated several times to gather all the data the Comms Hub needs.
+The Comms Hub communicates with the E-meter using the ZigBee application layer clusters associated with joining, binding, and commissioning. The ZigBee cluster connections between the Comms Hub and the E-meter are shown in FIG. 58. Most operations like those associated with the TOU calendar, price calculation and time maintenance are done using DLMS and ZigBee.
+The Comms Hub polls each E-meter for alarms and events at a configurable rate that can be as fast as once per 7.5 seconds. The Comms Hub also polls each E-meter for meter metrics at a configurable rate that is typically set to be once a day just after midnight. All the scheduled polls by the Comms are randomized as a small window to prevent data flooding in a neighborhood containing many Comms Hubs.
+Both the Head End System's COSEM applications and the Comms Hub's COSEM applications can communicate over the HAN network with the E-meter using the ZigBee DLMS Tunnel cluster.
+The DLMS defined WPDU contains the DLMS Wrapper Header and the DLMS AFDU. The ZigBee OTA Tunnel TransferData command carries the WPDU as shown in Table 15 below.
+
+
+
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 15
+
+
+ 
+
+
+ 
+ZigBee
+DLMS WPDU
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+Size
+2 bytes
+2 bytes
+2 bytes
+2 bytes
+2 bytes
+â
+
+
+Field
+TunnelID
+version
+Source
+Destination
+Length
+APDU
+
+
+Name
+ 
+ 
+wPort
+wPort
+ 
+(payload)
+
+
+ 
+
+
+
+
+
+ FIG. 62 illustrates the flow for the Head End System that sends a COSEM command to the E-meter using the DLMS Tunnel over ZigBee. In this example, the Head End System already has a WAN connection, TCP session, and TLS session established with the Comms Hub. The Head End System requests data from the E-meter by doing a ZigBee gateway sendDlmsCommand request to the Comms Hub that targets the E-meter's MAC address. This command contains a DLMS association with the E-Meter. The Comms Hub then uses the ZigBee DLMS Tunnel cluster to establish a DLMS tunnel to the E-meter after which it sends the association command. The Comms Hub returns the E-meter's association response to the Head End System. The Head End System is now able to communicate to the E-meter using the ZigBee Gateway sendDlmsCommand request and response commands and the ZigBee Tunnel cluster. The E-meter receives DLMS commands over the ZigBee Tunnel and generates a DLMS response which it returns over the same tunnel. The Comms Hub takes the responses and sends them to the Head End System using the ZigBee Gateway sendDlmsCommand response command. When the Head End System is finished it terminates the DLMS association. After the E-meter has responded to the association termination the Comms Hub goes through the process to terminate the ZigBee Tunnel with the E-meter.
+The Head End System sends various sets of information to the HAN devices using the ZigBee Message, Price, TOU Calendar, and Password cluster put commands. The Head End System accomplishes this by setting the appropriate information in the appropriate Comms Hub cluster. The HAN devices either poll the Comms Hub clusters for the information, or are sent it use the ZigBee Publish commands. The modes are shown in Table 16.
+
+
+
+ 
+ 
+ 
+ 
+
+
+
+TABLE 16
+
+
+ 
+
+
+Cluster
+E-meter, IHD
+G-meter
+HHT
+
+
+ 
+
+
+
+
+Message
+Pushed by the Comms
+Notification is sent
+Publish
+
+
+ 
+Hub to the IHD. DLMS is
+following a G-meter
+
+
+ 
+used to send messages to
+communication.
+
+
+ 
+the E-meter
+G-meter then polls
+
+
+Price
+Pushed by the Comms
+Notification is sent
+N/A
+
+
+ 
+Hub to the IHD. DLMS is
+following a G-meter
+
+
+ 
+used to send price
+communication.
+
+
+ 
+information to the E-meter
+G-meter then polls
+
+
+TOU
+Pushed by the Comms
+Notification is sent
+N/A
+
+
+Calendar
+Hub to the IHD. DLMS is
+following a G-meter
+
+
+ 
+used to send TOU
+communication.
+
+
+ 
+information to the E-meter
+G-meter then polls
+
+
+Password
+Pushed by the Comms
+Notification is sent to
+N/A
+
+
+ 
+Hub to the IHD. DLMS is
+the G-meter to stay
+
+
+ 
+used to send password
+awake and then the
+
+
+ 
+information to the E-meter
+password is published.
+
+
+ 
+
+
+
+
+
+In the example shown in FIG. 63, the Head End System sends a display message to the IHD's ZigBee Message Cluster. In this example the Head End System already has a WAN connection to the Comms Hub, so it sends the a ZigBee gateway sendZclCommand containing the putTextMessageSet command to the Comms Hub using the MAC address of the IHD. This Head End System message is acknowledged by the IHD if the putTextMessageSet command requests a confirmation. The Comms Hub receives the Head End System ZigBee gateway message and generates a ZigBee DisplayMessage command addressed to the IHD. Since the confirmation control field is set, the IHD sends a response back and the Comms Hub. The Comms Hub then creates an alert to the Head End System informing it that the message has been delivered. This alert may be sent in real-time or at the end of the day.
+A point-to-point connection between a hand-held terminal (âHHTâ) and the Comms Hub is established and used for commissioning the Comms Hub. The authority given the HHT depends on a certificate it is issued by the manufacturer or operator. The connection may be established as described in U.S. patent application Ser. No. 13/296,552 filed on Nov. 15, 2011, entitled âMETHOD FOR SECURELY COMMUNICATING ACROSS MULTIPLE NETWORKS USING A SINGLE RADIO,â wherein the HHT is able to find the Comms Hub and to communicate with it, without having to join the HAN network. The '552 Application is incorporated herein by reference in its entirety.
+An exemplary HHT Inter-PAN flow is shown in FIG. 64. It represents the flow used for commissioning. The HHT first discovers the devices in its vicinity by sending Data Frame requests on the configured channels and listening for responses. The Data Frame includes response filtering information which may include a MAC address and allowed RSSI level. These messages may be unicast in which case only the targeted Comms Hub replies or they may be broadcast and the HAN devices will determine if they respond based on the payload information. This information can be used to limit the response to that of the target Comms Hub. The Comms Hub uses its configured MAC address list to decide if it should respond to the Data frame request. Typically this will be a MAC address black list used to block known bad devices. On receipt of the Data Frame response, the HHT operator selects the target Comms Hub. This selection can be confirmed by the operator matching the source MAC address of a response to the MAC address on the Comms Hub label.
+The HHT then contacts the Comms Hub to initiate the ZigBee CBKE protocol. This message exchange generates a private, symmetric key shared between the two devices. With the symmetric key in place, both devices can now send secure ZigBee messages. The Comms Hub receives messages from many sources in the HAN network. It knows to apply the Inter-PAN key to the messages received with the APS Frame Type field set to 0b11. The first message received by the Comms Hub is the HHT's certificate. This certificate identifies the activities the HHT is authorized to perform.
+The HHT is now authorized to send commands to the Comms Hub and receive responses. The HHT operates an inactivity timer t2 that alerts it when to renew the symmetric key and a certificate. When the HHT decides that it is finished it does not renew the key. The Comms Hub's inactivity timer is set to t1. When the t1 timer expires the Comms Hub revokes the key and the certificate. The value t2 is set to be less than the value of t1.

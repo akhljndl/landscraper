@@ -1,0 +1,2096 @@
+Virtual prototyping and testing for medical device development 
+US-8224632-B2
+Trivascular, Inc.
+2012-07-17
+https://patents.google.com/patent/US8224632B2/en
+RELATED PATENT APPLICATION
+This patent application is a continuation and claims the benefit of U.S. patent application Ser. No. 09/679,725, filed Oct. 4, 2000 now U.S. Pat. No. 7,840,393, naming Robert G. Whirley and Michael V. Chobotov as inventors, entitled VIRTUAL PROTOTYPING AND TESTING FOR MEDICAL DEVICE DEVELOPMENT, the entirety of which is incorporated by reference herein, including all text and drawings.
+BACKGROUND
+1. Field of the Invention
+This invention relates to systems and methods of developing better-designed medical devices, specifically, intracorporeal medical devices and particularly cardiovascular stents and endovascular grafts.
+2. Background and Description of Related Art
+Atherosclerotic vascular disease is a significant health problem facing the world population today. Atherosclerosis results in two primary types of lesionsâocclusive and aneurysmal, with the aorta being the primary site of aneurysmal disease. Occlusive disease is a process in which a vessel lumen becomes narrowed and the blood flow restricted. Occlusive disease is typically associated with plaque buildup on the vessel wall or a biological response to vessel injury. One approach to treatment of occlusive disease involves placing a stent inside the vessel to act as a structural scaffold and hold open the vessel, and also possibly to provide local drug delivery or local radiation treatment. Aneurysmal disease is a process in which a vessel dilates under the influence of hemodynamic pressure, and may ultimately lead to rupture of the vessel and severe internal bleeding. One approach to treatment of aneurysmal disease involves placing a TPEG (transluminally placed endovascular graft, or âstent graftâ) across the aneurysm, excluding the aneurysm from hemodynamic pressure and thereby reducing or eliminating the risk of rupture. Examples of such grafts can be found in co-pending U.S. patent application Ser. No. 09/133,978, filed Aug. 14, 1998 by Chobotov, which is hereby incorporated by reference herein in its entirety.
+A TPEG is an endovascular prosthetic device that lines the interior of an artery to provide flow path integrity and structural support to the damaged or diseased blood vessel. TPEGs are sometimes called âstent graftsâ because they were originally created using combinations of stents and synthetic vascular graft segments. TPEGs are delivered to a blood vessel location in a compressed state, through an incision, and are then deployed at the location of concern.
+The current development process of TPEGs and medical devices generally, usually involves the reiterative and sequential steps of designing, fabricating the prototype, and testing the prototype until the required performance specifications are met. Fabrication of the prototype entails the building of the actual medical device, e.g., a TPEG. Testing can involve animal testings, human clinical trials, stress, strain, and deformation testing, and the like. Stents, TPEGs and other medical devices have suffered from long development times and from design deficiencies discovered late in the development and testing process. Thus, the development of improved medical devices could be significantly accelerated if design deficiencies could be identified earlier, before committing to lengthy laboratory testing, animal studies, and human clinical trials. A system that enables early evaluation of many aspects of device performance in vivo, and is applicable to development of stents for occlusive disease, TPEGs for aneurysmal disease, and other medical devices is highly desirable.
+In designing a TPEG, several factors must be taken into account, such as the structural integrity of the TPEG, the prevention of perigraft leaks, the need for a more easily-controlled TPEG deployment to allow a more precise positioning of the TPEG, the kink resistance of the TPEG, the morphology of the arterial walls, the relatively large size and lack of TPEG flexibility in the undeployed configuration (which can create difficulties in passing the TPEG from its insertion site to its deployment site), and the like. In vivo boundary conditions and forces, particularly dynamic or static cyclic in vivo forces, and the material properties of a TPEG are also important factors. Taking these factors into consideration during virtual testing and development of a medical device generates a more accurate assessment of the maximum stresses, strains, and deformations, over time that may potentially be handled by a medical device such as a TPEG.
+In designing a stent, several factors must be considered including radial force, crush resistance, flexibility (in both the compressed and the deployed configurations), fatigue life, and tissue intrusion through open stent cells. A system that allows rapid evaluation of these and other characteristics of a stent design before hardware prototypes are constructed, thereby reducing the cost and time required for development and also expanding the designer's capability to explore more exotic designs and possibly discover new and more advantageous stent designs within a given budget and timeframe is highly desirable.
+Thus, systems and methods which allow accurate virtual testing of a medical device design with respect to one or more of the above noted factors, in addition to other factors not specifically enumerated, without the need for an actual prototype of the design, are needed. Such systems and methods can reduce the cost of medical device development and increase the safety and efficacy of the designs.
+SUMMARY
+The invention provides a system and method for developing better-designed medical devices and particularly cardiovascular stents and endovascular grafts. The system comprises a Geometry Generator, a Mesh Generator, a Stress/Strain/Deformation Analyzer, and, optionally, a Visualization tool. The invention may obtain anatomic data from 3D volumetric data. In other embodiments, the invention utilizes an idealized anatomical feature, an in vitro model, or no anatomical feature at all.
+In one embodiment, the Geometry Generator receives three-dimensional volumetric data of an anatomical feature and accordingly extracts the surface points of such data, which in turn is received by the Mesh Generator. In another embodiment, the Geometry Generator based on algorithms available in such Geometry Generator software generates an output that is directly received by the Mesh Generator. Using the output generated by the Geometry generator and the geometric model of a candidate medical device, the Mesh Generator generates a mesh or a finite element model incorporating either the anatomical feature or in vitro model and candidate medical device. In an embodiment where no anatomical feature is used, a mesh only incorporating the candidate medical device is generated. The Stress/Strain/Deformation Analyzer then receives the mesh and the material models, the loads and/or displacements placed on the anatomical feature or in vitro model, if applicable, and the candidate medical device. Using stress and strain deformation analysis, particularly non-linear analysis, the Stress/Strain/Deformation Analyzer simulates and analyzes the potential in vivo stresses, strains, and deformations or motions of the candidate medical device. Such strains, stresses, and deformations may optionally be displayed using a Visualization tool.
+Various embodiments of the invention can be used to provide a variety of useful functions and capabilities to those who design, manufacture and use medical devices. Specifically, embodiments of the invention may be used to model anatomical features or anatomical environments dynamically. As a result, a computer generated model of a medical device, or the like, may be virtually placed or deployed within the anatomical model to measure the response of the device to the environment. The dynamics of the computer generated model of the anatomical features or environment can be accelerated dramatically such that large numbers of normal biological cycle, such as a heartbeat, can be imposed upon the computer generated medical device model in a relatively short period of time.
+This gives medical device designers the ability to virtually test a proposed design in a short period of time relative to the time it would take for a similar number of dynamic biological cycles in vivo. Thus, the iterative process of device design and testing of designs is accelerated and improvements in medical device technology can be achieved at a quicker rate. Further, embodiments of the invention can be used to vary and test material properties of medical device components over a broad range in a short period of time using the non-linear modeling capabilities of the embodiments. This capability can be used to select materials having optimal properties for producing the safest and most efficacious designs within a given set of design parameters.
+Another benefit of embodiments of the invention is directed to varying material and configuration properties of models of anatomical features such that a simulation of testing of a given device could be performed in a large number of patients, as might be carried out in a large scale clinical trial. If the statistical variation of tissue parameters of a given anatomical feature is known for a given patient population, a medical device model could be tested in anatomical models which vary over such a given range. In this way, a large scale clinical trial could be modeled with embodiments of the invention, at least as to certain performance parameters, without the need for large numbers of actual patients being subjected to clinical testing. The data generated from such a clinical trial modeling exercise could be used to produce or refine the design of a medical device such that it performs optimally over a broad range of anatomical environments. The design could be refined using such data to improve robustness and adaptability of the medical device design.
+Also, it is possible to use embodiments of the invention to identify failure modes of given medical device designs when such designs are subjected to dynamic mechanical and chemical forces. By identifying the cause of failure in a design, the âweak linkâ in the design can be pinpointed and necessary corrections to materials or configuration made in order to obviate the problem. It is also possible to test theories of failure experienced during in vivo clinical testing using embodiments of the invention. In other words, if an in vivo clinical failure of a medical device should occur, there may be one or more theories postulated as to the cause of the failure, particularly in a situation where multiple components of a device have failed and it is not clear from the clinical data which failure occurred first, or if an initial failure of one component of the device precipitated subsequent failure of other components of the device. The dynamic modeling capabilities of embodiments of the invention can allow rapid testing of multiple theories as to the timing and causation of complex failure modes and quickly determine which of the postulated theories is correct.
+In addition, the dynamic, non-linear analysis modeling capabilities of embodiments of the invention allow a physician, who is responsible for use or implementation of a medical device, to more accurately choose a proper size or type of medical device based on a specific patient's anatomy. Such is the case when a specific patient's anatomy or anatomical feature is substantially duplicated by a computer model of an embodiment of the invention generated from 3-D volumetric image data, or the like. A large number of sizes or types of virtual medical devices can then be placed and tested within the patient's specific anatomical feature to determine optimum safety and efficacy of the design choice.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+ FIG. 1 illustrates a block diagram representation of a virtual prototyping system having features of the present invention.
+ FIG. 2 illustrates a block diagram showing data received by an embodiment of a Geometry Generator and a Mesh Generator in accordance with the present invention.
+ FIG. 3 illustrates a block diagram representation of another embodiment of a system of the present invention.
+ FIG. 4 illustrates a block diagram showing data received by a Stress/Strain/Deformation Analyzer.
+ FIGS. 5A-5M contain an exemplary text of a command file that is read by a Mesh Generator, such as TRUEGRID, to conduct a component-level analysis of a stent, without the option for simulating deployment into CT-based anatomy.
+ FIGS. 6A-6F contain an exemplary text of a command file read by TRUEGRID for a simulated TPEG graft deployment in a proximal aortic neck to generate a mesh incorporating both an anatomical feature and medical device and to output files that are read by a Stress/Strain/Deformation Analyzer.
+ FIGS. 7A-7C contain an exemplary include file used by the command file listed in FIGS. 6A-6F.
+ FIGS. 8A-8L contain another exemplary command file read by TRUEGRID used in the virtual prototyping system of the present invention for simulating stent deployment into an anatomy from CT data, as opposed to a stent graft deployment.
+ FIGS. 9A and 9B illustrate a process to develop better-designed medical devices, particularly TPEGs, in accordance with an embodiment of the present invention using 3D volumetric data.
+ FIG. 10 illustrates a process to develop better-designed medical devices using in vitro anatomical features.
+ FIG. 11 illustrates the use of an embodiment of the present invention as a physician preprocedure planning tool.
+ FIG. 12 contains a representation of one simulation display of a cutaway lateral view of a vascular stent in the infrarenal aorta just proximal to an abdominal aneurysm.
+ FIG. 13 is a block diagram representation of one of the computers illustrated in FIG. 1.
+
+DETAILED DESCRIPTION
+The following detailed description illustrates an embodiment of the invention by way of example, not by way of limitation of the principles of the invention. Various embodiments of the invention will be described by way of illustration with reference to various software tools, but it should be understood that other software tools that have a comparable capabilities of the mentioned tools may be used and other medical device aside from TPEGs may also be developed using this invention. In addition, although the invention is discussed in the context of prosthesis and specifically endovascular grafts, this is in no way meant to limit the scope of the invention.
+Systems and methods of embodiments of the invention are suitable for the development and testing of medical devices including those for therapeutic, diagnostic, monitoring and the like purposes. In general, any device that interacts inside a patient's body may be better developed and tested with the systems and methods of embodiments of the present invention.
+Embodiments of the present invention are also well suited for development and testing of intracorporeal devices or prosthesis that generally have an acute interaction with anatomical features of a patent. A list of such devices, which is in no way exhaustive, could include endovascular grafts, stents, pacemakers, artificial joints, artificial tendons, heart valves, artificial limbs, orthopedic hardware, surgical equipment such as sutures, staples, etc., and the like.
+Embodiments of the present inventions are particularly well suited for the development and testing of devices for use in the vascular system or other bodily systems that have stresses, strains, and deformations which are dynamic, or quasi-static, and cyclic in nature, e.g., the rhythmic pulsing of the arterial system resulting from variations in blood pressure from the patent's beating heart and the resulting cyclic dynamic or quasi-static stresses, strains, and deformations these variations impart on the patient's arteries and medical devices disposed therein or thereon.
+Embodiments of the present invention are also suitable for development and testing of interventional medical devices, which have only transient or temporary contact with the anatomical features of a patient. Illustrative examples of such devices can include catheters, balloons, atherectomy devices, guidewires, and the like.
+ FIG. 1 is a block diagram showing one embodiment of a virtual prototyping system 105 for analyzing the use of a medical device constructed in accordance with an embodiment of the present invention. FIG. 1 shows that a Geometry Generator 120 receives CT scan or MRI Data 110 as input. The Geometry Generator 120 then processes the CT scan or MRI data and outputs data, which are then received by the Mesh Generator 130 as input. The Mesh Generator, in addition to receiving the output of the Geometry Generator 120, also receives a Medical Device Model data 140 as input. The Medical Device Model 140 contains the geometry (geometric shape or geometric model) of the candidate medical device. Such model may be the complete candidate, a portion, or an element of the candidate medical device. Similarly, a portion or an element of the anatomical features, not the entire anatomy scanned, may be received by the Mesh Generator 130. The Medical Device Model may be created by a computer-aided-design (CAD) software application and stored as a CAD data file. Examples of suitable CAD software packages include I-DEAS (available from SDRC, Inc. of Milford, Ohio) and CATIA (available from International Business Machines Corporation), however, any other suitable application could be used. The Medical Device Model could also, for example, be created through contact or non-contact three dimensional measurement/imaging of a physical device or model. In another embodiment, the medical device model 140 is created within the Mesh Generator 130 module itself.
+In addition, although the embodiment of FIG. 1 contemplates the use of CT or MRI volumetric data 110 as input, volumetric input could also be generated from any other suitable source, including other imaging system sources such as ultrasound imaging systems, beta scan imaging, radionuclide scanning, thermography and the like. Anatomical volumetric input data could also be artificially fabricated from idealized versions of anatomical features, which may be initially obtained from CT-data and modified, or be created manually by modeling such idealized version. These could be created to test medical devices within anatomical features having specified characteristics. For example, it may be desirable to test a medical device in an aorta having two distended sections caused by aortic aneurysms, which are separated by a non-distended portion of the aorta. Input data representing such an anatomical feature could be generated by manually entering data known to wholly represent such an anatomical feature. Alternatively, input data representing such an anatomical feature could be constructed by manually entering data corresponding to portions of CT, MRI or other imaging created data of actual patient aortas.
+The output of the Mesh Generator 130 is then received by the Stress/Strain/Deformation Analyzer 160. The Stress/Strain/Deformation Analyzer 160 also receives Materials Model data 170 and Load data 150 as input, which may also be outputs of the Mesh Generator 130. The output of the Stress/Strain/Deformation Analyzer 160 comprises the medical device performance data for evaluation, which may then be received by the Visualization tool 180 as input. The Visualization tool 180 in turn displays, through animation or visual representations, the predicted stresses, strains, and deformations on the candidate prosthesis âvirtually in vivo.â
+In an embodiment of the invention, the Geometry Generator 120 is a custom-developed software tool or the MIMICS software from Materialise NV (with offices in Ann Arbor, Mich., USA); the Mesh Generator 130 is TRUEGRIDÂ® of XYZ Scientific Applications, Inc. (Livermore, Calif., USA); the Stress/Strain/Deformation Analyzer 160 is a modified version of NIKE3D or DYNA3D available from Lawrence Livermore National Laboratory (LLNL); and the Visualization tool 180 is the GRIZ visualization software, also developed by LLNL.
+The unique combination of tools, data, and processing techniques as described herein in conjunction with the preferred embodiment provides a more accurate in vitro representation of anticipated in vivo forces exerted on medical devices and thereby reduces cost and time in the fabrication and testing of prototypes.
+The various systems or components 120, 130, 160, 180, inputs (e.g., via files), and outputs (e.g., via files) of the present invention may be contained in one or in a plurality of computers. Thus, the Geometry Generator may be contained in one computer, while the Stress/Strain/Deformation Analyzer and the Visualization tool are run and contained in a separate computer. Furthermore, the inputs need not directly be received by the receiving system, e.g., through a network transmission. The outputs for example, of the Geometry Generator may be stored in a floppy disk and read by a Mesh Generator via that floppy disk.
+ FIG. 2 shows the data flow for an embodiment of a Geometry Generator 120 of FIG. 1 in detail. The Geometry Generator 120 receives as input the CT scan, MRI data, or other three-dimensional (3D) volumetric data 110. It is preferred that data from CT scans or MRIs be used in this invention because they provide a 3D volumetric representation of patient anatomy and blood vessel morphology, including complex atherosclerotic plaque distribution within the flow lumen. This type of data thus provides an accurate representation, for example, of the environment on which a medical device, for example, a TPEG will be placed. The CT and MRI equipment that is used to capture such 3D volumetric data are those that are readily available.
+Certain researchers and scientists in the biological sciences have at their disposal a wealth of voxel data A voxel is the unit of CT or MRI reconstructions, represented as a pixel in the display of the CT scan or MRI. Well-established methods to extract triangular surface representations (hereinafter referred to âsurface pointsâ) from these voxel data using criteria such as variation in density are available. An embodiment of the Geometry Generator 120 first extracts the surface points, at step 220, from the CT scan or the MRI image data (e.g., segmentation, contour based, or 3D approach). A CAD software is then used to generate the Geometric Model 230 of the anatomy scanned using the extracted surface points. The extraction of surface points can be implemented by writing a software program that implements the techniques stated above or by available software programs. An example of a software program that generates surface points based on CT scan or MRI data is PREVIEW from Medical Media Systems.
+The output of the Geometry Generator 120 is in the form of an Anatomy Model 240, which contains the geometric model of the anatomy scanned. The Anatomy Model 240 and the Medical Device Model 140 (containing the geometric model of the candidate medical device) are then received by the Mesh Generator 130 as input (usually as CAD files). The anatomy model may be a portion or an element of the anatomy scanned. Similarly, the medical device model may be a portion or of an element of the candidate medical device. This is useful for analyzing the interaction between a portion of a candidate device, such as a proximal stent in a TPEG, and a certain anatomical feature, such as tissue. The Mesh Generator 130 then generates a finite element model incorporating both the anatomy model, whether idealized or actual, and the medical device model as represented by box 250.
+In one embodiment, the geometric models of the anatomy and the medical device are created using CAD software. Generally, the geometric models are stored in the Initial Graphics Exchange Specification (IGES) format that is an industry-standard graphic file format for CAD systems. Because of its wide-use, many FEA software tools read and utilize the IGES format. In another embodiment, the geometric models are created directly in the Mesh Generator.
+The Mesh Generator 130 in accordance with an embodiment of the invention is TRUEGRIDÂ®. TRUEGRID is a 3-D finite modeling and analysis tool that generates meshes or finite element models. It is a software that tessellates a geometric model into hexahedron brick elements and quadrilateral shell elements, creating a mesh or a grid. A FEA mesh generating tool, such as TRUEGRID, uses the anatomy model 240 and medical device model 140 created by a CAD software to generate a mesh. In another embodiment of a Geometry Generator 120 (not shown in the figures), the Geometry Generator is a software tool that interfaces between scanner data, such as CT, MRI, and technical scanner data, and Rapid Prototyping, CAD, or Finite Element analysis data. Such software tools typically generate surface points from such scanner data, which are then converted into STL (stereolithography), slice files, and/or IGES files, which may then be read by the Mesh Generator 130 as input. An example of such a Geometry Generator 120 is the âMaterialise Interactive Medical Image Control Systemâ (MIMICS) available from Materialise, referred to above. The output of the MIMICS program, for example, may be directly read and processed by the Mesh Generator 130. Thus, steps 220 and 230, illustrated in FIG. 2, are not necessarily implemented by this alternative embodiment of the Geometry Generator 120.
+ FIG. 3 is a block diagram showing another embodiment of a virtual prototyping system 105. FIG. 3 is similar to FIG. 1, except that the anatomical feature is not obtained from a 3D volumetric data, such as a CT scan. Rather, an in vitro model of the anatomical feature is presented for analysis. For example, instead of a CT-scan artery, the system analyzes the stresses, strains, and deformations of a medical device deployed in a latex tube, which represents the artery or the in vitro model. Such in vitro model may be a CAD file that is read by the Mesh Generator 130 or in another embodiment created within the Mesh Generator itself. Alternatively, an idealized anatomical feature may be created through this embodiment. In another embodiment of the invention, not shown in the figure, the system may do a component or element analysis of a proposed medical device, without the incorporation of either an anatomical feature or in vitro model.
+ FIG. 4 is a block diagram showing in detail the data flow of the Stress/Strain/Deformation Analyzer 160, which preferably is a non-linear finite element modeling software application such as DYNA3D or NIKE3D. The Stress/Strain/Deformation Analyzer receives a mesh incorporating both the medical device and the anatomy scanned (idealized or actual), a mesh incorporating both the medical device and in vitro model, or a mesh incorporating just the medical device model 250. A portion of the medical device, in vitro model, or the anatomy scanned may be used. The Stress/Strain/Deformation Analyzer 160 also receives the Materials Model 170, and the Load 150 on the applicable structures (e.g., TPEG and artery or just on the medical device) to generate an output used by the Visualization tool 180. In the preferred embodiment, the Materials Model 170 and the Load 150 are read by TRUEGRID through a command file (further discussed below). Thus, the outputs of TRUEGRID (the Mesh Generator) do not only include the finite element model 250 of the mesh incorporating both medical device and anatomy scanned, mesh incorporating both medical device and in vitro model, or a mesh containing only the medical device, but the materials model 170 parameters as well as load 150 information. This reduces the number of code changes, if necessary, within DYNA3D or NIKE3D, or the manual entry of input values to be read by DYNA3D or NIKE3D.
+DYNA3D is a general-purpose, explicit, three dimensional, finite element program for analyzing and simulating the large deformation dynamic response of inelastic solids and structures. DYNA3D and NIKE3D implement a number of material models, for example, including elastic, orthotropic elastic, and kinematics/isotropic plasticity. NIKE3D is a general-purpose nonlinear implicit, three-dimensional, finite element program for analyzing and simulating the finite strain and static and dynamic response of inelastic solids, shells, and beams.
+FEA Stress/Strain/Deformation Analyzers, such as DYNA3D and NIKE3D, are capable of analyzing and simulating sliding interfaces, body force loads due to base acceleration, body force loads due to spinning (geometry-dependent), concentrated nodal loads, pressure boundary conditions (geometry-dependent), and displacement boundary conditions.
+The Materials Model 170 is the numerical representation of the material characteristics of the medical device, the anatomy, and/or the in vitro model being analyzed. Loads include pressures, displacement, forces, and deformations. Using the mesh 250, the Materials Model 170, and the Load 150, the Stress/Strain/Deformation Analyzer 160 then analyzes and simulates the non-linear stress, strain, and deformation over time such as on a medical device (e.g., a TPEG and the arterial wall). The Stress/Strain/Deformation Analyzer in accordance with an embodiment of the present invention utilizes non-linear analysis (e.g., using non-linear formulas) or linear analysis to simulate and to analyze the non-linear static or dynamic behavior in the structure.
+In FIG. 4, the Materials Model 170 is directly received by the Stress/Strain/Deformation Analyzer 160. Another way to have the materials model be received by the Stress/Strain/Deformation Analyzer 160 is by modifying the source code of DYNA3D and NIKE3D, e.g., by hard-coding the materials model into the source code itself. Similarly, if the source code of the geometry generator, Mesh Generator, Stress/Strain/Deformation Analyzer, and/or Visualization tool are available, inputs as shown may be incorporated, for example, by actually hard-coding the input parameters into the source code or by changing certain equations in the code itself.
+Once the Stress/Strain/Deformation Analyzer 160 has analyzed the stresses, strains, and deformations on the medical device, the Visualization module 180 (in FIG. 1) can then receive the output of the Stress/Strain/Deformation Analyzer to visually display the resulting stresses, strains, and deformations 190.
+Generally, the numerical output of the Stress/Strain/Deformation Analyzer 160 may also be analyzed to determine the stresses, strains, deformations on the medical device without using the Visualization tool 180. Using the Visualization tool 180, however, facilitates such determination because the stresses, strains, and deformations are shown via a graphical and visual display. A virtual prototyping or simulation of a medical device design, rather than plain numerical output data, is thus produced.
+In an embodiment, the Visualization tool 180 is provided by the above-referenced GRIZ software application. GRIZ is an interactive software for visualizing FEA results on three-dimensional unstructured grids, and calculates and displays derived variables from FEA software tools such as DYNA3D, NIKE3D, and TOPAZ3D (also developed by LLNL). GRIZ provides display control of the mesh materials on an individual basis, allowing the user to concentrate on the analysis and visually focus on important subsets of the mesh, and provides the ability to animate the representation over time.
+GRIZ uses the Silicon Graphic Inc. (SGI) Graphics Library (GL) or Open GL for rendering and the âMotif widgetâ toolkit for its user interface. In order to compile and run GRIZ, both of these libraries are required. GRIZ can be used on SGI workstations as well as on SUN and other workstations using commercial GL emulation software.
+Considering the visual result on the screen display 190, a user may then compare the candidate medical device as designed against selected performance requirements. If the selected design meets the performance requirements, then a prototype of the selected medical device design may be built and tested. In addition, the visual result on the screen display 190 can be used by a physician to aid in the selection of various versions (e.g., sizes) of a given medical device design. For example, prior to a procedure for placement of a TPEG in a patient's aorta, the physician may first virtually test the performance of various TPEG designs or various versions of a single TPEG design prior to the procedure. To accomplish this, the physician would obtain volumetric data from the patient's aorta by any of the various methods discussed above and input that data into an embodiment of a system 105 (in FIG. 1) for analyzing the use of a medical device. The same or similar type of volumetric and materials data for a version of TPEG design to be tested is also loaded into the system 105. Note that it may be possible to load volumetric data from several anatomical features and versions of TPEG designs to be analyzed at one time, and then for the physician to choose which two to test together at a later time. Once the input data is loaded into the system 105, the visual result of the analysis of the Stress/Strain/Deformation Analyzer 160 is viewed by the physician on the screen display 190 and based on those results, the physician determines whether the TPEG version tested meets, exceeds, or falls short of the clinical requirements of the patient.
+If the version of the TPEG which was virtually tested by the system 105 falls short of the clinical requirements of the patient, another version may be tested and so on until an appropriate design is identified. The physician may then begin the actual procedure on the patient with the appropriate TPEG design version. The system 105 may be configured to display the performance of a given TPEG design version with regard to long term structural integrity, prevention of perigraft leaks or sealing function, the general sizing of the TPEG with respect to the patient's aorta and the like. With regard to testing of the long term durability or structural integrity of the TPEG or other medical device design, the system 105 has great utility. Specifically, system 105 has the ability, assuming the use of sufficiently powerful CPUs, to recreate large numbers of cyclic expansions and contractions in a short period of time. For example, as discussed above, the vascular system of a patient is constantly expanding and contracting as a result of dynamic or static pressure gradients within the vasculature from the patient's beating heart. These expansions and contractions can put stresses, strains, and deformations on intracorporeal medical devices, such as TPEG, which over time can lead to failure of the device. System 105 would give the physician the ability to quickly test a chosen TPEG design in a virtual model of the patient's expanding and contracting aorta for an amount of cycles that would equal or exceed the amount of cycles that would be expected in the patient's lifetime to determine the long term safety and efficacy of the design choice. Of course, a similar time compressed analysis could be used for any other type of medical device in any other part of a patient's body. Accordingly, if the invention is used as a preprocedure tool, physicians may analyze the use of various TPEG embodiments and select those that meet their performance requirements thereby allowing the physicians to select the best medical devices, such as the best TPEGs for treating their patients with aneurysm.
+Because of the computing resources needed by FEA software tools, they are generally run on Silicon Graphics or other UNIX computer systems. The Mesh Generator, Stress/Strain/Deformation Analyzer, and the visualization of the stresses, strains, and deformations on the candidate TPEG have been run on a Silicon Graphics (R12000) machine with 640 MB of memory.
+Modifications to DYNA3D or NIKE3D
+In one embodiment, NIKE3D and DYN/A3D were used and modified to implement the features of the present invention (TPEG design was analyzed). In determining the required material model, an exemplary material model (herein called TPEG material model (W)) was used to accommodate a strain energy density of the form:
+
+W=a 10(I 1â3)+a 01(I 2â3)+a 20(I 1â3)2 +a 11(I 1â3)(I 2â3)+a 02(I 2â3)2 +a 30(I 1â3)+a 21(I 1â3)2(I 2â3)+a 12(I 1â3)(I 2â3)2 +a 03(I 2â3)3+Â½K(I 3â1)2 
+
+with K=2(a 10 +a 01)/(1â2Î½)
+
+where
+    aij are material parameters; Î½ is Poisson's ratio; K is the bulk modulus given as a function of Poisson's ratio; and I1, I2, and I3 are the first, second, and third invariants of the right Cauchy-Green strain tensor, respectively.   
+The TPEG material model (W), discussed above, was derived from a doctoral thesis, which discusses the stress in abdominal aortic aneurysm. (See Madhavan Lakshmiraghavan, Mechanical Wall Stress in Abdominal Aortic Aneurysm: Towards Development of a Clinical Tool to Predict Aneurysm Rupture (1998) (unpublished Ph.D. dissertation, University of Pittsburgh which is hereby incorporated herein in its entirety).
+Other articles discussing a hyperelastic material, linear elastic, and non-linear elastic models of the aortic walls may also be used to derive a material model as exemplified above and other applications of the virtual prototyping system 105 (in FIG. 1). (See M. L. Raghavan et al., Ex Vivo Biomechanical Behavior of Abdominal Aortic Aneurysm: Assessment Using a New Mathematical Model, 24 Annals of Biomedical Engineering 573-582 (1996); David A. Vorp. Et al., Finite Element Analysis of the Effect of Diameter and Asymmetry on the Wall Stress Distribution in Abdominal Aortic Aneurysm, 35 BED (Bioengineering Conference ASME 1997) 33-34 (1997), both of which are incorporated by reference herein in their entirety).
+Modifications to NIKE3D
+NIKE3D has an existing material model, number 15, which is a three-dimensional continuum hyperelastic material that uses a strain energy density function of the form:
+
+
+
+
+W
+=
+
+
+A
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
++
+
+B
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+
+1
+/
+2
+
+â¢
+
+
+K
+â¡
+
+(
+
+ln
+â¢
+
+ 
+
+â¢
+Î¸
+
+)
+
+
+2
+
+
+
+
+
+
+
+
+with
+
+
+
+
+
+K
+=
+
+
+4
+â¢
+
+(
+
+A
++
+B
+
+)
+
+â¢
+
+(
+
+1
++
+v
+
+)
+
+
+
+(
+
+3
+-
+
+6
+â¢
+v
+
+
+)
+
+
+
+
+
+
+where
+    A and B are material parameters; Î½ is Poisson's ratio; K is the bulk modulus given as a function of Poisson's ratio; I1 and I2 are the first and second invariants of the right Cauchy-Green strain tensor, respectively; and Î¸ is the current volume of the element divided by the undeformed volume.   
+Using the material model 15 as the framework, the material model 15 is modified to implement the TPEG Material Model âWâ listed above. This entails ensuring that variables are accordingly updated or modified in the source code to capture the information required by the TPEG Material Model. Material model 15 was chosen from the NIKE3D models because it involves the least amount of code modification to implement the features of the present invention.
+Implementation of the TPEG Material Model in NIKE3D
+To implement the features in accordance with the present invention, two NIKE3D subroutines, weval.f and printm.f, were modified.
+The following modifications were made to NIKE3D subroutine weval.f:
+    a) Ten material parameters (a10, a01, a20, a11, a02, a30, a21, a12, a03, K) were read instead of three (A, B, and K). b) The calculation of K was changed from K=4(A+B)(1+Î½))/(3â6Î½) to K=2(a10+a01)/(1â2Î½) c) The calculation of   
+     â W   â  I 1      
+was changed from
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+1
+
+
+
+=
+
+
+A
+â¢
+
+ 
+
+â¢
+to
+â¢
+
+ 
+
+â¢
+
+
+â
+W
+
+
+â
+
+I
+1
+
+
+
+
+=
+
+
+a
+10
+
++
+
+2
+â¢
+
+
+a
+20
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+
++
+
+
+a
+11
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+3
+â¢
+
+
+
+a
+30
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+2
+
+
++
+
+2
+â¢
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+2
+
+
+
+
+
+
+ 
+
+
+d) The calculation of
+
+
+
+     â W   â  I 2      
+was changed from
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+2
+
+
+
+=
+
+
+B
+â¢
+
+ 
+
+â¢
+to
+â¢
+
+ 
+
+â¢
+
+
+â
+W
+
+
+â
+
+I
+2
+
+
+
+
+=
+
+
+a
+01
+
++
+
+
+a
+11
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
++
+
+2
+â¢
+
+a
+02
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+2
+
++
+
+2
+â¢
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+3
+â¢
+
+
+
+a
+03
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+2
+
+
+
+
+
+
+
+ 
+
+
+e) The higher derivatives of W with respect to I1 and I2 were changed from zero to
+
+
+
+
+
+
+
+
+
+
+
+â
+2
+
+â¢
+W
+
+
+â
+
+I
+1
+2
+
+
+
+=
+
+
+2
+â¢
+
+a
+20
+
+
++
+
+6
+â¢
+
+
+a
+30
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+
++
+
+2
+â¢
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+
+
+
+,
+
+
+
+
+â¢
+
+
+
+
+â
+2
+
+â¢
+W
+
+
+â
+
+I
+2
+2
+
+
+
+=
+
+
+2
+â¢
+
+a
+02
+
+
++
+
+2
+â¢
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+
++
+
+6
+â¢
+
+
+a
+03
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+
+
+
+,
+and
+
+
+
+
+
+
+
+
+
+â
+2
+
+â¢
+W
+
+
+
+â
+
+I
+1
+
+
+â¢
+
+â
+
+I
+2
+
+
+
+
+=
+
+
+a
+11
+
++
+
+2
+â¢
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+
++
+
+2
+â¢
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+
+
+
+
+
+ 
+
+
+f) The derivatives with respect to I3 were changed from
+
+
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+3
+
+
+
+=
+
+
+K
+â¡
+
+(
+
+ln
+â¢
+
+ 
+
+â¢
+
+
+I
+3
+
+/
+
+I
+3
+
+
+
+)
+
+
+â¢
+
+ 
+
+â¢
+to
+
+
+
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+3
+
+
+
+=
+
+
+K
+â¡
+
+(
+
+
+I
+3
+
+-
+1
+
+)
+
+
+â¢
+
+ 
+
+â¢
+and
+â¢
+
+ 
+
+â¢
+from
+
+
+â¢
+
+ 
+
+
+
+
+
+
+
+
+
+
+â
+2
+
+â¢
+W
+
+
+â
+
+I
+3
+2
+
+
+
+=
+
+
+
+K
+â¡
+
+(
+
+
+(
+
+1
+-
+
+ln
+â¢
+
+ 
+
+â¢
+
+I
+3
+
+
+
+)
+
+/
+
+I
+3
+2
+
+
+)
+
+
+â¢
+
+ 
+
+â¢
+to
+â¢
+
+ 
+
+â¢
+
+
+
+â
+2
+
+â¢
+W
+
+
+â
+
+I
+3
+2
+
+
+
+
+=
+K
+
+
+
+
+ 
+
+
+g) When a completely incompressible material (I3=1) is specified by setting the augmented Lagrangian flag to true, the derivatives with respect to I3 are left in the log form. The log form shows substantially faster convergence and better stability for completely incompressible materials.
+
+
+
+The NIKE3D subroutine printm.f was modified to print out all nine a material parameters to the material description in the high-speed printout file.
+Invocation of the Modified NIKE3D TPEG Material Model
+The TPEG material model (W) (i.e., the modified NIKE3D Material Model 15) is invoked in NIKE3D using the input data format shown in Table I. Poisson's ratio is kept as the third parameter to maintain compatibility with models using the original NIKE3D hyperelastic model. The documentation for NIKE3D, and the TRUEGRID Mesh Generator, provides an input format list for Material Model 15 similar to Table I given below, with A, B, and Î½ all defined on card 3 (it should be understood that the âcardâ represents lines of input data). The original NIKE3D code, however, reads A from columns 1-10 card 3, B from columns 1-10 of card 4, and Î½ from columns 1-10 of card 5. This format was changed to comply with the NIKE3D manual and the format in Table I in the modified weval.f and printm.f subroutines.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+
+
+TABLE I
+
+
+
+
+ 
+
+
+Input parameters format for the modified NIKE3D
+
+
+material model (TPEG material model)
+
+
+
+
+Card
+Columns
+Description
+Format
+
+
+ 
+
+
+1
+1-5
+Material ID number
+I5
+
+
+1
+â6-10
+Material type (use 15)
+I5
+
+
+1
+11-20
+Density
+E 10.0
+
+
+1
+21-25
+Element class (not used)
+I5
+
+
+1
+26-35
+Reference temperature (not used)
+E 10.0
+
+
+1
+36-45
+Rayleigh damping parameter alpha
+E 10.0
+
+
+1
+46-55
+Rayleigh damping parameter beta
+E 10.0
+
+
+2
+â1-72
+Material title
+12A6
+
+
+3
+â1-10
+a10 
+E 10.0
+
+
+3
+11-20
+a01 
+E 10.0
+
+
+3
+21-30
+Poisson's ratio
+E 10.0
+
+
+3
+31-40
+a20 
+E 10.0
+
+
+3
+41-50
+a11 
+E 10.0
+
+
+3
+51-60
+a02 
+E 10.0
+
+
+3
+61-70
+a30 
+E 10.0
+
+
+3
+71-80
+a21 
+E 10.0
+
+
+4
+â1-10
+a12 
+E 10.0
+
+
+4
+11-20
+a03 
+E 10.0
+
+
+5-7
+All
+Blank
+
+
+8
+â1-10
+Augmented Lagrangian flag
+E 10.0
+
+
+ 
+ 
+.EQ.1: active, enforce
+
+
+ 
+ 
+compressibility with augmented
+
+
+ 
+ 
+Lagrangian iteration
+
+
+8
+11-20
+Convergence tolerance for
+E 10.0
+
+
+ 
+ 
+augmented Lagrangian
+
+
+ 
+ 
+iteration
+
+
+ 
+ 
+.GT.0.0: converged when
+
+
+ 
+ 
+volume strain norm < TOL
+
+
+ 
+ 
+(tolerance)
+
+
+ 
+ 
+.LT.0.0: augment exactly -
+
+
+ 
+ 
+TOL times
+
+
+ 
+
+
+
+
+
+The format column specifies the expected data type. For example, a format of âIâ means that an integer is expected (âI5â means integer with 5 positions), âEâ means a real numeric value, and âAâ means character data type.
+Modifications to DYNA3D
+DYNA3D has an existing material model number 27, which is a three-dimensional continuum hyperelastic material that uses a strain energy density function of the form
+
+
+
+
+W
+=
+
+
+A
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
++
+
+B
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+C
+â¡
+
+(
+
+
+I
+3
+2
+
+-
+3
+
+)
+
+
++
+
+
+D
+â¡
+
+(
+
+
+I
+3
+
+-
+3
+
+)
+
+
+2
+
+
+
+
+
+
+
+with
+
+
+
+
+
+C
+=
+
+
+
+1
+/
+2
+
+â¢
+A
+
++
+B
+
+
+
+
+
+
+and
+
+
+
+
+
+D
+=
+
+
+
+A
+â¡
+
+(
+
+
+5
+â¢
+v
+
+-
+2
+
+)
+
+
++
+
+B
+â¡
+
+(
+
+
+11
+â¢
+v
+
+-
+5
+
+)
+
+
+
+
+2
+-
+
+4
+â¢
+v
+
+
+
+
+
+
+
+where:
+    A and B are material parameters; Î½ is Poisson's ratio; and I1, I2, and I3 are the first, second, and third invariants of the right Cauchy-Green strain tensor, respectively.   
+The material model 27 may be modified to implement the TPEG Material Model (W)). This also entails ensuring that variables are accordingly updated or modified in the source code to capture the information for the TPEG material model (W).
+Implementation of the TPEG Material Model in DYNA3D
+To implement the features in accordance with the present invention, two DYNA3D subroutines, f3dm27.f and printm.f, were modified. The âC(I3 â2â1)â term was left in the modified material model since without it, the explicit time integrator becomes unstable very easily. This term only significantly changes the result when the material undergoes significant change in volume. If Î½â0.5, the material behaves in a nearly incompressible matter, in this case D is much larger than C, and the inclusion of C has little to no effect on the final result.
+The following modifications were made to DYNA3D subroutine f3dm27.f:
+    a) Ten material parameters (a10, a01, a20, a11, a02, a30, a21, a12, a03, K) were read instead of four (A, B, C, and D). b) The calculation of D was changed from D=(A(5Î½â2)+B(11Î½â5))/(2â4Î½) to D=(a10+a01)/(1â2Î½) c) The computation for I1 and I2 were added. d) The calculation of   
+     â W   â  I 1      
+was changed from
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+1
+
+
+
+=
+
+
+A
+â¢
+
+ 
+
+â¢
+to
+â¢
+
+ 
+
+â¢
+
+
+â
+W
+
+
+â
+
+I
+1
+
+
+
+
+=
+
+
+a
+10
+
++
+
+2
+â¢
+
+
+a
+20
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+
++
+
+
+a
+11
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+3
+â¢
+
+
+
+a
+30
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+2
+
+
++
+
+2
+â¢
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+2
+
+.
+
+
+
+
+
+
+ 
+
+
+e) The calculation of
+
+
+
+     â W   â  I 2      
+was changed from
+
+
+
+
+
+
+
+â
+W
+
+
+â
+
+I
+2
+
+
+
+=
+
+
+B
+â¢
+
+ 
+
+â¢
+to
+â¢
+
+ 
+
+â¢
+
+
+â
+W
+
+
+â
+
+I
+2
+
+
+
+
+=
+
+
+a
+01
+
++
+
+
+a
+11
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
++
+
+2
+â¢
+
+a
+02
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+
+
+a
+21
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+2
+
++
+
+2
+â¢
+
+
+a
+12
+
+â¡
+
+(
+
+
+I
+1
+
+-
+3
+
+)
+
+
+â¢
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
++
+
+3
+â¢
+
+
+
+
+a
+03
+
+â¡
+
+(
+
+
+I
+2
+
+-
+3
+
+)
+
+
+2
+
+.
+
+
+
+
+
+
+
+ 
+
+
+f) The calculation of
+
+
+
+      â W   â  I 3    =   2 â¢  D â¡  (   I 3  - 1  )    -  2 â¢  C â¡  (   I 3  - 3   - 1  )        
+remains unchanged, however, the value of D has changed.
+
+The DYNA3D subroutine printm.f was modified to correctly output the hyperelastic material constants to the resulting high-speed printout file.
+Invocation of the Modified DYNA3D Material Model (TPEG Material Model)
+The TPEG material model (i.e., the modified DYNA3D material model 27) is invoked in DYNA3D using the input data format shown in Table II. Poisson's ratio is kept as the third parameter to maintain compatibility with models using the original DYNA3D hyperelastic model.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+
+
+TABLE II
+
+
+
+
+ 
+
+
+Input parameters format for the modified DYNA3D
+
+
+material model (TPEG material model)
+
+
+
+
+Card
+Columns
+Description
+Format
+
+
+ 
+
+
+1
+1-5
+Material ID number
+I5
+
+
+1
+â6-10
+Material type (use 15)
+I5
+
+
+1
+11-20
+Density
+E 10.0
+
+
+1
+21-25
+Element class (not used)
+I5
+
+
+1
+26-35
+Reference temperature (not used)
+E 10.0
+
+
+1
+36-45
+Rayleigh damping parameter alpha
+E 10.0
+
+
+1
+46-55
+Rayleigh damping parameter beta
+E 10.0
+
+
+2
+â1-72
+Material title
+12A6
+
+
+3
+â1-10
+a10 
+E 10.0
+
+
+3
+11-20
+a01 
+E 10.0
+
+
+3
+21-30
+Poisson's ratio
+E 10.0
+
+
+3
+31-40
+a20 
+E 10.0
+
+
+3
+41-50
+a11 
+E 10.0
+
+
+3
+51-60
+a02 
+E 10.0
+
+
+3
+61-70
+a30 
+E 10.0
+
+
+3
+71-80
+a21 
+E 10.0
+
+
+4
+â1-10
+a12 
+E 10.0
+
+
+4
+11-20
+a03 
+E 10.0
+
+
+5-7
+All
+Blank
+
+
+ 
+
+
+
+
+
+Reading the doctoral thesis mentioned above, the appropriate values of input parameters may accordingly be provided as input to the Stress/Strain/Deformation Analyzer (see Madhavan Lakshmiraghavan, Mechanical Wall Stress in Abdominal Aortic Aneurysm: Towards Development of a Clinical Tool to Predict Aneurysm Rupture (1998) (unpublished Ph.D. dissertation, University of Pittsburgh).
+TRUEGRID Command File
+ FIGS. 5A through 5M contain a command file that is an exemplary file read by TRUEGRID to implement the features of the present invention (e.g., for stent design). This exemplary command file illustrates a component-level analysis of a stent, without the option for simulating deployment into CT-based anatomy (isim mode=6, not present in the command file).
+TRUEGRID, in its basic form, is not only a Mesh Generator, but is also a format generator. It outputs data in a certain format, which are then read by NIKE3D and/or DYNA3D. The invention utilizes both TRUEGRID's capability as a Mesh Generator and an output generator to create an output file (e.g., Tables I and II discussed above), containing the appropriate values that would be read by NIKE3D and DYNA3D, respectively. The outputs created by TRUEGRID may be created by other means, e.g., by other Mesh Generator software or proprietary software.
+The command file (contained in FIGS. 5A-5M) contains the parameters and the instructions that are read by TRUEGRID to generate the mesh and the output file(s), which are read by DYNA3D and/or NIKE3D.
+The line numbers at the start of each line are only added to facilitate reference to particular lines in the command file and are not part of the command file. Text after the âcâ are ignored by TRUEGRID (comments). To take advantage of the capabilities of TRUEGRID, the command file contains various parameters that help developers customize their simulation and/or Stress/Strain/Deformation analysis. Mesh generating tools, such as TRUEGRID, in the non-interactive mode, generally require that command files or similar files be created to enable them to generate finite element models. In the interactive mode, a finite element model may be created by a medical device designer (e.g., TPEG designer) using the options available in the interactive mode of TRUEGRID.
+Referring to FIG. 5A, the inike parameter (lines 5 and 21) tells TRUEGRID that the output file is to be read by a NIKE3D Stress/Strain/Deformation Analyzer. The command file also tells TRUEGRID that the stent to be modeled is a full 3-segment stent design (line 6 and 22), the model is a full 360 degree model of a stent (lines 6 and 23), to model the stress on the initial expansion of the stent in vivo (lines 16 and 24), and to refine the elements by 2 in each direction of the cross section (lines 18 and 25). (Crowns can be a pointed or barbed portion of a stentâsee lines 7 through 9). The command file thus enables TRUEGRID to generate a mesh and a model of a stent subjected to various component-level in vitro tests such as radial force and predelivery compression. Simulation of these tests enables a designer to refine and optimize the stent design for its intended application (e.g. as component of a TPEG or for treating occlusive disease).
+TRUEGRID can also act like an interpreter. It reads the information contained in the command file, and interprets and processes the lines accordingly. For example, the text after the word âparaâ or âparameterâ are parameters read by TRUEGRID. These terms indicate the value or the formula that should be used by TRUEGRID. For example, line 21 denotes that the parameter inike contains the initial value 1.
+Line 46 in FIG. 5B means that the value of the parameter dCIA3 contains the value 0.0.
+Line 138 in FIG. 5D indicates that the initial value of the parameter rocompcyl is the value evaluated by the formula â[0.95*(min(% RCyl3,% RCyl6,% RCyl12â1,% RCyl12â2)â% RW6).â TRUEGRID understands that the min function has to be evaluated. The min function compares the value contained in each variable, in this case, contained in RCyl3 (e.g., contains 1), RCyl6 (contains 0.005), RCyl12â1 (contains 0.987), and RCyl12â2 (contains 0.0002), and returns the content of the variable, which holds the least valueâ0.0002 (value contained in Rcyl12â2). Assuming the variable RW6 contains the value 0.18, TRUEGRID then evaluates the rocompcly variable to contain 0.95*0.0002â0.18, which equals to negative 0.17981. This value is thus the initial value of rocompcyl when initially processed and read by TRUEGRID.
+Embodiments of the invention can simulate various phases of TPEG use. For example, it calculates the stresses, strains, and deformations on the TPEG when it is compressed then decompressed for deployment, when the TPEG is compressed into the catheter for deployment, when the TPEG expands, and the like.
+Referring to line 432, in FIG. 5L, the term âincludeâ indicates to TRUEGRID that when the condition as defined in line 431 is met, the istent.mts_nike_solid file is read. The contents of this include file could be added in the command file itself. For flexibility and readability, however, they were placed in a separate file. Programmers typically use include files, such as done in C or C++, for code control and ease of maintenance
+ FIGS. 6A-6F contain an exemplary text of a command file called âseal.runâ (line 2) read by TRUEGRID for a simulated TPEG graft deployment in a proximal aortic neck to generate a mesh incorporating both an anatomical feature and medical device and to output files that are read by a Stress/Strain/Deformation Analyzer.
+ FIGS. 7A-7C is an exemplary include file, called âtpeg.part_ct_aorta3,â used by âseal.runâ command file listed in FIGS. 6A-6F. See line 217 of FIG. 6F. This file contains the commands which read in surfaces created by the Geometry Generator 120 from CT data for the aorta and builds the mesh for the vessel.
+ FIGS. 8A-8L is another exemplary command file read by TRUEGRID used in the virtual prototyping system of the present invention for simulating stent deployment into an anatomy from CT-data, as opposed to a stent graft. The stent could be a part of a stent graft, could be intended for use to treat occlusive disease in the vasculature, or could even be used for nonvascular application, such as an esophageal stent.
+The files listed in FIGS. 5A-5M, 6A-6F, 7A-7C, and 8A-8L are written to be read by TRUEGRID. Variations on such files are expected depending on the Mesh Generator 130 deployed in the system.
+ FIG. 9A illustrates a flow chart, which sets forth the basic components of an embodiment of the inventive system and process in accordance with the present invention. In particular, this figure illustrates how to develop better-designed TPEGs. The steps illustrated may of course be utilized for developing other medical devices, other than TPEGs.
+To start, a TPEG designer first determines, in box 905A, the performance requirements desired, such as to secure an optimal structural integrity of the TPEG, to avoid potential health risks such as ruptures and endoleaks, or to have a smaller TPEG packaging. 3D volumetric data of the anatomy desired, for example, in this case a blood vessel, is then acquired at box 910A, using CT or MRI scanners. Alternatively, if 3D volumetric data are already available, such acquisition may be skipped and such 3D volumetric data be obtained from the archive.
+It should be noted here that the âanatomyâ desired, which defines the embodiment in which a medical device is to be tested, is not necessarily limited to a patient's body. For example, embodiments of the present invention could be used to obtain test results for medical device performance in a wide variety of in vitro tests, some of which may be necessary or desirable for Food and Drug Administration (FDA) approval of the medical device in question. Various forms of in vitro failure mode testing such on tensile pull testing and the like could be performed by an embodiment of the invention and allow the tester to easily vary test parameters, device design, and test frequency to quickly obtain the desired test results. In addition, volumetric anatomical data for animals could be used to simulate animal testing that is necessary or desirable for FDA approval of a medical device. This may be of particular importance for a medical device design, which seeks to establish equivalence with an existing approved product which has been previously tested in animal studies.
+The geometry generator (120 in FIG. 1) then generates a blood vessel geometric model in box 920A. As discussed above, the blood vessel geometric model may be an actual idealized or in vitro model. If the geometry generator is an embodiment where surface points are first extracted, a CAD system may then be used to generate such geometric model.
+Next, a candidate TPEG model or design, which is obtained typically from a model created using a CAD software, is selected or modeled by the TPEG designer (step 925A). The Mesh Generator (130 in FIG. 1) then generates a mesh model incorporating both the blood vessel and the TPEG (930A). A TPEG designer then determines the material properties of the candidate TPEG model and the blood vessel at step 935A. The material properties may also have been assigned by the TPEG designer during the previous step (i.e., the generation of the mesh model). Using a Stress/Strain/Deformation Analyzer (160 in FIG. 1), assuming that the load (150 in FIG. 1) and the Materials Model (170 in FIG. 1) are available to the Stress/Strain/Deformation Analyzer for input, a TPEG designer then simulates the candidate TPEG design behavior in a stress/strain/deformation analysis (at step 940A) to determine if the candidate TPEG meets the performance requirements.
+If the candidate TPEG does not meet the performance requirements, a âno.â outcome at decision box 955A, the TPEG designer chooses another TPEG design or model at step 980A, and repeats the steps as shown by the arrow to box 925A. If it, however, meets the target performance requirements, a âyesâ outcome at decision box 955A, a prototype is then fabricated based on the candidate TPEG model and design at step 960A. The fabricated prototype is then subjected to testing, e.g., animal testing or clinical testing, at step 965A. If the fabricated prototype meets the target performance requirements, the candidate TPEG model thus is a final design and may be used to produce other TPEGs.
+If the fabricated prototype, however, does not meet the performance requirements, a ânoâ outcome at decision box 970A, the TPEG designer modifies the TPEG design or selects a new TPEG design, and repeats the steps as shown with the arrow to box 925A. If necessary, the process is repeated several times until the performance requirements and the final design is obtained. A benefit of the invention is to reduce the number of ânoâ outcome at decision box 970A compared to a development process which uses only hardware prototypes for design verification.
+As discussed above, a proposed TPEG model may be evaluated against a number of anatomical features to determine the suitable range of conditions of an applicable TPEG model (e.g., size). Similarly, a set of anatomical features may be evaluated against a number of TPEG models to determine the type of suitable TPEG model for such set of anatomical feature. Furthermore, an analysis of the stresses, strains, and deformations may be conducted on the medical device without interaction to certain anatomical features.
+ FIG. 9B, is similar to FIG. 9A except for the additional step (box 942B) of displaying the visual simulation of the stresses and strains on the TPEG. The display of the simulation is typically employed using the Visualization tool (180 in FIG. 1), which in the preferred embodiment is the GRIZ software.
+Visual display of the simulation is not necessary because a reading of the numerical representation of the stresses, strains, and deformation on the TPEG may guide a TPEG designer whether the performance requirements are met. However, visual display is often desirable because a visual representation of the stresses and strains, for example, red hot spots on the visual TPEG model can be easier to understand than mere numerical representations.
+ FIG. 10 is similar to FIG. 9A and illustrates a process to develop better-designed medical devices using in vitro features. In the first step as shown in 1005, a medical device designer, determines the performance requirements. The next step is to generate a geometry model of the in vitro model, step 1020A, (e.g., latex tube to represent an artery), using software tools, such as a CAD software or even TRUEGRID. The steps are then similar to those illustrated in FIG. 9A. In another embodiment, the in vitro model such as a latex tube may be scanned to obtain a 3D volumetric data Such acquired 3D volumetric data may also be modified by the medical device designer.
+In another embodiment not shown, only the medical device model is analyzed absent the anatomical feature or in vitro model. The operations shown in FIG. 10 would be implemented, without the operation of generating blood vessel geometric model (step 1020A) and the analysis would only be performed on the geometric model of the candidate medical device or a potion of it. Material properties and load information pertinent only to the medical device are generally used in the analysis process.
+ FIG. 11 contains steps similar to those illustrated in FIG. 9A. FIG. 11 illustrates an embodiment of the present invention as a preprocedure planning tool, for example, to guide a physician in deciding which particular TPEG to implant in a patient.
+To start, a physician first determines, in box 1105, the surgical or interventional procedure objectives, typically, to ensure robust sealing and structural integrity of the TPEG in vivo for a particular patient. The physician then obtains 3D volumetric data of the potential site of the TPEG, e.g., the abdominal aorta, at step 1110. The Geometry Generator (120 in FIG. 1) then extracts the surface points from the 3D volumetric data acquired in step 1115. Based on the surface points extracted, a blood vessel geometric model is created 1120.
+Next, a candidate TPEG, which is obtained typically from a model created using a CAD software, is selected by the physician (step 1125). (TPEG models may be created in advance and stored in a library in the system. At this point, the physician is determining which available TPEG design is best suited for that patient or individual). The Mesh Generator (130 in FIG. 1) then generates a mesh model incorporating both the blood vessel and the selected TPEG. A physician may then identify the material properties of the candidate TPEG and the blood vessel at step 1135. The material properties may have also been assigned during the previous step (i.e., the generation of the mesh model). Using a Stress/Strain/Deformation Analyzer (160 in FIG. 1), assuming that the load (150 in FIG. 1) and the materials model (170 in FIG. 1) are available to the Stress/Strain/Deformation Analyzer for input, a physician may then run the candidate TPEG to a stress/strain/deformation analysis (at step 640) to determine if the candidate TPEG meets the surgical objectives.
+If the candidate TPEG does not meet the procedural objectives, a ânoâ outcome at decision box 1155, a physician may decide to change the TPEG to be used in the procedure at step 1180 and repeat the process as shown by the arrow to box 1125. Based on the physician's judgment, if the candidate TPEG does meet the procedural objectives, a âyesâ outcome at decision box 655, the physician then may decide whether to proceed with the planned TPEG implant procedure or not, at step 1160.
+ FIG. 12 contains a representation of one simulation display of a cutaway lateral view of a vascular stent in the infrarenal aorta just proximal to an abdominal aneurysm. Using the system as described above, several displays may be presented to the user showing the progressive stent expansion and contact with the luminal surface of the vessel. The system may be also be used such that the visualization module displays the medical device and the anatomical feature in color, with colors and their gradients representing the various stresses, strains, and deformations on the medical device and the anatomical feature. Other views, such as a proximal view, may also be used in simulation. FIG. 13 is a block diagram of an exemplary computer 1300 such as might comprise any of the computers containing a Geometry Generator 120, a Mesh Generator 130, a Stress/Strain/Deformation Analyzer 160, and a Visualization tool 180. Each computer 1300 operates under control of a central processor unit (CPU) 1302, such as a high-end microprocessor, e.g., typically found in Silicon Graphics workstation, and associated integrated circuit chips. A computer user can input commands and data from a keyboard and mouse 1312 and can view inputs and computer output at a display 1310. The display is typically a video monitor or flat panel display device. The computer 1300 also includes a direct access storage device (DASD) 1304, such as a fixed hard disk drive. The memory 1306 typically comprises volatile semiconductor random access memory (RAM). Each computer preferably includes a program product reader 1314 that accepts a program product storage device 1316, from which the program product reader can read data (and to which it can optionally write data). The program product reader can comprise, for example, a disk drive, and the program product storage device can comprise removable storage media such as a floppy disk, an optical CD-ROM disc, a CD-R disc, a CD-RW disc, DVD disk, or the like. In the preferred embodiment, each computer 1300 can communicate with the other connected computers over the network 1320 through a network interface 1308 that enables communication over a connection 1318 between the network and the computer. This facilitates having each separate system as illustrated in FIG. 1, provide inputs and outputs to the other components in the system.
+The CPU 1302 operates under control of programming steps that are temporarily stored in the memory 1306 of the computer 1300. When the programming steps are executed, the pertinent system component performs its functions. Thus, the programming steps implement the functionality of the system components illustrated in the figures. The programming steps can be received from the DASD 1304, through the program product 1316, or through the network connection 1318. The storage drive 1304 can receive a program product, read programming steps recorded thereon, and transfer the programming steps into the memory 1306 for execution by the CPU 1302. As noted above, the program product storage device can comprise any one of multiple removable media having recorded computer-readable instructions, including magnetic floppy disks, CD-ROM, and DVD storage discs. Other suitable program product storage devices can include magnetic tape and semiconductor memory chips. In this way, the processing steps necessary for operation in accordance with the invention can be embodied on a program product.
+Alternatively, the program steps can be received into the operating memory 1306 over the network 1318. In the network method, the computer receives data including program steps into the memory 1306 through the network interface 1308 after network communication has been established over the network connection 1318. The program steps are then executed by the CPU 1302 to implement the processing of the present invention.
+Although the present invention is implemented on UNIX workstations, typical personal computers could likely be adopted to perform these functions in the future.
+It should be understood that all of the computers of the systems embodying the various systems illustrated in FIG. 1, preferably have a construction similar to that shown in FIG. 13, so that details described with respect to the FIG. 13 computer 1300 will be understood to apply to all computers or components of the system. Any of the computers can have an alternative construction, so long as they have sufficient resources and processing power to handle finite element analyses and other functions in accordance with the present invention.
+Those skilled in the art will recognize that variations in the steps, as well as the order of execution, may be done and still make the various embodiments of the invention operate. Furthermore, one skilled in the art will realize that although the examples described herein generally refer to TPEGs, other medical devices may be designed in accordance with the present invention.
+In addition, although the modules of the system 105 (FIG. 1), the Geometry Generator, the Mesh Generator, Stress/Strain/Deformation Analyzer, and the Visualization module, are shown in different boxes, depending on the software tools utilized their functions may with each other. Some functions, for example, that are done by one module, e.g., the Mesh Generator, TRUEGRID, thus, may also be done by the Geometry Generator, MIMICS, or vice versa.
+Embodiments of the present invention have been described above so that an understanding of the present invention can be conveyed. There are, however, many alternative software programs available or able to be written that would embody the functions of the present invention, and thus, may be used accordingly. The present invention should therefore not be seen as limited to the particular embodiments described herein, but rather, it should be understood that the present invention has wide applicability with respect to medical device design generally. All modifications, variations, or equivalent arrangements and implementations that are within the scope of the attached claims should therefore be considered within the scope of the invention.

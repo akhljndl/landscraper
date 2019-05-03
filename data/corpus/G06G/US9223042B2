@@ -1,0 +1,738 @@
+Systems and methods for the quantitative estimate of production-forecast uncertainty 
+US-9223042-B2
+Landmark Graphics Corporation
+2015-12-29
+https://patents.google.com/patent/US9223042B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+The priority of PCT Patent Application No. PCT/US09/58504, filed on Sep. 25, 2009, is hereby claimed, and the specification thereof is incorporated herein by reference.
+STATEMENT REGARDING FEDERALLY SPONSORED RESEARCH
+Not applicable.
+FIELD OF THE INVENTION
+The present invention generally relates to estimating oil and gas recovery for various reservoir production scenarios. More particularly, the present invention relates to new reservoir-data integration and inversion techniques for the quantitative estimation of hydrocarbon-reservoir production-forecast uncertainty.
+BACKGROUND OF THE INVENTION
+In large-scale oil and gas exploration and production, statistical distributions of the recovery performance for various development scenarios form the quantitative foundation of the investment decision process. Accurate reservoir forecasting depends largely on the accurate estimation of dynamic performance statistics and evaluating the recovery performance through reservoir simulations. Evaluating the recovery performance through reservoir simulations is an integral component of dynamic data integration and inversion, which is commonly referred to as âHistory Matchingâ and, ultimately, reservoir production forecasting.
+History Matching
+History matching represents the act of adjusting a reservoir model until it closely reproduces the observed data from the field. The historical production and pressures are matched as closely as possible. The accuracy of the history matching depends on the quality of the reservoir model and the quality and quantity of pressure and production data. After a model has been history matched, it can be used to simulate future reservoir behavior with a higher degree of confidence, particularly if the adjustments are constrained by known geological properties in the reservoir.
+Traditionally, history matching has been performed manually and methods from the 1980's are still widely used. This is a time-consuming process and prone to personal bias. One-parameter-at-a-time type sensitivity studies, for example, typically lack quantitative rigor, are less susceptible to review and are usually bound to generate a single-match reservoir model. In geologically-complex reservoirs, quantification of the effect of stratigraphic and structural uncertainties on the dynamic performance statistics is imperative to reservoir simulation. To fully account for such uncertainties, diverse geological realizations that cover a sufficiently large range are selected to approximate the forecast statistics, which is becoming of fundamental relevance for Quantitative Reservoir Management (QRM).
+Recent advances in computing have created a new technical discipline commonly referred to as computer-assisted history matching, which can be divided into three main methods: deterministic, stochastic and hybrid. History matching is an inverse problem, highly non-linear and ill-posed. The solution to such a problem inevitably resorts to recursive algorithms that, depending on the prior information, can reveal a whole suite of models (i.e. realizations) to fit the dynamic data.
+During the last decade, stochastic methods have become widely recognized throughout the oil and gas industry, with the main developments in the areas of i) evolutionary algorithms (e.g. genetic algorithms or evolution strategy); ii) data assimilation with ensemble Kalman filters; and iii) Bayesian-based sequential Monte Carlo or Markov chain Monte Carlo (MCMC) methods. In Bayesian sampling, the objective function is constructed using the Bayesian formulation:
+      p  m | d   â¡  (  m | d  )   =     p  d | m   â¡  (  d | m  )   â¢   p m  â¡  ( m )      p d  â¡  ( d )       
+which combines observed data with the prior geological information, where pm|d(m|d), Pd|m(d|m) and pm(m) represent the posterior, likelihood, and prior probability distribution, respectively. The normalization factor pd(d) represents the probability associated with the data, which is independent of the model parameters and is usually treated as a constant.
+
+The Bayesian-based sequential Monte Carlo or Monte Carlo Markov chain Monte Carlo methods provide the most statistically rigorous and accurate way for sampling a posterior probability density function (pdf), but when deployed in direct (i.e. analog) simulation, suffer from prohibitively high computational costs because of high rejection rates and the necessity to run a full flow simulation for every proposed model realization. This problem has been addressed by proposing a two-stage method with a high acceptance probability of the Metropolis-Hastings algorithm. The method works well for linear problems, but not for nonlinear computer-assisted history-matching applications. To improve on that, a rigorous two-stage MCMC approach has been proposed to increase the acceptance rate and reduce the computational effort by using the sensitivities (i.e. derivatives of generalized travel time with respect to given reservoir property) calculated with the use of streamline tracing technology.
+Quantification and Reservoir Production Uncertainty Forecasting
+Uncertainty represents an inherent component in dynamic reservoir modeling, primarily because of data noise, the systematic modeling error, and non-uniqueness of the inverse problem solution. In general, static data (e.g. well logs, cores, and seismic traces) and dynamic data (e.g. production history, pressure transient tests, etc.) are analyzed. Recent advances in static modeling technology enable rapid construction of a large number of geologic realizations, but the computational cost associated with full-physics reservoir simulation is still prohibitive. Integration of the data from different sources is a non-trivial assignment, because deployed data span a variety in length, scales of heterogeneity and usually have a different degree of precision. Data integration, as implemented in history matching, is a part of the data assimilation process, which refers to the estimation of parameters and dynamic variables of a model on the basis of measurement data. The model refers to the âmodel of the oil reservoirâ and is formulated in terms of the production based performance criteria.
+Reducing uncertainty can be achieved by integrating additional data in subsurface modeling and is seen as one of the crucial components of Smart Reservoir Management. State-of-the-art industrial applications for uncertainty management and production forecast combine experimental design, maximum entropy estimators, ensemble Kalman filters or neighborhood algorithms. Neighborhood algorithms are well-known algorithms for solving non-linear geophysical inversion problems and usually include two stages: i) a search stageâa method for searching in a multi-dimensional parameter space where the objective is to find models within acceptable values of user-supplied objective function and ii) an appraisal stageâwhere the entire ensemble of models produced in the search stage is used to derive some form of Bayesian measures (e.g. covariance or marginal PDFs).
+There is therefore, a need for integrating various reservoir data to support dynamic-quantitative data-inversion, stochastic-uncertainty-management and smart reservoir-management.
+SUMMARY OF THE INVENTION
+The present invention meets the above needs and overcomes one or more deficiencies in the prior art by providing systems and methods for updating posterior geological models by integrating various reservoir data to support dynamic-quantitative data-inversion, stochastic-uncertainty-management and smart reservoir-management.
+In one embodiment, the present invention includes a method for updating posterior geological models, which comprises: a) computing new geological realizations for a prior geological model using a computer processor; b) computing an exact likelihood of an objective function using the new geological realizations for the prior geological model or an acceptable number of the new geological realizations for the prior geological model; c) defining an initial state for a sequential Monte Carlo chain based on the exact likelihood of an objective function; d) defining a new sample based on the initial state for a sequential Monte Carlo chain and a random sample from the prior geological model; e) computing an approximate likelihood of an objective function using the new sample; f) repeating step d), based only on another random sample from the prior geological model, and step e) until the approximate likelihood of an objective function meets an acceptance criteria; g) computing another exact likelihood of an objective function using the new sample if the new sample meets the acceptance criteria; h) repeating step d), based only on another random sample from the prior geological model, and steps e) through g) until the another exact likelihood of an objective function meets another acceptance criteria; i) repeating step d), based only on another random sample from the prior geological model, and steps e) through h) until a convergence criteria is met; and j) storing each new sample that meets the acceptance criteria and the another acceptance criteria, each new sample representing a respective updated posterior geological model.
+In another embodiment, the present invention includes a non-transitory program carrier device tangibly carrying computer executable instructions for updating posterior geological models. The instructions are executable to implement a) computing new geological realizations for a prior geological model; b) computing an exact likelihood of an objective function using the new geological realizations for the prior geological model or an acceptable number of the new geological realizations for the prior geological model; c) defining an initial state for a sequential Monte Carlo chain based on the exact likelihood of an objective function; d) defining a new sample based on the initial state for a sequential Monte Carlo chain and a random sample from the prior geological model; e) computing an approximate likelihood of an objective function using the new sample; f) repeating step d), based only on another random sample from the prior geological model, and step e) until the approximate likelihood of an objective function meets an acceptance criteria; g) computing another exact likelihood of an objective function using the new sample if the new sample meets the acceptance criteria; h) repeating step d), based only on another random sample from the prior geological model, and steps e) through g) until the another exact likelihood of an objective function does not meet another acceptance criteria; i) repeating step d), based only on another random sample from the prior geological model, and steps e) through h) until a convergence criteria is met; and j) storing each new sample that meets the acceptance criteria and the another acceptance criteria, each new sample representing a respective updated posterior geological model.
+Additional aspects, advantages and embodiments of the invention will become apparent to those skilled in the art from the following description of the various embodiments and related drawings.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+The present invention is described below with references to the accompanying drawings in which like elements are referenced with like reference numerals, and in which:
+ FIG. 1 is a flow diagram illustrating one embodiment of a method for implementing the present invention.
+ FIG. 2 is a flow diagram illustrating another embodiment of a method for implementing the present invention.
+ FIG. 3 is a flow diagram illustrating one embodiment of a method for implementing steps 103 and 203 in FIGS. 1 and 2, respectively.
+ FIG. 4 is a flow diagram illustrating one embodiment of a method for implementing step 306 in FIG. 3.
+ FIG. 5 is a flow diagram illustrating one embodiment of a method for implementing steps 114 and 204, 217 in FIGS. 1 and 2, respectively.
+ FIG. 6A is a plurality of 2D images illustrating the generation of a 3D petrophysical realization in step 305 of FIG. 3.
+ FIG. 6B is a plurality of 2D images illustrating the 3D results of step 404 in FIG. 4.
+ FIG. 6C is a plurality of 2D images illustrating the 3D results stored in step 407 of FIG. 4.
+ FIG. 7 is a block diagram illustrating one embodiment of a system for implementing the present invention.
+
+DETAILED DESCRIPTION OF THE PREFERRED EMBODIMENTS
+The subject matter of the present invention is described with specificity, however, the description itself is not intended to limit the scope of the invention. The subject matter thus, might also be embodied in other ways, to include different steps or combinations of steps similar to the ones described herein, in conjunction with other technologies. Moreover, although the term âstepâ may be used herein to describe different elements of methods employed, the term should not be interpreted as implying any particular order among or between various steps herein disclosed unless otherwise expressly limited by the description to a particular order. While the following description refers to the oil and gas industry, the systems and methods of the present invention are not limited thereto and may also be applied to other industries to achieve similar results.
+Method Description
+The following methods propose an integral closed-loop approach in dynamic quantification of uncertainty, based on streamline simulations, as techniques for pre-screening geological models. The methods combine a fast data inversion algorithm with efficient model parametrization and ranking techniques for rapid decision-making in the course of reservoir management.
+Referring now to FIG. 1, a flow diagram illustrates one embodiment of a method 100 for implementing the present invention.
+In step 101, parameters for a prior geological model are input for the method 100 using the client interface and/or the video interface described in reference to FIG. 7. Such parameters may include, for example, permeability, which may be entered in the form of a 3D array [Nx, Ny, Nz].
+In step 102, a number (N) of new geological realizations for the prior geological model are defined using the client interface and/or the video interface described in reference to FIG. 7.
+In step 103, the number (N) of new geological realizations are computed for the prior geological model in the manner further described in reference to FIG. 3.
+In step 104, an exact likelihood of an objective function is computed using the computed number (N) of new geological realizations for the prior geological model. One technique, for example, computes the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the computed number (N) of new geological realizations for the prior geological model to obtain a model response g(m), a data-misfit (dPâg(m)) and an array of production-data sensitivity-coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed data and p=number of production wells. Another technique, for example, may be used to compute the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the computed number (N) of new geological realizations for the prior geological model to obtain a model response g(m), a data-misfit (dPâg(m)) and an array of sensitivity coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed production data with p=number of production wells and an array of sensitivity coefficients SSÎµR[Nx*Ny*Nz]*S, where dS=d(s) is a vector of observed (time-lapse) seismic data with s=number of (time-lapse) seismic data control points. Seismic data used in the form of fluid saturation and pressure maps may be derived by, for example, seismic inversion. These maps provide a separate set of constraints in addition to the production data. The extended term of the exact likelihood of an objective function, by combining sensitivity derivatives with respect to production data P and (time-lapse) seismic data S, has the following Bayesian formulation:
+
+pm|d(m|d)âexp[âO(m)]
+
+where O(m)=Â½(dPâg(m))TCP â1(dPâg(m))+Â½(dSâg(m))TCS â1(dSâg(m))
+
+and CP and CS are covariance matrices corresponding to production data P and (time-lapse) seismic data S, respectively.
+
+In step 105, an initial state of sequential Monte Carlo (âMCâ) chain is defined. One proposed definition for the initial state of the sequential MC chain, for example, is: mi;i=1:I, where I equals the number of sequential MC chain repetitions.
+In step 106, a new sample is defined by sampling the conditional probability density function (pdf) q (m*|mi) using a random walk sampler mi+1=mi+ÏÎµ, where Ï is a chain step size ands is a random sample from the prior geological model. Alternatively, other well known samplers may be used such as, for example, an independent sampler or a Langevin sampler.
+In step 107, an approximate likelihood of objective function is computed using the new sample defined in step 106. One technique, for example, computes the approximate likelihood of objective function by proposing a transition Î´m=m*âmi, which defines change in a forward model response using the production-data sensitivity-matrix Sp; Î´dP=SPÂ·Î´m. Another technique, for example, may be used to compute the approximate likelihood of objective function by proposing a transition Î´m=m*âmi, which defines change in a forward model response using the production-data sensitivity-matrix Sp; Î´dP=SPÂ·Î´m and the seismic data sensitivity matrix SS; Î´dS=SSÂ·Î´m.
+In step 108, the method 100 determines whether acceptance criteria Î±1(m*,mi) are met. If the acceptance criteria are met, then the method 100 proceeds to step 110. If the acceptance criteria are not met, then the method 100 proceeds to step 108 a. The acceptance criteria Î±1(m*,mi) may be defined, for example, using a Metropolis-Hastings criterion, which is well known in the art. A value is sampled from a standard uniform distribution of pseudo-random numbers on the open interval U(0,1) and the acceptance criteria Î±1(m*,mi) is compared to the sampled value. If the acceptance criteria Î±1(m*,mi) is larger than the sampled value, then the new sample (mi) is promoted to the proposed state of the sequential MC chain (i.e. mi+1=m*) and the method 100 proceeds to step 110. If the acceptance criteria Î±1(m*,mi) is smaller than the sampled value, then the method 100 ultimately returns to step 106 where another new sample is defined.
+In step 108 a, another random sample is chosen from the prior geological model and the method 100 returns to step 106 to define another new sample. The method 100 therefore, iteratively proceeds through steps 106, 107, 108 and 108 a until the acceptance criteria in step 108 are met.
+In step 110, an exact likelihood of objective function is computed using the last new sample defined in step 106 after the acceptance criteria in step 108 are met. One technique, for example, computes the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the last new sample defined in step 106 to obtain a model response g(m*), a data-misfit (dPâg(m*)) and an array of production-data sensitivity-coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed data and p=number of production wells. Another technique, for example, may be used to compute the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the last new sample defined in step 106 to obtain a model response g(m*), a data-misfit (dPâg(m*)) and an array of sensitivity coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed production data with p=number of production wells and an array of sensitivity coefficients SSÎµR[Nx*Ny*Nz]*S, where dS=d(s) is a vector of observed (time-lapse) seismic data with s=number of (time-lapse) seismic data control points. Seismic data used in the form of fluid saturation and pressure maps may be derived by, for example, seismic inversion. These maps provide a separate set of constraints in addition to the production data. The extended term of the exact likelihood of an objective function, by combining sensitivity derivatives with respect to production data P and (time-lapse) seismic data S, has the following Bayesian formulation:
+
+pm|d(m|d)âexp[âO(m)]
+
+where O(m)=Â½(dPâg(m))TCP â1(dPâg(m))+Â½(dSâg(m))TCS â1(dSâg(m))
+
+and CP and CS are covariance matrices corresponding to production data P and (time-lapse) seismic data S, respectively.
+
+In step 111, the method 100 determines whether the acceptance criteria Î±2(m*,mi) are met. If the acceptance criteria are met, then the method 100 proceeds to step 113. If the acceptance criteria are not met, then the method 100 proceeds to step 111 a. The acceptance criteria Î±2(m*,mi) may be defined, for example, using the Metropolis-Hastings criterion, which is well known in the art. A value is sampled from a standard uniform distribution of pseudo-random numbers on the open interval U(0,1) and the acceptance criteria Î±2(m*,mi) is compared to the sampled value. If the acceptance criteria Î±2(m*,mi) is larger than the sampled value, then the new sample (mi) is accepted as the updated posterior sample (i.e. mi+1=m*) and the method 100 proceeds to step 113. If the acceptance criteria Î±2(m*,mi) is smaller than the sampled value, then the method 100 ultimately returns to step 106 where another new sample is defined.
+In step 111 a, another random sample is chosen from the prior geological model and the method 100 returns to step 106 to define another new sample. The method 100 therefore, iteratively proceeds through steps 106, 107, 108, 110, 111 and 111 a until the acceptance criteria in step 111 are met.
+In step 113, the method 100 determines whether convergence criteria are met. If the convergence criteria are met, then the method 100 proceeds to step 114. If the convergence criteria are not met, then the method 100 proceeds to step 113 a. One convergence criterion, for example, utilizes the use of a maximum entropy criterion or method. For example, the entropy S may be defined as S=â<pm|d(m|d)log(pm|d(m|d))>, where pm|d(m|d) is the updated posterior geological model.
+In step 113 a, another random sample is chosen from the prior geological model and the method 100 returns to step 106 to define another new sample. The method 100 therefore, iteratively proceeds through steps 106, 107, 108, 110, 111, 113 and 113 a until the convergence criteria in step 113 are met.
+In step 114, each sample that meets the acceptance criteria in steps 108, 111 and the convergence criteria in step 113 is stored as an updated posterior geological model and is dynamically ranked in the manner further described in reference to FIG. 5.
+In step 115, the ranked posterior geological models are evaluated using the client interface and/or video interface described in reference to FIG. 7, which enable the execution of one or more business decisions based on the evaluation. An evaluation may be based, for example, on the selection of a number of ranked posterior geological models. The selection may be based on a certain number of hierarchically ranked posterior geological models with respect to their corresponding Ultimate Recovery Factor (URF) and forwarded to operating units for further consideration in closed-loop reservoir management workflows or execution of well-placement optimization campaigns, for example.
+Referring now to FIG. 2, a flow diagram illustrates another embodiment of a method 200 for implementing the present invention.
+In step 201, parameters for a prior geological model are input for the method 200 using the client interface and/or the video interface described in reference to FIG. 7. Such parameters may include, for example, permeability, which may be entered in the form of a 3D array [Nx, Ny, Nz].
+In step 202, a number (N) of new geological realizations for the prior geological model are defined using the client interface and/or the video interface described in reference to FIG. 7.
+In step 203, the number (N) of new geological realizations are computed for the prior geological model in the manner further described in reference to FIG. 3.
+In step 204, the new geological realizations computed in step 203 are dynamically ranked in the manner further described in reference to FIG. 5.
+In step 205, acceptable new geological realizations are selected using the client interface and/or the video interface described in reference to FIG. 7, based upon their rank. Although at least one new geological realization must be selected, preferably less than all new geological realizations are selected. Acceptable new geological realizations could, for example, be those that remain above some user-defined threshold.
+In step 206, an exact likelihood of objective function is computed using the selected new geological realization(s) for the prior geological model. One technique, for example, computes the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the selected new geological realization(s) for the prior geological model to obtain a model response g(m), a data-misfit (dPâg(m)) and an array of production-data sensitivity-coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed data and p=number of production wells. Another technique, for example, may be used to compute the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the selected new geological realization(s) for the prior geological model to obtain a model response g(m), a data-misfit (dPâg(m)) and an array of sensitivity coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed production data with p=number of production wells and an array of sensitivity coefficients SSÎµR[Nx*Ny*Nz]*S, where dS=d(s) is a vector of observed (time-lapse) seismic data with s=number of (time-lapse) seismic data control points. Seismic data used in the form of fluid saturation and pressure maps may be derived by, for example, seismic inversion. These maps provide a separate set of constraints in addition to the production data. The extended term of the exact likelihood of an objective function, by combining sensitivity derivatives with respect to production data P and (time-lapse) seismic data S, has the following Bayesian formulation:
+
+pm|d(m|d)âexp[âO(m)]
+
+where O(m)=Â½(dPâg(m))TCP â1(dPâg(m))+Â½(dSâg(m))TCS â1(dSâg(m))
+
+and CP and CS are covariance matrices corresponding to production data P and (time-lapse) seismic data S, respectively.
+
+In step 207, an initial state of sequential Monte Carlo (âMCâ) chain is defined. One proposed definition for the initial state of the sequential MC chain, for example, is: mi;i=1:I, where 1 equals the number of sequential MC chain repetitions.
+In step 208, a new sample is defined by sampling the conditional probability density function (pdf) q (m*|mi) using a random walk sampler mi+1=mi+ÏÎµ, where Ï is a chain step size and Îµ is a random sample from the prior geological model. Alternatively, other well known samplers may be used such as, for example, an independent sampler or a Langevin sampler.
+In step 209, an approximate likelihood of objective function is computed using the new sample defined in step 206. One technique, for example, computes the approximate likelihood of objective function by proposing a transition Î´m=m*âmi, which defines change in a forward model response using the production-data sensitivity-matrix SP; Î´dP=SPÂ·Î´m. Another technique, for example, may be used to compute the approximate likelihood of objective function by proposing a transition Î´m=m*âmi, which defines change in a forward model response using the production-data sensitivity-matrix SP; Î´dP=SPÂ·Î´m and the seismic data sensitivity matrix SS; Î´dS=SSÂ·Î´m.
+In step 210, the method 200 determines whether acceptance criteria Î±1(m*,mi) are met. If the acceptance criteria are met, then the method 200 proceeds to step 212. If the acceptance criteria are not met, then the method 200 proceeds to step 210 a. The acceptance criteria Î±1(m*,mi) may be defined using a Metropolis-Hastings criterion, which is well known in the art. A value is sampled from a standard uniform distribution of pseudo-random numbers on the open interval U(0,1) and the acceptance criteria Î±1(m*,mi) is compared to the sampled value. If the acceptance criteria Î±1(m*,mi) is larger than the sampled value, then the new sample (mi) is promoted to the proposed state of the sequential MC chain (i.e. mi+1=m*) and the method 200 proceeds to step 212. If the acceptance criteria Î±1(m*,mi) is smaller than the sampled value, then the method 200 ultimately returns to step 208 where another new sample is defined.
+In step 210 a, another random sample is chosen from the prior geological model and the method 200 returns to step 208 to define another new sample. The method 200 therefore, iteratively proceeds through steps 208, 209, 210 and 210 a until the acceptance criteria in step 210 are met.
+In step 212, an exact likelihood of objective function is computed using the last new sample defined in step 208 after the acceptance criteria in step 210 are met. One technique, for example, computes the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the last new sample defined in step 208 to obtain a model response g(m*), a data-misfit (dPâg(m*)) and an array of production-data sensitivity-coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed data and p=number of production wells. Another technique, for example, may be used to compute the exact likelihood of an objective function by performing a forward simulation, streamline-tracing and calculation of derivatives, which may be performed using techniques well known in the art and the last new sample defined in step 208 to obtain a model response g(m*), a data-misfit (dâg(m*)) and an array of sensitivity coefficients SPÎµR[Nx*Ny*Nz]*P, where dP=d(p) is a vector of observed production data with p=number of production wells and an array of sensitivity coefficients SSÎµR[Nx*Ny*Nz]*S, where dS=d(s) is a vector of observed (time-lapse) seismic data with s=number of (time-lapse) seismic data control points. Seismic data used in the form of fluid saturation and pressure maps may be derived by, for example, seismic inversion. These maps provide a separate set of constraints in addition to the production data. The extended term of the exact likelihood of an objective function, by combining sensitivity derivatives with respect to production data P and (time-lapse) seismic data S, has the following Bayesian formulation:
+
+pm|d(m|d)âexp[âO(m)]
+
+where O(m)=Â½(dPâg(m))TCP â1(dPâg(m))+Â½(dSâg(m))TCS â1(dSâg(m))
+
+and CP and CS are covariance matrices corresponding to production data P and (time-lapse) seismic data S, respectively.
+
+In step 213, the method 200 determines whether the acceptance criteria Î±2(m*,mi) are met. If the acceptance criteria are met, then the method 200 proceeds to step 215. If the acceptance criteria are not met, then the method 200 proceeds to step 213 a. The acceptance criteria Î±2(m*,mi) may be defined using a Metropolis-Hastings criterion, which is well known in the art. A value is sampled from a standard uniform distribution of pseudo-random numbers on the open interval U(0,1) and the acceptance criteria Î±2(m*,mi) is compared to the sampled value. If the acceptance criteria Î±2(m*,mi) is larger than the sampled value, then the new sample (mi) is accepted as the updated posterior sample (i.e. mi+1=m*) and the method 200 proceeds to step 215. If the acceptance criteria Î±2(m*,mi) is smaller than the sampled value, then the method 200 ultimately returns to step 208 where another new sample is defined.
+In step 213 a, another random sample is chosen from the prior geological model and the method 200 returns to step 208 to define another new sample. The method 200 therefore, iteratively proceeds through steps 208, 209, 210, 212, 213 and 213 a until the acceptance criteria in step 213 are met.
+In step 215, the method 200 determines whether convergence criteria are met. If the convergence criteria are met, then the method 200 proceeds to step 216. If the convergence criteria are not met, then the method 200 proceeds to step 215 a. One convergence criterion, for example, utilizes the use of a maximum entropy criterion or method. For example, the entropy S may be defined as S=â<pm|d(m|d)log(pm|d(m|d))>, where pm|d(m|d) is the updated posterior geological model.
+In step 215 a, another random sample is chosen from the prior geological model and the method 200 returns to step 208 to define another new sample. The method 200 therefore, iteratively proceeds through steps 208, 209, 210, 212, 213, 215 and 215 a until the convergence criteria in step 215 are met
+In step 216, the method 200 determines whether to perform dynamic ranking of the accepted samples (updated posterior geological models). If dynamic ranking of the updated posterior geological models should be performed, then the method 200 proceeds to step 217. If dynamic ranking of the updated posterior geological models should not be performed, then the method 200 proceeds to step 220. The decision to perform dynamic ranking may be based on subjective criteria such as, for example, the number of updated posterior geological models using the client interface and/or the video interface described in reference to FIG. 7.
+In step 217, each sample that meets the acceptance criteria in steps 210, 213 and the convergence criteria in step 215 is stored as an updated posterior geological model and is dynamically ranked in the manner further described in reference to FIG. 5.
+In step 218, the best ranked posterior geological model is selected using the client interface and/or the video interface described in reference to FIG. 7. Preferably, the highest ranked posterior geological model is the best.
+In step 219, the prior geological model is replaced with the best ranked posterior geological model and is renamed the âprior geological model.â The method 200 then returns to step 202 to define another number (N) of new geological realizations for the prior geological model.
+In step 220, the updated posterior geological models are stored and a business decision is executed based upon the updated posterior geological models using the client interface and/or the video interface described in reference to FIG. 7. For example, when updated posterior geological models are delivered to the operating unit they can be further considered for inclusion in closed-loop-reservoir-management workflows or execution of well-placement optimization campaigns.
+Referring now to FIG. 3, a flow diagram illustrates one embodiment of a method 300 for implementing steps 103 and 203 in FIGS. 1 and 2, respectively.
+In step 301, a framework is defined for DSEMâ¢ using the client interface and/or the video interface described in reference to FIG. 7. The framework may be defined, for example, by entering the parameters from step 101 in DSEMâ¢.
+In step 302, variogram parameters for a facies and petrophysical computation are defined using the client interface and/or the video interface described in reference to FIG. 7. The variogram parameters may be initially computed using the techniques and algorithms for variogram modeling and computation in DSEMâ¢, for example. DSEMâ¢ uses variations of a well known kriging method to compute the variogram parameters.
+In step 303, a random number/seed is defined for the facies and petrophysical computation using the client interface and/or the video interface described in reference to FIG. 7. A standard well-known random-number generator, for example, may be used to enter the random number/seed in DSEMâ¢.
+In step 304, a new facies realization is computed using the parameters defined in steps 301-303. The facies realization may be computed, for example, by a Pluri Gaussian Simulation, which is a well-known technique. A single new 3D facies realization is therefore, computed in the form of a single column vector with dimensions [Nx*Ny*Nz*].
+In step 305, the new facies realization is used to constrain the generation of a petrophysical realization in the form of a 3D array [Nx, Ny, Nz]. The petrophysical realization, for example, may be generated by a Turning bands simulation method, which is a well-known technique. The facies realization is therefore, used as a constraint when the petrophysical realization is generated. A single new 3D petrophysical realization is therefore, generated in the form of a single column vector with dimensions [Nx*Ny*Nz]. An exemplary generation of a 3D petrophysical realization is illustrated in FIG. 6A by a plurality of 2D images representing different layers of an original permeability field. The data used to construct the images in FIG. 6A is taken from a well known data source referred to as the Brugge synthetic data set, which is publicly available.
+In step 306, model parameterization is performed on one of the geological realizations from the number (N) of new geological realizations in the manner further described in reference to FIG. 4.
+In step 307, the method 300 determines if each new geological realization is parameterized. If each new geological realization has been parameterized, then the method 300 proceeds to step 308. If each new geological realization has not been parameterized, then the method 300 proceeds to step 307 a.  
+In step 307 a, (n) is increased by one (1) until (n) is equal to the defined number (N) of new geological realizations and the method 300 returns to step 303 to define another random number/seed for simulation. The method 300 therefore, iteratively proceeds through steps 303, 304, 305, 306, 307 and 307 a until each new geological realization has been parameterized according to step 306.
+In step 308, each parameterized new geological realization is stored as a new geological realization and is returned to step 104 or step 204.
+Referring now to FIG. 4, a flow diagram illustrates one embodiment of a method 400 for implementing step 306 in FIG. 3. The method utilizes a Discrete Cosine Transform (DCT). The DCT is currently the most successful transform for image compression and pattern recognition, and has been recognized as an efficient method for parameterization of new realizations for a permeability field using history matching and Ensemble Kalman Filter (EnKF) methods.
+In step 401, the number of retained 3D DCT modes (NMODES) is defined using the client interface and/or the video interface described in reference to FIG. 7. The number of retained 3D DCT modes (NMODES) may be based on a subjective determination of what is best.
+In step 402, a set of basis functions (Î±(u), Î±(v), Î±(w)) is computed for a 3D DCT using the petrophysical realization generated in step 305 by:
+     Î± â¡  ( u )   =  {        1  N x        for â¢     â¢ u  = 0        2  N x        for â¢     â¢ u  â  0     â¢     â¢  Î± â¡  ( v )    =  {        1  N y        for â¢     â¢ v  = 0        2  N y        for â¢     â¢ v  â  0     â¢  
+  â¢  Î± â¡  ( w )    =  {      1  N z        for â¢     â¢ w  = 0        2  N z        for â¢     â¢ w  â  0             
+Nx, Ny and Nz therefore, correspond to the petrophysical realization represented as 3D array in step 305.
+
+In step 403, coefficients (C(u,v,w)) for the 3D DCT are calculated using the set of basis functions (Î±(u), Î±(v), Î±(w)) for the 3D DCT by:
+
+
+
+
+
+
+C
+â¡
+
+(
+
+u
+,
+v
+,
+w
+
+)
+
+
+)
+
+=
+
+(
+
+
+Î±
+â¡
+
+(
+u
+)
+
+
+â¢
+
+Î±
+â¡
+
+(
+v
+)
+
+
+â¢
+
+Î±
+â¡
+
+(
+w
+)
+
+
+â¢
+
+
+â
+
+x
+=
+0
+
+
+Nx
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+â
+
+y
+=
+0
+
+
+Ny
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+â
+
+z
+=
+0
+
+
+Nz
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+f
+â¡
+
+(
+
+x
+,
+y
+,
+z
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+x
+
++
+1
+
+)
+
+
+â¢
+u
+
+
+2
+*
+Nx
+
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+y
+
++
+1
+
+)
+
+
+â¢
+v
+
+
+2
+*
+Ny
+
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+z
+
++
+1
+
+)
+
+
+â¢
+w
+
+
+2
+*
+Nz
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+In step 404, truncation of the 3D DCT coefficients is performed by finding a threshold to retain NMODES of significant coefficients for the 3D DCT. Finding the threshold to retain NMODES of significant coefficients may be performed in two steps: i) sorting an array of absolute 3D DCT coefficients in ascending order; and ii) calculating the threshold by rounding the elements of (Nx*Ny*NzâNMODES) down to the nearest integer. An exemplary truncation of the 3D DCT coefficients is illustrated in FIG. 6B by a plurality of 2D images representing different layers of truncated 3% of log 3D DCT coefficients. The data used to construct the images in FIG. 6B is taken from the same data source used to construct the images in FIG. 6A.
+In step 405, the insignificant 3D DCT coefficients are nullified using techniques well known in the art to zero-out the insignificant 3D DCT coefficients. The insignificant 3D DCT coefficients may be nullified, for example, by: i) retaining the NMODES of significant coefficients from step 404 and ii) mapping the 3D DCT coefficients calculated in step 403 onto the NMODES of significant coefficients.
+In step 406, an inverse 3D DCT is performed on the remaining truncated 3D DCT coefficients by:
+
+
+
+
+
+f
+â¡
+
+(
+
+x
+,
+y
+,
+z
+
+)
+
+
+=
+
+
+â
+
+u
+=
+0
+
+
+Nx
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+â
+
+v
+=
+0
+
+
+Ny
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+â
+
+w
+=
+0
+
+
+Nz
+-
+1
+
+
+â¢
+
+ 
+
+â¢
+
+
+Î±
+â¡
+
+(
+u
+)
+
+
+â¢
+
+Î±
+â¡
+
+(
+v
+)
+
+
+â¢
+
+Î±
+â¡
+
+(
+w
+)
+
+
+â¢
+
+C
+â¡
+
+(
+
+u
+,
+v
+,
+w
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+x
+
++
+1
+
+)
+
+
+â¢
+u
+
+
+2
+*
+Nx
+
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+y
+
++
+1
+
+)
+
+
+â¢
+v
+
+
+2
+*
+Ny
+
+
+)
+
+
+â¢
+
+cos
+â¡
+
+(
+
+
+
+Ï
+â¡
+
+(
+
+
+2
+â¢
+
+ 
+
+â¢
+z
+
++
+1
+
+)
+
+
+â¢
+w
+
+
+2
+*
+Nz
+
+
+)
+
+
+
+
+
+
+
+
+
+
+In step 407, the inverse 3D DCT is stored as a parameterized geological realization and is returned to step 307 in FIG. 3. An exemplary inverse 3D DCT as a result of step 406 is illustrated in FIG. 6C by a plurality of 2D images representing different layers of a restored permeability field with 3% 3D DCT coefficients. The data used to construct the images in FIG. 6C is taken from the same data source used to construct the images in FIGS. 6A and 6B. As revealed by a comparison of FIG. 6A and FIG. 6C, each image for the same layer in FIG. 6A and FIG. 6C appears almost identical. The fact that FIG. 6A and FIG. 6C appear almost identical highlights the accuracy and efficiency of the 3D DCT model parameterization method 400. It also demonstrates that the original permeability field in FIG. 6A can be restored using only the 3% 3D DCT coefficients retained as a result of the method 400.
+Referring now to FIG. 5, a flow diagram illustrates one embodiment of a method 500 for implementing steps 114 and 204, 217 in FIGS. 1 and 2, respectively.
+In step 501, a streamline simulation is performed with the updated posterior geological models (steps 114, 217) or the new geological realizations (step 204) using techniques well known in the art, which produces a dynamic system response such as, for example, a recovery factor. The streamline simulation is performed using techniques well known in the art.
+In step 502, a pattern dissimilarity distance matrix (D) is generated using the dynamic system response data calculated in step 501. In one embodiment, for example, the pattern dissimilarity distance matrix is generated by:
+(D)={Î´ij} of dynamic response in Euclidean space E, where
+     Î´ ij  =    â  i ,  j = 1   n  â¢     â¢   (   RF i  -  RF j   )  2       
+and i,j=1, . . . , N
+
+In step 503, a multi-dimensional scaling (MDS) is performed and the pattern dissimilarity distance matrix (D) is mapped into a linear, high-dimensional feature space (F) using well-known techniques such as, for example, Kernel Principal Component Analysis or K-means clustering.
+In step 505, kernel methods, which are techniques well know in the art, are used to compartmentalize data points (x) of feature space (F). In one embodiment, for example, the data points (x) of feature space (F) are compartmentalized by i) defining a-priori number of clusters (k); ii) partitioning Nc data points (x) randomly into clusters (k); and iii) calculating cluster centroids (Îi).
+In step 506, cluster centroids (Îi) are calculated for each compartment of data points (x) using techniques which are well known in the art.
+In step 507, data points (x) are assigned to cluster centroids (Îi) on a proximity basis through an optimized process. In one embodiment, for example, the optimized process may minimize the âsquare distanceâ objective function O(x,Îi), where:
+
+
+
+
+O
+=
+
+
+â
+
+i
+=
+1
+
+k
+
+â¢
+
+ 
+
+â¢
+
+
+â
+
+j
+=
+1
+
+Nc
+
+â¢
+
+ 
+
+â¢
+
+
+ï
+
+
+x
+j
+
+-
+
+Î
+i
+
+
+ï
+
+2
+
+
+
+
+
+
+
+In step 508, the method 500 determines whether the cluster centroids (Îi) remain stationary. If the cluster centroids (Îi) remain stationary, then the method 500 proceeds to step 509. If the cluster centroids (Îi) do not remain stationary, then the method 500 proceeds to step 508 a.  
+In step 508 a, i, j are increased by 1 for the optimized process in step 507 and the method 500 returns to step 507. The method 500 therefore, iteratively proceeds through steps 507, 508 and 508 a until the cluster centroids (Îi) remain stationary.
+In step 509, a full-physics simulation is performed for each updated posterior geological model or each new geological realization positioned closest to each cluster centroid (Îi) using techniques well known in the art such as, for example, a finite-difference forward-reservoir simulator. In this manner, the updated posterior geological models or the new geological realizations are dynamically ranked according to the results of the full-physics simulation and the results are returned to step 115, step 205 or step 218.
+System Description
+The present invention may be implemented through a computer-executable program of instructions, such as program modules, generally referred to as software applications or application programs executed by a computer. The software may include, for example, routines, programs, objects, components, and data structures that perform particular tasks or implement particular abstract data types. The software forms an interface to allow a computer to react according to a source of input. DecisionSpace Earth Modeling (DSEMâ¢) and NexusÂ®, which are commercial software applications marketed by Landmark Graphics Corporation, may be used with other third party applications (e.g. Streamline Simulation and DESTINY) as interface applications to implement the present invention. The software may also cooperate with other code segments to initiate a variety of tasks in response to data received in conjunction with the source of the received data. The software may be stored and/or carried on any variety of memory media such as CD-ROM, magnetic disk, bubble memory and semiconductor memory (e.g., various types of RAM or ROM). Furthermore, the software and its results may be transmitted over a variety of carrier media such as optical fiber, metallic wire and/or through any of a variety of networks such as the Internet.
+Moreover, those skilled in the art will appreciate that the invention may be practiced with a variety of computer-system configurations, including hand-held devices, multiprocessor systems, microprocessor-based or programmable-consumer electronics, minicomputers, mainframe computers, and the like. Any number of computer-systems and computer networks are acceptable for use with the present invention. The invention may be practiced in distributed-computing environments where tasks are performed by remote-processing devices that are linked through a communications network. In a distributed-computing environment, program modules may be located in both local and remote computer-storage media including memory storage devices. The present invention may therefore, be implemented in connection with various hardware, software or a combination thereof, in a computer system or other processing system.
+Referring now to FIG. 7, a block diagram of a system for implementing the present invention on a computer is illustrated. The system includes a computing unit, sometimes referred to as a computing system, which contains memory, application programs, a client interface, a video interface and a processing unit. The computing unit is only one example of a suitable computing environment and is not intended to suggest any limitation as to the scope of use or functionality of the invention.
+The memory primarily stores the application programs, which may also be described as program modules containing computer-executable instructions, executed by the computing unit for implementing the present invention described herein and illustrated in FIGS. 1-5. The memory therefore, includes an inversion and ranking platform, which enables the methods illustrated and described in reference in FIGS. 1 and 2 and integrates functionality from the remaining application programs illustrated in FIG. 7. The inversion and ranking platform, for example, integrates DSEMâ¢ to execute the functions described in reference to steps 103 and 203 in FIGS. 1 and 2, respectively. In particular, DSEMâ¢ may be used to execute the functions described in reference to steps 301-305 in FIG. 3 while the inversion and ranking platform is used to execute the functions described in reference to steps 306-308 in FIG. 3 and steps 401-407 in FIG. 4. The inversion and ranking platform, for example, also integrates a third party streamline simulation application program, (e.g. 3DSL offered by StreamSim Technologies, Inc.) to execute the functions described in reference to step 501 in FIG. 5 while the inversion and ranking platform is used to execute the functions described in reference to steps 502-508 in FIG. 5. The inversion and ranking platform, for example, also integrates DESTINY, which is an application program developed within a joint industry project led by Texas A&M University, and NexusÂ® to execute the functions described in reference to steps 104, 110 in FIG. 1 and steps 206, 212 in FIG. 2. And, NexusÂ® may also be used to execute the functions described in reference to step 509 in FIG. 5.
+Although the computing unit is shown as having a generalized memory, the computing unit typically includes a variety of computer readable media. By way of example, and not limitation, computer readable media may comprise computer storage media. The computing system memory may include computer storage media in the form of volatile and/or nonvolatile memory such as a read only memory (ROM) and random access memory (RAM). A basic input/output system (BIOS), containing the basic routines that help to transfer information between elements within the computing unit, such as during start-up, is typically stored in ROM. The RAM typically contains data and/or program modules that are immediately accessible to and/or presently being operated on by the processing unit. By way of example, and not limitation, the computing unit includes an operating system, application programs, other program modules, and program data.
+The components shown in the memory may also be included in other removable/nonremovable, volatile/nonvolatile computer storage media or they may be implemented in the computing unit through application program interface (âAPIâ), which may reside on a separate computing unit connected through a computer system or network. For example only, a hard disk drive may read from or write to nonremovable, nonvolatile magnetic media, a magnetic disk drive may read from or write to a removable, non-volatile magnetic disk, and an optical disk drive may read from or write to a removable, nonvolatile optical disk such as a CD ROM or other optical media. Other removable/non-removable, volatile/non-volatile computer storage media that can be used in the exemplary operating environment may include, but are not limited to, magnetic tape cassettes, flash memory cards, digital versatile disks, digital video tape, solid state RAM, solid state ROM, and the like. The drives and their associated computer storage media discussed above provide storage of computer readable instructions, data structures, program modules and other data for the computing unit.
+A client may enter commands and information into the computing unit through the client interface, which may be input devices such as a keyboard and pointing device, commonly referred to as a mouse, trackball or touch pad. Input devices may include a microphone, joystick, satellite dish, scanner, or the like. These and other input devices are often connected to the processing unit through a system bus, but may be connected by other interface and bus structures, such as a parallel port or a universal serial bus (USB).
+A monitor or other type of display device may be connected to the system bus via an interface, such as a video interface. A graphical user interface (âGUIâ) may also be used with the video interface to receive instructions from the client interface and transmit instructions to the processing unit. In addition to the monitor, computers may also include other peripheral output devices such as speakers and printer, which may be connected through an output peripheral interface.
+Although many other internal components of the computing unit are not shown, those of ordinary skill in the art will appreciate that such components and their interconnection are well known.
+While the present invention has been described in connection with presently preferred embodiments, it will be understood by those skilled in the art that it is not intended to limit the invention to those embodiments. It is therefore, contemplated that various alternative embodiments and modifications may be made to the disclosed embodiments without departing from the spirit and scope of the invention defined by the appended claims and equivalents thereof.

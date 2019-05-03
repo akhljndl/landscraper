@@ -1,0 +1,2386 @@
+Systems and methods for risk stratification of patient populations 
+US-8515780-B2
+Health Outcomes Sciences, Llc
+2013-08-20
+https://patents.google.com/patent/US8515780B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+This application is a continuation of U.S. patent Ser. No. 12/965,656, filed Dec. 10, 2010, which is a continuation of U.S. patent Ser. No. 11/072,053, filed Mar. 4, 2005, now U.S. Pat. No. 7,853,456, which claims benefit of priority to provisional patent application Ser. No. 60/550,763 filed Mar. 5, 2004, and to provisional patent application Ser. No. 60/554,700, filed Mar. 19, 2004, all of which are hereby incorporated by reference in their entirety.
+BACKGROUND OF THE INVENTION
+1. Field of the Invention
+The invention relates to methods and systems that provide computerized health care management, and more specifically, to methods and systems providing statistical assessment and prognostic information for individuals.
+2. Description of the Related Art
+This application hereby incorporates by reference in its entirety another application Ser. No. PCT/US06/07792 filed on even date by the same inventors and entitled âMethods and Apparatus for Providing Decision Support.â
+The past decade of health services research has witnessed an explosion of prognostic models to help physicians understand the risks and benefits of proposed medical therapies. However, the application of such models to clinical practice has been limited by both their complexity and the lack of a practical mechanism for making them available at the time of medical decision-making.
+Furthermore, both the patient and the attending health care professional should be involved in making clinical health care treatment decisions that affect the patient's desired heath goals and quality of life concerns. These decisions may vary depending upon the patient's age, sex, socioeconomic, demographic and clinical characteristics, genetic, proteomic and biomarker parameters. The factors affect the relative risk and successfulness of outcomes of medical and surgical procedures and are referred to in the art by the term âclinical data.â
+One goal of medical care is to make treatment recommendations to patients commensurate with their goals and values. To achieve this goal, one must describe the risks and benefits of a treatment that are relevant to a unique constellation of comorbidities and function of each particular patient. Several known risk-stratification models exist for diseases ranging from coronary artery disease to deep venous thrombosis to mortality from a gastrointestinal hemorrhage, e.g., as reported in Knaus W A et al., APACHE': a severity of disease classification system. Critical Care Medicine 13(10) 818-29 (1985, October) (a model for ICU patients); Wells P S et al., Accuracy of clinical assessment of deep-vein thrombosis. Lancet. 345:1326-30 (1995) (a score for the probability of deep vein thrombosis); Rockall TA et al., Risk assessment after acute upper gastrointestinal haemorrhage. Gut 38:316-21 (1996). Currently, these models remain largely academic and without a practical method or mechanism for being used in routine clinical care.
+Computerized expert systems process information that usually correspond to rules or procedures that are applied by human experts to solve similar problems. One example of an expert system in the health care field is described in U.S. Pat. No. 5,517,405 to McAndrew et al. This system prompts users with questions directed towards a particular medical condition or symptom. The system consults a database or library to dynamically generate queries on the basis of user responses. Ultimately, the system provides a diagnosis together with a recommendation for a medical procedure or other treatment.
+Another example of an expert system in the health care field is described in U.S. Pat. No. 6,385,589 to Trusheim et al. The system described therein accepts input from data sources that target identification of a âmedical event.â The data sources include laboratory data confirming a disease diagnosis, pharmacy benefits manager data, hospital admissions data, physician records, home health care data, and health insurance data. The system described by Trusheim et al. also provides member characterization data, which is compiled using member surveys, care provider data, insurance claim data, and historical health care data. The system uses a combination of member characteristics and medical event data to identify risk situations, such as diabetes, hypertension, dementia, unmedicated heart conditions, and discharge of elderly patients with no caregiver support. Although member survey responses may be used in making these risk assessments, Trusheim et al. does not appear to use the survey responses to identify the nature and extent of risk in terms of a statistical risk assessment. For example, a condition may be diagnosed in which an elderly person has been discharged with no caregiver, but without any assessment of whether the discharge poses mild or severe health status risk. Proactive follow-ups after identification of a risk situation are left to a medical care provider who assesses the patient.
+Other known methods for evaluating and risk-stratifying patients to (for example) identify those with the greatest likelihood of future coronary conditions include exercise treadmill tests, nuclear stress tests, and stress echocardiography. Once these tests identify patients with an adverse prognosis, further risk-stratifying patients are expensive and, in some cases, invasive. Additionally, the results from such tests can require several days for a trained technician or statistician to process and there is no clear mechanism for integrating the data in statistical models to better refine risk or to determine how such risk may vary as a function of alternative treatment strategies. Most importantly, the subsequent outcomes of alternative treatment strategies for a given risk profile are neither generated nor presented.
+The following references are provided for background purposes and are specifically incorporated herein by reference, as are any and all other references cited herein, including patents and patent applications:
+  1. Yusuf S, Zucker D, Peduzzi P, Fisher L D, Takaro T, Kennedy J W, Davis K, Killip T, Passamani E, Norris R, et al. Effect of coronary artery bypass graft surgery on survival: overview of 10-year results from randomised trials by the Coronary Artery Bypass Graft Surgery Trialists Collaboration. Lancet. 1994; 344:563-70. 2. Spertus J, McDonell M, Fihn S. Association between depression and worse disease-specific functional status in outpatients with coronary artery disease. Am Heart J. 2000; 140:105-110. 3. Spertus J A, Winder J A, Dewhurst T A, Deyo R A, Fihn S D. Monitoring the quality of life in patients with coronary artery disease. Am J. Cardiol. 1994; 74:1240-1244. 4. Spertus J A, Winder J A, Dewhurst T A, Deyo R A, Prodzinski J, McDonell M, Fihn S D. Development and evaluation of the Seattle Angina Questionnaire: A new functional status measure for coronary artery disease. J Am Coll Cardiol. 1995; 25:333-341. 5. McHorney C A, Ware J E, Jr., Raczek A E. The MOS 36-Item Short-Form Health Survey (SF-36): II. Psychometric and clinical tests of validity in measuring physical and mental health constructs. Med Care. 1993; 31:247-63. 6. Fisher S G, Weber L, Goldberg J, Davis F. Mortality ascertainment in the veteran population: alternatives to the National Death Index. Am J. Epidemiol. 1995; 141:242-50. 7. Jones R H, Hannan E L, Hammermeister K E, Delong E R, O'Connor G T, Luepker R V, Parsonnet V, Pryor D B. Identification of preoperative variables needed for risk adjustment of short-term mortality after coronary artery bypass graft surgery. The Working Group Panel on the Cooperative CABG Database Project. J Am Coll Cardiol. 1996; 28:1478-1487. 8. Block P C, Peterson E C, Krone R, Kesler K, Hannan E, O'Connor G T, Detre K. Identification of variables needed to risk adjust outcomes of coronary interventions: evidence-based guidelines for efficient data collection. J Am Coll Cardiol. 1998; 32:275-82. 9. Wolinsky F D, Johnson R J. Perceived health status and mortality among older men and women. J. Gerontol. 1992; 47:S304-12. 10. Rumsfeld J S, MaWhinney S, McCarthy M, Jr., Shroyer A L, VillaNueva C B, O'Brien M, Moritz T E, Henderson W G, Grover F L, Sethi G K, Hammermeister K E. Health-related quality of life as a predictor of mortality following coronary artery bypass graft surgery. Participants of the Department of Veterans Affairs Cooperative Study Group on Processes, Structures, and Outcomes of Care in Cardiac Surgery. JAMA. 1999; 281:1298-303. 11. Califf R M, Mark D B, Harrell F E, Jr., Hlatky M A, Lee K L, Rosati R A, Pryor D B. Importance of clinical measures of ischemia in the prognosis of patients with documented coronary artery disease. J Am Coll Cardiol. 1988; 11:20-6. 12. Eisenstein E L, Shaw L K, Anstrom K J, Nelson C L, Hakim Z, Hasselblad V, Mark D B. Assessing the clinical and economic burden of coronary artery disease: 1986-1998. Med Care. 2001; 39:824-35. 
+SUMMARY OF THE INVENTION
+Some aspects of the present invention provide a method for supplying information. This method includes operating, or contacting with an agent to operate a server to communicate via one or more networks with at least one of a research agency or an intermediary agency. The method further includes contracting with the research agency for the research agency to supply to the server, via at least one of the networks, statistical models each using one or more parameters, wherein the models are configured to determine statistical outcomes of at least one course of procedure or of non-treatment, or risks of developing a pathological condition later in life. (By way of example only, and not by way of limitation, the latter, when provided, might include a 10-year risk of developing CAD or another condition, based on, for example, genetic and other clinical factors). The method further includes contracting with the intermediary agency for the intermediary agency to receive, on request from the intermediary agency via at least one of the networks, parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results and with default values of parameters when such default values are available, to receive and reformat the parameter lists and default values, when available, for transmission to end users or their agents as queries, to transmit information received in response to the queries to the server for processing in the requested models, to receive statistical results from the models, and to reformat the results and transmit the reformatted results to the end users or their agents.
+In another aspect, the present invention provides a method for risk-stratifying individual patients. In this aspect, the method includes contracting with a research agency for the research agency to create statistical health models configured to provide model results including patient risk assessments using health query responses, health parameter data, or both. In addition, the method includes operating a server to store instructions to receive requests to use the models, to distribute requests for data used by the models, and to apply a redundancy reduction procedure to the requests for data when a plurality of models are requested that pertain to a single patient, to analyze data received in response to the requests. The method further includes transmitting results from the analysis, and contracting with an intermediary agency for the intermediary agency to receive model requests from users, to transmit the model requests to the server use the stored instructions relating to the model, and to disseminate reduced redundancy requests for data relating to requested models. The intermediary agency is also contracted to transmit data received in response to the data requests to the server, to receive the transmitted results from the analysis, and to format the results from the analysis for transmission to users.
+In yet another aspect, the present invention provides a statistical processing system. The statistical processing system includes a server operably configured with program instructions implementing a plurality of statistical models to at least one of (a) predict a health outcome based on questionnaire responses or other data inputs relevant to a particular patient, (b) assist a patient's choice of therapeutic modality based on questionnaire responses or other relevant inputs, and (c) assess a health risk or status based on questionnaire responses and/or data inputs. Also provided is a research agency communicating with the server and contracted to provide the statistical models using a visual interface communicated by the server. The server is configured to analyze requests received from users relating to a plurality of said statistical models to reduce redundancy in requests for patient data.
+In still another aspect, the present invention provides a method for supplying information. This method includes operating, or contacting with an agent to operate a server to communicate via one or more networks with a research agency and with either end users or their agents. The method further includes contracting with the research agency for the research agency to supply to the server, via at least one of the networks, statistical models each using one or more parameters, the models configured to determine statistical outcomes of at least one course of procedure or of non-treatment, or risks of developing a pathological condition later in life. Other steps in the method include receiving, via at least one of the networks, requests for use of the statistical models, constructing parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results and with default values of parameters when such default values are available, transmitting the reduced redundancy parameter lists and default values, when available, to end users or their agents as queries, receiving information in response to the queries for processing in the requested models, and transmitting statistical results of the models to the end users or their agents.
+In yet another aspect, the present invention provides a method for supplying information that includes operating, or contacting with an agent to operate a server to communicate via one or more networks including an intermediary agency and providing, in the server, statistical models each using one or more parameters, the models configured to determine statistical outcomes of at least one course of procedure or of non-treatment, or risks of developing a pathological condition later in life. The method also includes contracting with the intermediary agency for the intermediary agency to receive, on request from the intermediary agency via at least one of the networks, parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results and with default values of parameters when such default values are available, to receive and reformat the parameter lists and default values, when available, for transmission to end users or their agents as queries, to transmit information received in response to the queries to the server for processing in the requested models, to receive statistical results from the models, and to reformat the results and transmit the reformatted results to the end users or their agents.
+It will thus be appreciated that configurations of the present invention provide systems and methods for analyzing medical information by comparing the medical information against a statistically validated study to make an expert description or proactive recommendation in the form of a risk assessment. Methods and apparatus of the present invention have the capacity to rapidly disseminate assessments in a variety of formats and to be updatable as new information becomes available. Thus, some configurations of the present invention provide assurance that the most accurate models can be provided for use at all times. Information provided can be used by physicians and patients to make informed decisions, such that the risk associated with a medical procedure can be gauged relative to the potential benefit of performing the procedure. Therefore, configurations of the present invention can help maximize the potential benefit from a particular intervention procedure and allow selection of the best of several alternative procedures.
+Furthermore, some configurations of the present invention facilitate rapid translation of evidenced-based predictive models into robust tools (for example, web-based tools) capable of providing visual representations of predicted outcomes. When used in a medical environment to provide outcome predictions at the point of patient care, some configurations of the present invention can be used to rapidly disseminate the newest knowledge to the clinical setting.
+Moreover, outcomes researchers can use various configurations of the present invention to create powerful evidence-based tools that deliver decision support at the point of care for diagnostic workups and treatment selection. In the management of acute coronary syndromes (ACS), for example, physicians can get immediate probability estimates for outcomes such as survival, angina frequency, or physical limitation at one year for all possible treatment options, as well as risk-projections for procedural complications.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+ FIG. 1 is a process schematic diagram that illustrates the creation of a statistical model through the use of data collection and statistical processing, together with inversion and prognostic use of the statistical model in evaluating new responses;
+ FIG. 2 shows a prognostic statistical model including Kaplan-Meier calculation results that demonstrate increasing mortality over time on the basis of Seattle Angina Questionnaire (SAQ) scores that have been stratified in quartiles of relative disease severity;
+ FIG. 3 shows a prognostic statistical model including a bar graph that relates SAQ physical limitation scores to one year mortality in the test study group;
+ FIG. 4 shows a prognostic statistical model including a bar graph that relates SAQ angina frequency scores to one year mortality in the test study group;
+ FIG. 5 shows a prognostic statistical model including a bar graph that relates SAQ angina stability scores to one year mortality in the test study group;
+ FIG. 6 shows a prognostic statistical model including a bar graph that relates SAQ quality of life scores to one year mortality in the test study group;
+ FIG. 7 shows a descriptive statistical model including a plot of scores from two different health status domains including SAQ Angina Frequency Score and SAQ Physical Limitation Score, such that spatial regions of the plot are associated with extremely high risk of mortality;
+ FIG. 8 shows a descriptive statistical model including a plot of scores from two different health status domains including Kansas City Cardiomyopathy (KCCQ) Summary Score and KCCQ Self-Efficacy Domain Score; such that spatial regions of the plot are associated with extremely high risk of mortality;
+ FIG. 9 shows a descriptive statistical model including a plot of scores from two different health status domains including SAQ Angina Frequency Score and SAQ Disease Perception/Quality of Life Score, such that spatial regions of the plot are associated with patients experiencing frequent symptoms that are having an extremely adverse effect upon their quality of life;
+ FIG. 10 shows a medical evaluation system, in accord with one embodiment of the invention;
+ FIG. 11 shows a flow chart illustrating an operation of the system of FIG. 10;
+ FIGS. 12A and 12B are comparative graphs showing that angina frequency may vary depending upon the type of clinical procedure a patient has undergone and the demographic background of the patient;
+ FIG. 13 shows comparative statistics including complications and angina frequency according to different therapeutic options;
+ FIG. 14 is a system schematic diagram illustrating various components that may be used to assist patients and medical workers in selecting a clinical procedure based upon a desired patient goal or outcome;
+ FIG. 15 shows additional aspects that may be included in the system of FIG. 14 according to one embodiment;
+ FIG. 16 is a flow diagram of process steps to obtain and to store data according to one embodiment;
+ FIG. 17 is a flow diagram of process steps to obtain stored data according to one embodiment;
+ FIG. 18 is a flow chart illustrating additional detail with respect to FIG. 17;
+ FIG. 19 is a flow chart illustrating additional detail with respect to FIG. 17;
+ FIG. 20 is a flow chart illustrating additional detail with respect to FIG. 17;
+ FIG. 21 is a flow chart illustrating additional detail with respect to FIG. 17;
+ FIG. 22 illustrates an intranet of medical evaluation system users connected to a local server which permits the users to share information; and
+ FIG. 23 illustrates an internet of medical evaluation system users connected to a website server which permits the users to share information.
+ FIG. 24 is a pictorial block diagram of a configuration of a computer network of the present invention.
+ FIG. 25A-B are block diagrams showing the logical structure of an example configuration of a server module.
+ FIG. 26 is a flow chart illustrating instruction steps provided by some configurations of the server module of FIG. 25 in some configurations of the present invention.
+ FIG. 27A-C are examples of a display of a visual selection of parametric regression model forms.
+ FIG. 28 is an example of a display of an outcome type screen.
+ FIG. 29 is an example of a display of a parameter name screen.
+ FIG. 30 is a flow chart illustrating additional instruction steps provided by some configurations of the server module of FIG. 25 in some configurations of the present invention.
+ FIG. 31 is an example of a display that provides a visual selection of previously stored models.
+ FIG. 32 is an example of a display requesting parameter data.
+ FIG. 33 is an example of a result display provided by some configurations of the present invention.
+
+DETAILED DESCRIPTION OF THE PREFERRED EMBODIMENT
+Some configurations of the present invention provide a user-friendly architecture for a clinician to input patient data on an internet, mobile, or handheld computerized device. The device may be a remote device that is part of an intranet, internet, or both, and calculations may be performed on the remote device or on a server. Analysis of inputted data uses statistical models that may be downloaded from the internet, a CD, DVD, or other electronic medium or may be created by the user or by another entity via a guided process for formula construction. Statistical models may include linear, logistic, ordinal, cumulative logit, survival, and multinomial models. The results of the statistic analysis are displayed within minutes such that they may be used as a rapid clinical decision aid. Numerous display options allow clinicians and patients to choose how the results appear. For example, horizontal graphs, vertical graphs, side-by-side stacking plots, whisker plots, etc. are provided as user-selectable options.
+Some configurations of the present invention integrate with existing information technology infrastructure. The multi-tiered architecture of some configurations includes presentation, application, and data layers, which are separately identifiable but interoperable. In some configurations, an application layer controls data collection, model execution, and portal site management. The data layer contains encrypted or otherwise protected data, in conformance with HIPAA regulations for the protection of health information.
+The emergence of the internet and mobile computing devices has created new opportunities for researchers in the health care field to translate their evidenced-based predictive models into clinical decision aids. However, a number of barriers continue to prevent researchers from taking advantage of these technologies, including (1) the need for expertise in a computer programming language or application development environment; (2) the challenge of creating a system that can adapt to a broad range of clinical practice settings, each with unique workflow constraints; (3) the need for a sustainable mechanism for updating predictive models and deploying revisions in a timely fashion; (4) the difficulty of integrating with existing information technology (IT) infrastructures and disparate clinical information systems; and (5) the need to maintain the highest level of security for storing and transmitting protected health information (PHI) in accordance with HIPPA.
+In an ideal world, outcomes researchers would have a pre-existing, technological framework in place that would allow them to rapidly translate their predictive models into clinical decision aids without having to invest significant personnel or financial resources. Researchers could use a visually-based interface for implementing prediction models and would have access to a full range of services for managing and deploying models across a broad range of devices in diverse health-care settings. The need for primary data entry on the part of clinicians and their staff would be minimized by built-in data storage capabilities as well as support for industry-standard protocols for exchanging health information with existing systems. These same data exchange mechanisms could also be used to provide web-based services that could go beyond clinical decision aids; for example, resource planning services that input whole population databases to project future disease prevalences and resource requirements.
+In some configurations, a risk manager service is an application suite useful for building customizable web-based prediction tools that can be readily integrated into the workflow of patient care. Some configurations make use of Microsoft .NET framework and Microsoft Internet Information Services (IIS) and Microsoft SQL Server to create a robust multi-tier system that can deliver enterprise-level performance. However, configurations of the present invention are not limited to using any particular software company's software tools.
+Some configurations of the present invention provide a web portal delivery system. A customizable portal engine delivers content to web-based clients. Page content in some configurations is authored using a built-in interface similar to that of a word processor, or the content can be edited directly as HTML or other appropriate mark-up language. A set of portal content modules includes, in some configurations, workgroup directories, discussion threads, and document repositories that allow outcomes research groups to create, manage, and build their own collective web sites.
+Some configurations of the present invention provide a virtual prediction formula designer. An intuitive graphical user interface is provided that allows researchers to implement prediction formulae derived from standard statistical models. In many configurations, it is not necessary that researchers write software code directly. Instead, the configuration guides users through each phase of the formula construction process while supporting a range of statistical models. These models can include linear, logistic, cumulative logit, and multinomial models. Validation checks are used in some configurations to ensure the internal consistency of formulae before the formulae are published to the web either for direct us, use through an intermediary, or use via a hand-held PDA or similar device.
+Also, some configurations of the present invention provide a dynamic data collection system that individually customizes the necessary data input to the most parsimonious set of variables needed to conduct the requested analysis. A rendering engine creates data-input forms âon-the-fly.â Collected data can be stored for subsequent retrieval, and data entry fields can be pre-populated with previously stored values in accordance with administratively defined data expiration policies.
+In addition, some configurations of the present invention provide a graphical display of model output. Some configurations provide a plurality of graphical display options that are configured to help clinicians and patients understand model results and drive shared decision making. Examples include gradient-filled horizontal bar plots, solid-filled vertical bar plots, whisker plots, and âfiguringâ plots. Optional side-by-side stacking of plots provided in some configurations makes it easier to compare related outcomes (for example, expected results of different treatments for a particular condition) and allow display of relative treatment benefits derived from previously conducted randomized clinical trials. Customizable report templates are also provided in some configurations to allow such outputs to be configured into decision aids, informed consent documents, and patient educational materials.
+Some configurations of the present invention provide cross-platform support. For example, support is provided for a plurality of platforms that may include Netscape, Internet Explorer, and mobile device support for WAP/WML and/or Pocket Browser devices. Thus, physicians can have access to predictive models in various clinical settings in which wired and/or wireless network service is available.
+Some configurations provide a broad assortment of graphical output options that facilitate the sharing of information with patients, thereby allowing physicians and patients to reach a consensus decision regarding therapy that best meets the desires, needs, and expectations of the patient.
+Enterprise-level performance is provided using a multi-tier application architecture that allows organizations to use high-performance servers such as IIS and Microsoft SQL Server for delivering web-content and managing data resources. Pages are constructed using dynamically-loaded controls that use configurable output caching. ADO.NET data access is implemented in some configurations using SQL stored procedures to increase performance and reduce network traffic. An XML-based configuration caches system-wide settings to reduce disk accession frequency during startup and operation.
+Some configurations support both Microsoft WINDOWSÂ® authentication using a domain/active directory and Forms-based authentication using a stored username/password. A role-based security infrastructure is used to maintain access control. Protected Health Information (PHI) is encrypted using dynamically generated ciphers (e.g., 128-bit minimum ciphers) that are unique to each user.
+In some configurations, private and shared data management modes are provided to give authorized healthcare providers flexible access to patient information without compromising security. In private mode, each user can only access his or her own personal patient record set, whereas in shared mode, all authorized users can access a common patient record set. Some configurations also provide optional support for user aliasing. User aliasing allows individual physicians to create additional sets (for example, up to 10) of login credentials that map to their own account. This aliasing provides a convenient method for giving clinical support staff access to patient information while maintaining the ability to audit record access under a pre-existing role.
+Also, some configurations provide XML web services that facilitate integration with existing IT infrastructures. These services allow healthcare organizations to rapidly link a patient database or databases created in configurations of the present invention with existing clinical information systems. For example, the link is provided over the Internet using industry standard protocols such as SOAP. Predictive tools are published in some configurations as a web service for automated model execution or as a service to third parties.
+Some configurations of the present invention utilize a multi-tier application architecture wherein the presentation, application and/or data layers are separate but interoperable, allowing for a high degree of scalability, maintainability, and customization to meet the needs of an outcomes research group or healthcare organization.
+The presentation layer in some configurations comprises web forms that utilize dynamically populated controls. These web forms are used to handle display and management of data for a user. Logic for model design and management, as well as data collection and model execution in some configurations, are handled by the application tier or layer. The application layer also provides business logic that is used for managing the portal site and associated web services, including, in some configurations, user and role management. Model definitions, patient information, portal content, and/or user information are stored in a server (for example, an SQL server database) that is access via stored procedures. These stored procedures are called from within a Microsoft .NET assembly in some configurations. Stored procedures provide a clean separation between the SQL database store and the middle-tier data access layer, thereby resulting not only in easier maintenance but also performance benefits since the procedures can be optimized the first time they are run and then retained in memory for subsequent calls.
+In some configurations, role-based security and auditing procedures are built into the application and data layers. These security and auditing procedures are used to ensure that authenticated users can access only data for which they the users are authorized. Configuration settings in some configurations are stored in an XML file, including high level portal, tab, and module definitions. Additional performance gains are achieved in some configurations through caching of the portal settings, wherein settings are reloaded only if the configuration file has changed.
+A general regression model framework is used for expressing predictions, encompassing various types of prognostic models including linear, logistic, ordinal, multinomial, and survival models. Models are serialized in some configurations of the present invention.
+An outcomes researcher identifies parameters that go into a prediction formula. New parameters can be created de novo or selected from an existing parameter library. The use of parameter libraries permits standardization of parameter definitions across all models. Researchers can also set up shared libraries to facilitate collaboration with other groups on model implementations and data collection.
+Once parameters have been defined, one or more data transformations are assigned to each. Examples of transformations include identity, polynomial, and âdummy-variableâ transformations. Custom transformation types can also be defined in some configurations, to provide a broad range of complex formulae.
+Main effects and interaction terms derived from the input parameters and their transformations are defined. In addition, regression coefficients are provided. These regression coefficients are used for calculating point estimates for an outcome of interest. Some configurations allow covariance estimates to be entered, as well. These covariance estimates are used for computing dynamically generatable confidence intervals.
+Intuitive graphical user interfaces are provided in some configurations that guide model developers through formula construction and/or directly import formula definitions from an XML or other suitably formatted file using a predefined schema.
+Once models have been constructed and published to the web via the portal, a built-in form rendering engine provided in some configurations of the present invention can be used to collect data elements required to run models. Some configurations also store collected data is in an internal database or piped to a data mapping service that readies the data for subsequent funneling into the specified model algorithm for execution. Results are then returned to the requesting client.
+Scalability is provided in some configurations via a multi-tier application architecture. For example, server administrators can farm the front end of the portal across a number of servers while maintaining the ability to pull information from a single unique data store. Some configurations support all three modes of session state management currently implemented in .NET, allowing administrators to create dedicated state management servers for further performance gains under selected usage conditions or to support server farm configurations.
+A modular architecture is used in some configurations of the present invention to provide extensibility. For example, some configurations are written entirely in C# and Transact-SQL, wherein business logic for performing a specific task or closely related tasks is encapsulated within a single code module. For example, a PortalModuleControl base class is provided for use by developers. Developers writing new modules can have these modules inherit this base class, which provides hooks that are used for the portal module to interact with the fundamental framework. Once created, administrators can readily integrate and manage new modules from within the administrative pages.
+A code-behind-coding model is used in some configurations to maintain compatibility with Microsoft's Visual Studio.NETâ¢ developer environment.
+Some configurations of the present invention utilize both authentication and authorization to provide security. Authentication is a process by which the application verifies a user's identity and credentials. Authorization actually verifies the authenticated user's permissions for a requested resource.
+A portal component is provided in some configurations that supports both Forms-based and WindowsÂ® authentication. When operated in the Forms-based authentication mode, configurations of the present invention store usernames and passwords within a database. When using the WindowsÂ® authentication, configurations of the present invention use a domain/active directory with NTLM challenge/response protocol to authenticate users.
+Role-based security is used to provide authorization for the portal in some configuration of the present invention. Role based security determines whether or not a user has access to a particular resource. Users are grouped into various roles (for example, administrators, power users, users, etc.) and the role mappings are stored in the database. Resource access control is determined at the level of each portal tab and module. Redundant role checking is performed at the time of module initialization to prevent unauthorized access to administrative functionality. The patient database also employs redundant identity checking at the data access level to ensure that only authorized users can query or modify patient information. Some configurations provide an added measure of security by encrypting Protected Health Information (PHI) in the database using (for example) a system of dynamically generated 128-bit (minimum) ciphers that are unique to each user. All patient records belonging to a user are encrypted in some configurations using a unique set of ciphers so that other users or intruders cannot access the information.
+Various configurations of the present invention translate complex risk stratification models and outcomes predictions to the interface of patient care. As such, medical decision-making and the quality of delivered care can be improved. Potential applications include decision support and shared decision making. Evidence-based tools can be built that deliver decision support at the point of care for diagnostic workups and treatment selection. For example, immediate probability estimates for specific diseases can be provided in order to select optimal diagnostic strategies for individual patients. Also, risks and outcomes can be estimated for patients considering one of several treatment options.
+Visual representations of projected outcomes can be shared with patients to help them appreciate consequences of treatments, so that patients can select treatment options. Patients can thus be involved in selecting therapies most aligned with their individual goals and preferences.
+Resource utilization can be improved using risk-stratification models deployed by various configurations of the present invention. Clinicians, nurses, and/or administrators can use the models to triage patients between different levels of care within a hospital or outpatient setting, while social workers and discharge teams can use the models to assess the need for additional social services at the time of discharge.
+Customizable support templates are provided by some configurations of the present invention. These support templates can be used to generate âinformed consentâ documents that represent the anticipated risks and benefits of treatment, and individualize them to a specific patient.
+Some configurations of the present invention create personalized informational brochures that can be used to educate patients about their disease condition and future prognosis. Outcomes associated with different lifestyle choices (e.g., exercise, smoking, etc.) can also be presented to help patients make more informed choices about their compliance with lifestyle or medication recommendations.
+Web services provided in some configurations of the present invention can be used to pass entire databases spanning whole patient populations through models projecting future disease prevalences, treatment costs, resource requirements, or any other outcome of interest.
+Some configurations of the present invention thus can improve the quality of medical decision making, reduce expenses related to incorrect or unnecessary tests or treatments, and empower patients to make informed decisions. Configurations of the present invention can also be useful for organizations monitoring national or global health threats. These organizations can use configurations of the present invention as a database for population studies, wherein demographic data may be accessed to monitor or predict the spread of disease.
+Traditional use of medical information has been limited to clinical evaluation or similar studies indicating a present status in the progression of a disease, in quantifying the burden of disease, and disease-related impact on health related quality of life. Experts may use these data in making clinical assessments; however, the prognostic significance of a medical information score is traditionally unknown. Use of this information in prognostic fashion, according to the description below, facilitates systematic results that describe and evaluate a patient's medical information from new perspectives. Accordingly, physicians and patients can make better-informed decisions as to medical intervention, and the risks of intervention can now be quantitatively balanced against what the patient might expect if intervention does not occur.
+The following discussion of processing medical information illustrates a particular embodiment in the field of cardiac health status information by way of example, not by limitation. The principles described below may be generally followed to produce analogous results in any field of health care for any disease or conditions.
+ FIG. 1 is a block diagram illustrating a general process 100 for practicing the aforementioned concepts. The process 100 may be implemented through the use of program instructions on a single computer, in a distributed processing environment, or with human intervention at respective illustrated steps. Step 102 entails the creation or identification of a survey designed to procure medical information, such as health status information, and possibly other information that may sometimes overlap with medical information, such as demographic information and clinical information. As a particular example of medical information, health status information means information that focuses upon a disease or medical condition as measured by symptomatology, physical effects (e.g., limited range of motion or lifting capability), or mental effects of the disease (e.g., depression or anxiety). The health status information may also monitor the effects of treatment. In these contexts, demographic data means descriptive information that could be used to characterize or classify a person in a statistically meaningful way, for example, age, smoking habits, income, geographic location, marital status, race, gender, military service, or drinking habits. Clinical information may include medical history information about the person or diagnostic test results from that person.
+Particularly useful clinical information includes the identification of adverse outcomes, which are defined as a medical event that people normally wish to avoid. Adverse outcomes may include, for example, hospitalizations, death, onset of mental depression, and surgery. The clinical data may also include positive outcomes, such as five year cancer survival, cancer remission, or the effectiveness of a class of therapeutic modality in treating a disease.
+A variety of health status questionnaires are available and generally known to medical practitioners. Many of these questionnaires have been validated by direct or indirect means to show that patient responses to the questionnaires bear some relationship in describing a present disease state or medical condition. Pre-existing questionnaires may be selected for use as the survey in step 102. This manner of selection accelerates the time required for completion of step 102. Alternatively, it is not necessary to use health status questionnaires, and any medical information may be applied for these purposes, e.g., laboratory test results, such as blood work, biopsy, endocrine tests; genetic tests, such as microarray testing for a variety of diseases or conditions; health screening tests; cancer tests; and physical examination findings.
+A survey may be created in step 102 using research that identifies conditions, results, symptoms and/or descriptions of a medical disease or condition. This research is preferably completed by a medical expert as to the disease or medical condition. The questions may be prepared to present survey respondents with a variety of selectable options that are each assigned a score on a relative scale that indicates a relative severity of the disease or medical condition. The overall survey may be scored on the basis of accumulated scores from some or all answers to the questions. The questions may be scored on the basis of the overall score or subsets of questions addressing domains or categories of disease symptomatology, for example, domains of physical limitation, severity of symptomatology, frequency of symptomatology, quality of life, and satisfaction with treatment. The creation of surveys for purposes of using them according to the various instrumentalities and embodiments of the invention does not fundamentally differ from traditional techniques of producing these surveys or questionnaires.
+In step 104, the survey that is created or identified in step 102 may be administered to a test study group of persons who provide responses 106. Administration may occur by using written or electronic instrumentalities. Additional data including clinical or demographic data may optionally be obtained from additional responses 106 or from electronic data storage 108, such as the database of a health insurance company, medical informatics company, medical hospital, or governmental agency.
+The data-gathering step 104 may proceed over a period of time, such that the survey responses 106 may continually update throughout this period, with the initial response forming a baseline. The survey responses are scored by a suitable scoring system, and the data is subjected to statistical processing in steps 110 and 112. Univariate statistics may be calculated in step 110 to identify potentially significant predictors of future health states. The statistical results may, for example, relate health status information from the responses 106 to adverse outcomes and/or positive outcomes in the clinical data. The medical information may be used to stratify the outcomes into ranges. Still further, the statistical information may be related to outcomes over a period of time. Demographic data and clinical data may be used to correct outcomes for factors that are not directly related to the medical condition that is the focus of the medical information survey, such as by correcting overall mortality in a cardiac study for mortality arising from diabetes.
+In step 114, the results of statistical calculations from steps 110 and 112 may be subjected to expert review, for example, review by medical and statistical experts in the field. The lessons gleaned from this review may be represented by program logic and stored in a rules base 116. Statistical correlations or algorithms may also be created for use in prognostic modeling. A particularly useful technique, for example, is the Kaplan-Meier method of relating a parameter to an adverse outcome over time. A plurality of Kaplan-Meier curves may, for example, represent stratified groupings of medical information. The statistical results may, for example, be related to health status information, demographic data, and/or clinical data through use of artificial intelligence or self-training algorithms, such as neural networks or adaptive filters. The result of step 116 may produce an inverted statistical model or rules that may be used to assess probabilities of outcomes on the basis of medical information.
+In step 118, a person (such as a patient or other individual) may be administered a questionnaire that is identical, or at least statistically identical, to the survey that was created or identified in step 102. Additional surveys may be administered or other data sources may be used to obtain, as completely as possible from the person, an identical set of data in comparison to the data that was gathered from individuals in the test study group in step 104. Step 120 may include submitting the personal input data from step 118 for processing through the inverted model derived from step 114. The result of the evaluation modeling step 120 may be to assess the probabilities of outcomes on the basis of the person's medical information.
+The results from step 120 may be categorized in step 122, e.g., by the use of delimiting values or rules-based score groupings, to select persons who are at a relatively greater or lower risk of having a particular outcome. In step 124, a recommendation may be generated, for example, that the person seek out a physician for treatment, or that the person may wish to consider one medical procedure over another.
+The Seattle Angina Questionnaire (SAQ) is a well-known and widely-accepted health status questionnaire providing a disease-specific health status measure for patients with coronary artery disease; however, the questionnaire has not heretofore been shown to be a valid predictive tool. There will now be demonstrated, by way of example and not of limitation, a methodology according to the process 100 for relating health status measures to adverse outcomes, such as mortality, hospitalization and poor quality of life.
+EXAMPLE 1
+Survey Data Collection
+Example 1 demonstrates data collection techniques for gathering data that were used as steps 102 and 104 of FIG. 1. In some cases, an expert devised questions to obtain data possibly having some relevancy in assessing prognostic outcomes. In other cases, a well-accepted study may be selected for this purpose.
+A literature search identified the SAQ as a leading survey pertaining to health status of acute coronary syndromes (ACS) or coronary artery disease (CAD). A total of 5,558 Veteran's Administration patients reporting coronary artery disease were administered the SAQ. Patient responses to the SAQ were evaluated by conventional SAQ assessment techniques to provide scores assessing physical limitation characteristics according to traditional risk variables including physical limitation, angina stability, angina frequency, CAD-specific treatment satisfaction and quality of life. The patients were also asked to provide demographic information and medical history data. Selection of the SAQ for this example was made because the questionnaire is generally accepted to be a valid indicator of the status it was designed to measure, namely, patients' disease-specific physical limitations, angina stability, angina frequency, treatment satisfaction and quality of life. SAQ selection was also made because the SAQ is generally accepted as a valid clinical tool by the medical profession. The SAQ is a self-administered, disease specific measure for patients with coronary artery disease. The questionnaire is valid, reproducible, and sensitive to clinical change.
+SAQ responses were obtained from a test study group of cardiac patients. The SAQ was scored to quantify the patients in a plurality of domains. The domains included physical limitations due to angina, the frequency and recent change in patient symptoms, patient satisfaction with treatment, and the degree to which patients perceive that disease has impacted their quality of life. The scores were transformed to assess the scores on a distribution across a range of 0 to 100, according to conventional SAQ methodology where higher scores indicate better status function, e.g., less physical limitation, less angina and better quality of life. The normalized scores from the test study group were divided into quartile ranges of increasing severity for ease of interpretation. The SAQ domains of this particular study included physical limitation, angina, and better quality of life.
+Demographic or clinical data not directly linked to health status information was shown to have statistical significance in using health status data to assess outcomes including morbidity and ACS hospital admission. Data was collected from the survey respondents who were asked to provide information including:
+gender;
+race;
+medical comorbidities arising from or related to previous hospitalization, cancer, chronic heartburn, depression, drug abuse, kidney problems, liver disease (yellow jaundice or hepatitis), post traumatic stress disorder, seizures or convulsions, peptic ulcer disease, and thyroid disease;
+cardiac risk factors including diabetes, hypertension, and smoking history; and
+cardiovascular disease severity factors indicated by stroke, congestive heart failure (CHF), previous hospitalization for ACS, prior coronary revascularization procedure, and prior myocardial infarction (MI).
+Additional demographic data was obtained using standard questionnaires that were also scored, such as the SF-36, as described in McHomey et al., The MOS-36 Item Short-form Health Survey (SF-36): II Psychometric and clinical test of validity in measuring physical and mental health constructs, Med. Care. 1193; 31:247-63.
+Outcomes were tracked for each patient during a two-year course of study. The primary outcome was one-year mortality. Mortality was tracked using information provided by the Veteran's Administration. A second outcome tracked during the two-year course of the study was hospital admission for ACS.
+EXAMPLE 2
+Statistical Processing of Life Survey Data Collection
+The data collected in Example 1 was subjected to statistical processing, e.g., as generally shown in steps 110 and 112 of FIG. 1 to create a model relating the respective adverse outcomes to scores on the SAQ. All analyses were performed using commercially available statistical computer programs, namely, SASâ¢ Version 6.12 (a trademark of SAS Institute, Inc. of Cary, N.C.) and S-Plus 2000â¢ for Windows (a trademark of Statistical Sciences, Inc., of Seattle, Wash.). Statistical curves for all cause mortality were calculated using Kaplan-Meier analysis. The data were stratified by quartiles of the initial or baseline SAQ scores. Log-rank tests were used to compare data from the respective groups to establish that patients with lower scores initially died sooner and more frequently than patients reporting higher scores. Predictive models were developed for one year mortality and ACS hospitalization, by logistic regression.
+Three models were constructed for each of the adverse outcomes including mortality and hospitalization. The first model included only SAQ domain scores. The second model included only demographic data and clinical variables. In each case, the models were developed by incorporating predictors with significant univariate associations with outcome (probability value less than or equal to 0.1) and using backward elimination until all remaining factors were significant at the 0.1 level. Age was entered as a continuous predictor, and the remaining independent variables were categorical. A final model was developed by combining significant variables from the first two models to estimate the incremental prognostic value of the SAQ score above demographic and clinical characteristics alone. For all modes reported in Table 1, probability values and estimated odds ratios are presented.
+Model calibration was assessed by comparing predicted and observed outcomes by deciles of predicted risk. Goodness of fit was determined by the Hosmer-Lameshow test. Discriminatory power was evaluated by use of c-statistics and compared by Mann-Whitney tests, as described in DeLong et al., Comparing the areas under two or more correlated receiver operating characteristic curves: a nonparametric approach. Biometrics, 1988; 44; 837-845. Model calibration and shrinkage were validated on 200 bootstrap resamples of the original data set, as described in Harrell et al., Multivariable prognostic models: issues in developing models, evaluating assumptions and adequacy, and measuring and reducing errors, Stat. Med. 1996; 15:361-387.
+In fewer than 0.3% of the cases, baseline and clinical variables were missing from the input data. The missing baseline and clinical data was imputed to the mean or by random sampling of data. Nineteen percent of patients had missing SAQ scores because of incomplete questionnaires. The one year mortality for these patients was higher (7.5% versus 5.3) and the ACS hospital admission was lower (2.3% versus 3.6) than patients who filled out completed questionnaires. Primary analyses were performed on those with complete SAQ data. Supporting analyses were performed to determine the impact of missing data were conducted with multiple imputation techniques that conditioned upon the available SAQ and SF-36 scores, according to techniques described in Little et al., Statistical Analysis with Missing Data, New York, N.Y., Wiley; 1987. S-plus subroutines developed by Frank Harrell available for this purpose as Harrell, Hmisc S-Plus function library in lib.stat.cmu.edu; 1999.
+EXAMPLE 3
+Univariate Calculation Results
+The results of statistical calculations in Example 2 were inverted to provide a model for prognostic use. Table 1 provides the baseline characteristics and univariate odds ratios for one-year mortality and hospitalization. The mean SF-36 PCS was 30.8Â±10.5, indicating that these patients scored almost two standard deviations below the mean United States population in terms of general physical health status. Over the one year of observation, there were 238 deaths (5.3% of the test population) and 154 ACS hospital admissions (3.6% of the test population).
+Table 1 describes the relative odds of death at one year by demographic characteristics, comorbidities, and SAQ scores. The most powerful predictive parameters were age, presence of congestive heart failure, and health status. In Table 1, the âOdds Ratioâ for âOne-Year Mortalityâ is calculated as the actual mortality divided by the âMinimalâ mortality. The low p-values show that the reported modes are statistically valid predictors because the p-values are less than an arbitrary delimiting value, in this case less than 0.05. Thus, the âOdds Ratioâ for the âMinimalâ quartile is understood to be 1.0. A person in the âSevereâ quartile is 6.2 times more likely to die than a person in the âMinimalâ quartile. Table 1 provides a model for prognostic use because Table 1 may be used to relate a person's health status, demographic, or clinical information, with an outcome likelihood in the domain of mortality or ACS hospitalization. This is done, for example, by assessing the person's SAQ score as to physical limitation and entering Table 1 to determine the likelihood. This modeling capability may, for example, be performed through program instructions that apply an expert set of rules in reporting from a database.
+ FIG. 2 shows the Kaplan-Meir survival curves over time for the SAQ physical limitation domain, which was broken out into quartiles representing severe (0-24), moderate (25-49), mild (50-74), and minimal (75 to 100) physical limitation. Separation of the curves, especially for those having the worst function, begins immediately and continues over the two-year period of observation. The mortality rates shown in FIG. 2 are the actual mortality rates, as opposed to the odds ratio shown in Table 1. Linear regression, such as a least squares technique, may be used to calculate an algorithm for each of the stratified domains to obtain a prognostic model on the basis of SAQ score.
+As shown in Table 1, SAQ scores were divided into domains including physical limitation, angina stability, angina frequency, and quality of life.
+Specifically, the SAQ was scored in a different manner for each domain to assess these parameters. The domains were divided into SAQ ranges. Table 1 also describes the odds of hospital admission for ACS. The strongest predictor of admission was a previous ACS-related hospitalization. The next most powerful predictors were SAQ angina frequency, physical limitation, and quality of life domains. For example, those reporting severe angina were 3.1 times more likely to be admitted to the hospital for ACS than those reporting minimal angina.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 1
+
+
+
+
+ 
+
+
+BASELINE CHARACTERISTICS AND UNIVARIATE ODDS RATIOS
+
+
+
+
+ 
+ 
+ 
+One-Year ACS
+
+
+ 
+ 
+One-Year Mortality
+Admission
+
+
+
+
+ 
+ 
+Odds
+ 
+Odds
+ 
+
+
+ 
+ 
+Ratio
+ 
+Ratio
+ 
+
+
+ 
+n = 4,484
+(95% CI)
+p = value
+(95% CI)
+p-value
+
+
+ 
+
+
+
+
+Age (years)*
+67 Â± 10
+1.6
+<0.001
+1.0
+0.895
+
+
+ 
+ 
+(1.4, 1.9)
+ 
+(0.8, 1.2)
+ 
+
+
+Male
+4405 (98.3%)
+1.4
+0.58
+N/A
+0.11
+
+
+ 
+ 
+(0.5, 5.6)
+ 
+ 
+ 
+
+
+Caucasian
+3697 (85.6%)
+1.1
+0.71
+1.0
+0.97
+
+
+ 
+ 
+(0.7, 1.6)
+ 
+(0.7, 1.6)
+ 
+
+
+Prior hospitalization (any)
+â720 (16.1%)
+1.7
+0.001
+4.6
+<0.001
+
+
+ 
+ 
+(1.2, 2.3)
+ 
+(3.3, 6.4)
+ 
+
+
+Prior hospitalization for ACS
+â148 (3.3%)
+1.6
+0.12
+10.3
+<0.001
+
+
+ 
+ 
+(0.8, 2.8)
+ 
+(6.6, 15.7)
+ 
+
+
+Cancer
+â612 (13.7%)
+1.9
+<0.001
+0.9
+0.77
+
+
+ 
+ 
+(1.4, 2.6)
+ 
+(0.6, 1.5)
+ 
+
+
+GERD
+1059 (23.6%)
+0.8
+0.20
+1.1
+0.53
+
+
+ 
+ 
+(0.6, 1.1)
+ 
+(0.8, 1.6)
+ 
+
+
+Congestive Heart Failure
+â887 (19.8%)
+2.4
+<0.001
+1.5
+0.02
+
+
+(CHF)
+ 
+(1.8, 3.2)
+ 
+(1.1, 2.2)
+ 
+
+
+Depression
+1280 (28.6%)
+1.0
+0.76
+1.1
+0.69
+
+
+ 
+ 
+(0.8, 1.4)
+ 
+(0.8, 1.5)
+ 
+
+
+Diabetes
+1283 (28.6%)
+1.4
+0.01
+1.4
+0.05
+
+
+ 
+ 
+(1.1, 1.9)
+ 
+(1.0, 1.9)
+ 
+
+
+Drug abuse
+â91 (2.0%)
+0.8
+0.70
+0.3
+0.21
+
+
+ 
+ 
+(0.2, 2.0)
+ 
+(0.0, 1.4)
+ 
+
+
+MI
+2355 (52.5%)
+1.4
+0.02
+1.6
+0.004
+
+
+ 
+ 
+(1.1, 1.8)
+ 
+(1.2, 2.3)
+ 
+
+
+Hypertension
+2853 (63.6%)
+0.8
+0.11
+1.0
+0.95
+
+
+ 
+ 
+(0.6, 1.1)
+ 
+(0.7, 1.4)
+ 
+
+
+Smoking status
+ 
+ 
+ 
+ 
+ 
+
+
+Never
+â686 (15.6%)
+â
+0.12
+â
+0.24
+
+
+Past
+2721 (62.0%)
+1.3
+ 
+1.3
+ 
+
+
+ 
+ 
+(0.8, 1.9)
+ 
+(0.8, 2.3)
+ 
+
+
+Current
+â980 (22.3%)
+1.6
+ 
+1.6
+ 
+
+
+ 
+ 
+(1.0, 2.5)
+ 
+(0.9, 2.9)
+ 
+
+
+Chronic renal insufficiency
+â694 (15.5%)
+1.6
+0.005
+1.1
+0.55
+
+
+ 
+ 
+(1.1, 2.1)
+ 
+(0.7, 1.7)
+ 
+
+
+Liver disease
+â320 (7.1%)
+1.3
+0.30
+0.6
+0.22
+
+
+ 
+ 
+(0.8, 2.0)
+ 
+(0.3, 1.2)
+ 
+
+
+Post-traumatic stress disorder
+â516 (11.5%)
+1.1
+0.74
+1.3
+0.27
+
+
+ 
+ 
+(0.7, 1.6)
+ 
+(0.8, 2.0)
+ 
+
+
+Seizures/convulsions
+â187 (4.2%)
+1.0
+0.98
+0.4
+0.16
+
+
+ 
+ 
+(0.5, 1.8)
+ 
+(0.1, 1.2)
+ 
+
+
+Peptic ulcer disease
+â984 (21.9%)
+1.2
+0.28
+1.1
+0.64
+
+
+ 
+ 
+(0.9, 1.6)
+ 
+(0.7, 1.6)
+ 
+
+
+Stroke
+â742 (16.6%)
+1.6
+0.002
+1.4
+0.07
+
+
+ 
+ 
+(1.2, 2.2)
+ 
+(1.0, 2.1)
+ 
+
+
+Thyroid disease
+â196 (4.4%)
+1.6
+0.07
+0.6
+0.31
+
+
+ 
+ 
+(0.9, 2.7)
+ 
+(0.2, 1.4)
+ 
+
+
+Prior PTCA or CABG
+2138 (47.7%)
+1.2
+0.16
+1.9
+<0.001
+
+
+ 
+ 
+(0.9, 1.6)
+ 
+(1.4, 2.6)
+ 
+
+
+SAQ Physical Limitation
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+â856 (19.1%)
+â
+<0.001
+â
+<0.001
+
+
+Mild
+1239 (27.6%)
+1.6
+ 
+1.6
+ 
+
+
+ 
+ 
+(0.9, 2.8)
+ 
+(0.9, 3.0)
+ 
+
+
+Moderate
+1728 (38.5%)
+2.5
+ 
+2.7
+ 
+
+
+ 
+ 
+(1.5, 4.2)
+ 
+(1.6, 5.0)
+ 
+
+
+Severe
+â661 (14.7%)
+6.2
+ 
+2.8
+ 
+
+
+ 
+ 
+(3.7, 10.3)
+ 
+(1.5, 5.3)
+ 
+
+
+SAQ Angina Stability
+ 
+ 
+ 
+ 
+ 
+
+
+Much better
+â831 (18.5%)
+â
+<0.001
+â
+0.05
+
+
+Slightly better
+â439 (9.8%)
+1.3
+ 
+1.7
+ 
+
+
+ 
+ 
+(0.8, 2.2)
+ 
+(0.8, 3.5)
+ 
+
+
+Unchanged
+2339 (52.2%)
+1.2
+ 
+1.9
+ 
+
+
+ 
+ 
+(0.8, 1.8)
+ 
+(1.2, 3.4)
+ 
+
+
+Slightly worse
+â576 (12.9%)
+1.1
+ 
+2.5
+ 
+
+
+ 
+ 
+(0.7, 1.9)
+ 
+(1.4, 4.8)
+ 
+
+
+Much worse
+â299 (6.7%)
+2.9
+ 
+2.3
+ 
+
+
+ 
+ 
+(1.8, 4.8)
+ 
+(1.1, 4.9)
+ 
+
+
+SAQ Angina Frequency
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+2437 (54.4%)
+â
+<0.001
+â
+<0.001
+
+
+Mild
+1268 (28.3%)
+1.0
+ 
+1.6
+ 
+
+
+ 
+ 
+(0.7, 1.4)
+ 
+(1.1, 2.3)
+ 
+
+
+Moderate
+â539 (12.0%)
+1.8
+ 
+2.6
+ 
+
+
+ 
+ 
+(1.3, 2.6)
+ 
+(1.6, 4.0)
+ 
+
+
+Severe
+â240 (5.4%)
+2.6
+ 
+3.1
+ 
+
+
+ 
+ 
+(1.6, 4.0)
+ 
+(1.7, 5.3)
+ 
+
+
+SAQ Quality of Life
+ 
+ 
+ 
+ 
+ 
+
+
+Excellent
+1791 (39.9%)
+â
+0.002
+â
+<0.001
+
+
+Good
+1461 (32.6%)
+1.3
+ 
+2.1
+ 
+
+
+ 
+ 
+(0.9, 1.7)
+ 
+(1.4, 3.3)
+ 
+
+
+Fair
+â916 (20.4%)
+1.5
+ 
+3.2
+ 
+
+
+ 
+ 
+(1.1, 2.2)
+ 
+(2.0, 4.9)
+ 
+
+
+Poor
+â316 (7.1%)
+2.4
+ 
+2.2
+ 
+
+
+ 
+ 
+(1.5, 3.7)
+ 
+(1.1, 4.1)
+
+
+ 
+
+
+*Odds ratios per years
+
+
+
+
+
+The information from Table 1 may be depicted graphically and used in a three dimensional model. For example, the Kaplan-Meier curves shown in FIG. 2 may be linked to SAQ scores through a common mortality. Accordingly, the model is able to project that a person with an initial SAQ baseline in one of the stratified rankings may cross the boundary into another stratification having a higher mortality at a future point in time. For example, FIG. 3 is a bar graph providing point-in-time graphical representation of actual mortality rates for SAQ quartile ranges of the physical limitation domain. FIG. 4 is a bar graph providing a graphical representation of actual mortality results for the angina frequency domain, which was divided into SAQ ranges including Much Worse (0-24), Slightly Worse (25-49), Unchanged (50), Slightly Better (51-75), and Much Better (76-100). FIG. 5 is a bar graph providing a graphical representation of results for the angina stability domain. FIG. 6 is a bar graph providing a graphical representation of quartile results for the quality of life domain.
+In this particular study group, the strongest health status predictor was SAQ physical limitation. Angina frequency and quality of life domains all had a significant trend toward lower mortality with higher patient function, fewer symptoms, and better quality of life. The angina stability SAQ scores measure changes in patients' angina. Those patients reporting increased angina over the past month had a one year mortality rate of 11.4% compared with 4.9% for the rest of the study population. An expert-defined rules base may concentrate upon making prognostic assessments of outcome likelihood on the basis of the strongest predictors, or on the basis of a combination of the strongest predictors. For example, a combination of predictors may be used to enhance overall results through use of a multivariate prognostic model that is produced using the strongest predictors, as shown in Example 4.
+EXAMPLE 4
+Multivariable Prognostic Models
+As shown above, physical limitation and angina frequency were the best SAQ-based predictors for both one year mortality and ACS hospital admission. These predictors were studied in combination with demographic and clinical data, as shown in Tables 2 and 3. The effect of the multivariable analysis was, for example, to correct the univariate results shown in Table 1 for demographic and clinical factors that are unrelated to ACS, and vice versa. For example, the odds ratio for the âSevereâ range of the âPhysical Limitationâ domain is shown as being 6.0 in the univariate approach and 4.0 when corrected for the contribution of other factors, such as cancer, age, previous hospitalization, and CHF. In addition to adjusting the magnitude of the scores in a minor way, these multivariable results confirmed that SAQ scores in the physical limitation and angina frequency domains are valid independent predictors of future mortality and ACS hospitalization.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 2
+
+
+
+
+ 
+
+
+PROGNOSTIC MODELS FOR ONE-YEAR MORTALITY
+
+
+
+
+ 
+Model 1 (SAQ)
+Model 2 (Clinical) 
+Model 3 (Combined)
+
+
+
+
+ 
+Odds Ratio
+ 
+Odds Ratio
+ 
+Odds Ratio
+ 
+
+
+ 
+(95% CI)
+p-value
+(95% CI)
+p-value
+(95% CI)
+p-value
+
+
+ 
+
+
+
+
+Physical Limitation
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+â
+<0.001
+ 
+ 
+â
+<0.001
+
+
+Mild
+1.7
+ 
+ 
+ 
+1.5
+ 
+
+
+ 
+(1.0, 3.0)
+ 
+ 
+ 
+(0.9, 2.7)
+ 
+
+
+Moderate
+2.6
+ 
+ 
+ 
+2.0
+ 
+
+
+ 
+(1.6, 4.4)
+ 
+ 
+ 
+(1.2, 3.5)
+ 
+
+
+Severe
+6.0
+ 
+ 
+ 
+4.0
+ 
+
+
+ 
+(3.6, 10.6)
+ 
+ 
+ 
+(2.4, 7.2)
+ 
+
+
+Angina Frequency
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+â
+0.068
+ 
+ 
+â
+0.078
+
+
+Mild
+0.8
+ 
+ 
+ 
+.08
+ 
+
+
+ 
+(0.5, 1.1)
+ 
+ 
+ 
+(0.6, 1.2)
+ 
+
+
+Moderate
+1.1
+ 
+ 
+ 
+1.2
+ 
+
+
+ 
+(0.8, 1.6)
+ 
+ 
+ 
+(0.8, 1.8)
+ 
+
+
+Severe
+1.4
+ 
+ 
+ 
+1.6
+ 
+
+
+ 
+(0.9, 2.2)
+ 
+ 
+ 
+(0.9, 2.5)
+ 
+
+
+Age (per +10 years)
+ 
+ 
+1.6
+<0.001 
+1.6
+<0.001
+
+
+ 
+ 
+ 
+(1.4, 1.9)
+ 
+(1.3, 1.8)
+ 
+
+
+CHF
+ 
+ 
+2.3
+<0.001 
+1.9
+<0.001
+
+
+ 
+ 
+ 
+(1.3, 3.0)
+ 
+(1.4, 2.5)
+ 
+
+
+Cancer
+ 
+ 
+1.5
+0.015
+1.5
+0.031
+
+
+ 
+ 
+ 
+(1.1, 2.1)
+ 
+(1.0, 2.0)
+ 
+
+
+Prior hospitalization
+ 
+ 
+1.5
+0.024
+1.4
+0.065
+
+
+ 
+ 
+ 
+(1.1, 2.0)
+ 
+(1.0, 1.9)
+ 
+
+
+Diabetes
+ 
+ 
+1.3
+0.059
+1.3
+0.129
+
+
+ 
+ 
+ 
+(1.0, 1.7)
+ 
+(0.9, 1.7)
+ 
+
+
+Stroke
+ 
+ 
+1.3
+0.092
+1.2
+0.396
+
+
+ 
+ 
+ 
+(1.0, 1.8)
+ 
+(0.8, 1.6)
+ 
+
+
+c-statistic
+0.66
+ 
+0.69
+ 
+0.72
+ 
+
+
+Original
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+dataset
+0.66
+ 
+0.67
+ 
+0.70
+ 
+
+
+Validated
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Hosmer-Lemeshow
+0.57
+ 
+0.16
+ 
+0.26
+ 
+
+
+p-value
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE 3
+
+
+
+
+ 
+
+
+PROGNOSTIC MODELS FOR ONE-YEAR ACS ADMISSION
+
+
+
+
+ 
+Model 1 (SAQ)
+Model 2 (Clinical)
+Model 3 (Combined)
+
+
+
+
+ 
+Odds Ratio
+ 
+Odds Ratio
+ 
+Odds Ratio
+ 
+
+
+ 
+(95% CI)
+p-value
+(95% CI)
+p-value
+(95% CI)
+p-value
+
+
+ 
+
+
+
+
+Physical Limitation
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+â
+0.030
+ 
+ 
+â
+0.102
+
+
+Mild
+1.4
+ 
+ 
+ 
+1.5
+ 
+
+
+ 
+(0.7, 2.6)
+ 
+ 
+ 
+(0.8, 2.9)
+ 
+
+
+Moderate
+2.1
+ 
+ 
+ 
+2.0
+ 
+
+
+ 
+(1.2, 3.8)
+ 
+ 
+ 
+(1.1, 3.8)
+ 
+
+
+Severe
+1.9
+ 
+ 
+ 
+1.8
+ 
+
+
+ 
+(1.0, 3.7)
+ 
+ 
+ 
+(0.9, 3.6)
+ 
+
+
+Angina Frequency
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Minimal
+â
+0.005
+ 
+ 
+â
+0.016
+
+
+Mild
+1.4
+ 
+ 
+ 
+1.4
+ 
+
+
+ 
+(0.9, 2.0)
+ 
+ 
+ 
+(0.9, 2.0)
+ 
+
+
+Moderate
+2.1
+ 
+ 
+ 
+2.0
+ 
+
+
+ 
+(1.3, 3.3)
+ 
+ 
+ 
+(1.2, 3.2)
+ 
+
+
+Severe
+2.4
+ 
+ 
+ 
+2.2
+ 
+
+
+ 
+(1.3, 4.3)
+ 
+ 
+ 
+(1.2, 4.2)
+ 
+
+
+Prior hosp (ACS)
+ 
+ 
+11.7
+<0.001
+10.6 
+<0.001
+
+
+ 
+ 
+ 
+(7.4, 18.1)
+ 
+(6.7, 16.7)
+ 
+
+
+Prior hosp (other)
+ 
+ 
+2.8
+<0.001
+2.7
+<0.001
+
+
+ 
+ 
+ 
+(1.9, 4.2)
+ 
+(1.8, 4.0)
+ 
+
+
+Prior PTCA/CABG
+ 
+ 
+1.6
+0.005
+1.6
+0.004
+
+
+ 
+ 
+ 
+(1.2, 2.3)
+ 
+(1.2, 2.3)
+ 
+
+
+c-statistic
+0.63
+ 
+0.69
+ 
+0.73
+ 
+
+
+Original
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+dataset
+0.62
+ 
+0.66
+ 
+0.70
+ 
+
+
+Validated
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+Hosmer-Lemeshow 
+0.32
+ 
+0.87
+ 
+0.80
+ 
+
+
+p-value
+
+
+ 
+
+
+
+
+
+EXAMPLE 5
+Personal Input and Evaluation Modeling
+The models shown in Tables 1-3 are used as inverted models in the sense that they were created in a forward manner from the analysis of vast amounts of statistical data, but they may be used in a reverse manner by:
+accepting personal input data;
+calculating a SAQ score; and
+entering the tables to determine whether the person has a relatively greater risk of encountering an adverse outcome according to any particular modality.
+In a hypothetical example, John Doe is hospitalized for a treatment of moderate blockages of his coronary arteries (atherosclerosis). As a routine matter to pass time while undergoing treatment, a doctor administers the SAQ. John dutifully provides a response, which is scanned and scored electronically in accord with the personal input step 118 of FIG. 1. The score places John in a severe range for physical limitation and a severe range for angina frequency. Accordingly, in the evaluation step 120 an electronic system accesses the model shown in Table 2 to show that John has a 4Ã greater chance of dying in the next year than does someone with minimal physical limitation, and a 1.6Ã greater chance of dying than does someone with minimal angina frequency, resulting in a combined mortality risk that is 6.4-fold greater than someone with minimal physical limitations on angina. Alternatively, the system can also consult FIG. 3 to ascertain that his overall one year mortality rate, as someone with severe physical limitation and angina, is about 12%.
+EXAMPLE 6
+Categorization and Recommendation
+In Example 5, John may be categorized as a man, as a man who has mild atherosclerosis, as a man who has severe physical limitation, and as a person with severe angina. As a person with cancer, John may stand a greater chance of dying from cancer than from CAD over the next year. Due to his particular cancer and the treatment employed, it may not be practicable to implement treatment for his CAD, or only a few treatments may be workable. Other options may be affected by his age in combination with his cancer. These categorizations may be assisted by demographic or clinical data obtained for his personal input.
+On the basis of categorization data and input from the expert-defined rules base 116, a medical recommendation in step 124 may be rendered according to the categorization. Significantly, some configurations of the present invention provide evidence of predicted outcomes that can assist in the selection of therapies aligned with the goals and values of the individual patient under the guidance of their physician rather than providing so-called ârightâ or âwrongâ decisions that an expert rules-based decision system might provide.
+EXAMPLE 7
+Disease Management Program
+ FIG. 7 demonstrates the application of the data from FIGS. 2-6 into a disease management model. FIG. 7 provides an example of the general principle of leveraging the health status scores of populations of patients to identify high risk individuals. SAQ angina frequency scores (abscissa) are plotted against SAQ physical limitation scores (ordinate) for the same person to form a distribution. Those patients in the lower left quadrant have frequent angina (SAQ angina frequency scores<50) and marked physical limitation (SAQ Physical Limitation<50). Statistical calculations show that those patients in the upper left quadrant have a 20.4% chance of dying over the next 2 years. Those in the lower left quadrant have a 12.4% chance of dying while those in both quadrants on the right side of the graph have a 4.5% risk.
+A healthcare system managing a population of patients may use such a categorization technique, i.e., plotting different personal score domains from the same health status survey against one another, stratifying the data on the basis of spatial location (e.g., the lower left quadrant), and calculating the odds of an outcome on the basis of this stratification. In FIG. 7, the technique has produced an astonishing predictor indicating a 20.4% chance of death. This information would certainly be of value to a person who stands, for example, a 1% chance of dying while undergoing an elective cardiac procedure. Prospectively, a person showing a SAQ score in the lower left quadrant would benefit most from a cardiac consultation. A health care provider or a health maintenance organization might choose to use these statistics to manage a healthcare plan with scarce resources in such a way that persons who will benefit the most from services with limited availability receive the services on a preferential basis.
+Similarly, FIG. 8 shows a similar model for patients with congestive heart failure using cross-plotted domains from the Kansas City Cardiomyopathy Questionnaire. An overall summary score (abscissa) is plotted against the self-efficacy score (ordinate). Differing rates of hospital admission and death are statistically correlated to spatial domains, as in FIG. 8. Admission rates differ from 64% for persons who plot on the lower right hand area to 31% and 13% for persons in the respective left hand side and upper right areas.
+ FIG. 9 is a model formed as a plot of SAQ angina frequency versus SAQ quality of life scores. The shaded region 900 identifies patients who have angina occurring approximately once-a-week or greater and who are moderately to extremely limited in their quality of life because of the angina. On the basis of subjectively defined rules that can be tailored to a particular healthcare environment using the expert-defined rules base 116, these patients may warrant careful evaluation for opportunities to improve their symptom control.
+By way of example, FIG. 10 shows a medical evaluation system 1000 that is configured for predicting or describing patient health outcome in a person with sub-marginal cardiac function. Medical evaluation system 1000 may include processor 1002, graphical user interface 1004, and a data storage unit 1006. The graphical user interface 1004 may be configured for presenting questionnaires to the person. Graphical user interface 1004 may receive the responses from the person for subsequent processing by processor 1002 and storage in the data storage unit 1006, e.g., in a logically defined personal database storage component 1008. Graphical user interface 1004, by way of example, could be administered over the internet, locally through a touch screen, via computer keyboard, by voice recognition technology, or through a mouse-driven interface. An appropriate device containing interface 1004 may, for example, be a personal computer, personal data assistant (PDA), cellular telephone, or other electronic device.
+In medical system 1000, processor 1002 is communicatively connected to interface 1004 for scoring the responses and evaluating the responses. Evaluation may be performed using the expert-defined rules base 116 and information from a group study model 1010 that is produced using the methodologies shown and described in Examples 1-7. Processor 1002 reports the evaluation results to a system user through interface 1004, or by another means such as a printer or electronic messaging. By way of example, the group data 1010 may be compiled from a single hospital or insurance carrier population or may be representative of a national or global population. In one embodiment, group data 1010 may be downloaded from the internet.
+A feature of the test study group model 1010 is that it may contain information from a statistically validated survey, i.e., one having statistical correlation indicators indicating that measured predictive parameters are closely related to a measured outcome. For example, validation may be proven through the use of delimiting metrics, such as p values less than a delimiting value of 0.05 (see, e.g., Tables 1-3). The group study model 1010 may be accessed to provide a prognostic ranking or other measure of health outcomes. For example, processor 1002 could use models represented by any of FIGS. 2-9 or Tables 1-3 to identify SAQ scores in domains where the scores indicate sub-marginal cardiac function. New responses in the personal data 1008 may be scored and input for comparison against the group study model 1010 and the expert-defined rules base 116 to assess the respondent's odds of encountering an outcome.
+A user of medical system 1000 may be able to generate reports from the system by interactively adjusting pre-defined delimiters or parameters. For example, the test study group data 1010 might be accessed to calculate a Kaplan-Meier curve like FIG. 1, except stratification might include an additional 30% SAQ range and new responses could be evaluated and filtered on the basis of this new range. Alternatively, the shaded region 900 in FIG. 9 might be manipulated as a graphical user interface through the use of drag and drop functions to produce a new spatial range that triggers calculation and reporting of outcome statistics that are attributed to that spatial range.
+Processor 1002 may also rank medical information scores, such as health status scores, to predict patient health outcome of an individual patient. For example, where the patient has sub-marginal cardiac function, the questionnaire may be the SAQ, the Kansas City Cardiomyopathy Questionnaire (KCCQ), or any other questionnaire that includes a disease-specific health status measure.
+The test study group data 1010 may also include, for example, a reporting network of other administrative data, such as the date of last visit with a cardiovascular specialist or a list of specific cardiovascular medications that the patient may or may not be taking. A patient's current treatment may be automatically reported to the personal database 1008 by other databases (not shown) that are linked to storage unit 1006. For example, a pharmaceutical database describing what therapies have been prescribed may allow relationships between categories of scores so that opportunities for further treatment and treatment efficacy may be linked to medical information. Other diagnostic databases, such as those for angiography or echocardiography, can be used to suggest certain treatments. For example, outcomes from these diagnostic databases may be linked with health status information to suggest an increase in dosage for a certain pharmaceutical agent; the use of a device, such as a stent; or a procedure including angiography or bypass surgery. Further statistical linkage of medical information data to actual health outcomes associated with the recommended treatments may provide statistical optimization that improves health outcomes for a group of patients that is studied.
+ FIG. 11 shows a flow chart illustrating operation 1100 of system 1000, in accord with one method. Operation 1000 commences with mode selection 1102, which may entail user selection of a medical mode for a particular disease or medical condition from among a plurality of such diseases or conditions, e.g., ACS, diabetes, or cancer. Step 1104 entails processor 1102 retrieving a model group that may comprise a selected medical information questionnaire, program instruction for implementing the rules base 116, and the group model 1010 for the selected medical mode.
+The graphical user interface 1004 receives responses from a person in an interview step 1106, which may also entail retrieval of information, such as demographic and clinical information, from other databases (not shown). Processor 1002 may receive transmitted personal responses from graphical user interface 1004, store the responses in the personal database 1008, and process the responses. Processing may include scoring 1110 to obtain scores, followed by evaluation modeling 120, categorization 122, and recommendation 124, as described above in the context of FIG. 1.
+The foregoing discussion emphasizes methodology for using patient self-assessment data to monitor cardiac health, with overtones on how this data might be used in treatment programs, e.g., by changing medication in response to a changing self-assessment score. In additional contexts, the self assessment data, perhaps additionally including patient satisfaction surveys, may be statistically processed to relate demographics and/or and patient satisfaction with having undergone a particular procedure or treatment. By way of example, FIG. 12A is a graph of angina frequency post-CABG (diamond is economically burdened patient; square is not economically burdened patient). Patients characterized as economically burdened had about the same frequency of angina post CABG as did the patient population characterized as economically burdened. FIG. 12B is a graph of angina frequency in patients post-PCI (Percutaneous Coronary Intervention) revascularization. Patients characterized as not economically burdened demonstrate a higher frequency of angina after PO revascularization procedure. These results show that clinical patient outcomes may vary by the type of procedure and demographic background of the patient.
+ FIG. 13 is a graph demonstrating the frequency of angina and statistical likelihood of complications in a post-coronary attack patient having had bypass surgery, as compared to patients having had angioplasty. The complications monitored in these patients were death (0.9%), stroke (1.5%), readmit (2%) and PTCA (less than 1%). FIG. 2 also shows a graph demonstrating the frequency of angina in a post-coronary event patient that had an angioplasty. The same complications were monitored in these patients, with a reported frequency of 0.1% death, 0.02% stroke, 30% readmission to the hospital, and 20% Re PTCA.
+ FIG. 14 shows computer system 1400 configured for use in a medical or clinical health care facility to identify an appropriate post-cardiac event regimen according to a desired patient outcome. An individual patient considering options for pre or post-coronary event treatment, in accord with one embodiment, may review statistical information as show in FIGS. 12 and 13. The patient may complete a survey that provides computer system 1400 with the patient's demographic data, lifestyle, and goals. Computer system 1400 processes this information, categorizes the patient, and provides a comparison of outcomes from similarly situated persons who have previously undergone procedures of the types being contemplated. The report is useful in assisting the patient and medical workers in selecting a clinical procedure that is best for the patient according to the desired outcome, adjusted for demographics.
+Computer system 1400 may include processor 1402, computer memory 1404, and storage unit 1406. In computer system 1400, processor 1402 is communicatively connected to computer memory 1404 and to storage unit 1406 for operating in accord with a mode of selecting a clinical procedure with assistance of statistics pertaining to other outcomes that may be used as a predictive tool. In one embodiment, computer system 1400 is configured for identifying an individual patient's disease state and demographics of the individual patient comprising age, sex, economic burden, living situation, social support, employment status, type of employment, education level, disease severity, symptoms and clinical setting.
+Computer system 1400 may, for example, assess a set of medical information parameters (which may include or consist of âclinical data,â as that term is used in the art) from the individual patient to provide a first data assessment profile and identify the projected health outcome desired by the individual patient based upon said individual patient's preferences and goals. Computer system 1400 may also assess a set of medical information parameters from a population of patients having similar demographics to said individual patient, the population of patients having received different treatments, in providing a library of specific projected health outcomes for each different treatment.
+Upon assessing the medical information parameters from the population of patients, computer system 1400 may select preferred outcomes from the library of specific projected health outcomes that similarly coincide with preferences and goals of the individual patient, present the preferred outcomes to the patient, and select a clinical treatment that has a projected health outcome that is most similar to the individual patient's desired projected health outcome for the patient based on the preferred outcomes. In one embodiment, software 1403 is configured for operatively controlling computer system 1400 and may initially reside in storage unit 1406. Upon initializing computer system 1400, software 1403 may be loaded in computer memory 1404. Processor 1402 may then run software 1403.
+ FIG. 15 shows medical system 1500 configured for identifying an appropriate post-cardiac event regimen for an individual patient considering options for postcoronary event treatment, in accord with one embodiment of the invention. Medical system 1500 may include processor 1504, storage unit 1506, and interface 1508. In medical system 1500, storage unit 1506 is configured for storing group data in a database 1509. The group data may comprise responses to a questionnaire having a plurality of questions regarding quality of life and demographic information. The response may be derived from a plurality of patients having survived a coronary event. A first group of the patients have received a post-coronary event revascularization procedure. A second group of the patients had not received a post-coronary event revascularization procedure. Demographics of the first and second groups of patients may be similar to those of the individual patient. In medical system 1500, interface 1508 is configured for receiving responses to questions from an individual patient. In medical system 1500, processor 1504 is communicatively connected to interface 1508 and to storage unit 1506 for performing statistical analysis on the responses from the plurality of patients and from the individual patient. A comparison of the statistical analysis of the responses from the group of patients and from the individual patient may provide a basis upon which the individual patient may select a post-cardiac event treatment appropriate to the individual patient preferences and goals of the individual patient.
+While the example is given of the selection of a mode of coronary revascularization, other configurations of the present invention may assist, for example, in the cessation of smoking, the institution of an exercise program or compliance with a particular medication regimen. Thus, configurations of the present invention may provide a powerful way of motivating patients to adopt a healthy lifestyle by demonstrating important benefits of lifestyle decisions.
+With further regard to FIGS. 13 and 15, those skilled in the art should appreciate that storage unit 1506 and storage unit 1406 may illustratively represent the same storage memory and/or one or a combination of storage unit 1406 and computer memory 1404 within computer system 1400. Processor 1402 may incorporate functionality including processor 1504, for example.
+ FIG. 16 shows a flow chart illustrating operation 1600 of medical system 1500 (shown in FIG. 15), in accord with one methodology. Operation 1600 commences in step 1602. Processor 1504 identifies an individual patient's disease state and demographics of the individual patient comprising age, sex, economic burden, living situation, social support, employment status, type of employment, education level, disease severity, symptoms and clinical setting, in step 1604. Processor 1504 assesses a set of clinical data (as that term is used in the art) of the individual patient, in step 1606. Processor 1504 identifies the projected health outcome desired by the individual patient based upon said individual patient's preferences and goals, in step 1608. Processor 1504 assesses a set of clinical data from a population of patients having similar demographics to the individual patient to provide a library of specific projected health outcomes for each different treatment, in step 1610. Processor 1504 selects preferred outcomes from the library of specific projected health outcomes that similarly coincide with preferences and goals of the individual patient, in step 1612. In step 1614, interface 1508 presents the preferred outcomes to the patient, wherein the outcomes are presented, for example, as a function of available treatment options. Processor 1504 selects a clinical treatment having a projected health outcome that is most similar to the individual patient's desired projected health outcome for the patient based on the preferred outcomes, in step 1616. Operation 1600 ends in step 1618.
+Instructions that perform the operation discussed in FIG. 16 may be stored in storage media or computer memory. The instructions may be retrieved and executed by processor 1504. Some examples of instructions include software, program code, and firmware. Some examples of storage media include memory devices, tapes, disks, integrated circuits, and servers. The instructions are operational when executed by processor 1504 to direct processor 1504 to operate in accord with the invention. Those skilled in the art are familiar with instructions and storage media.
+ FIG. 17 shows a flow chart illustrating operation 1700 of medical system 1500 (shown in FIG. 15), in accord with one methodology. Operation 1700 commences in step 1702. Processor 1504 identifies the disease state and demographics of the individual patient, in step 1704. The demographics may include age, sex, economic burden, living situation, social support, employment status, type of employment, education level, disease severity, symptoms and clinical setting. Processor 1504 assesses a set of clinical data from the patient to provide a first data assessment profile, in step 1705. Processor 1504 assesses a set of clinical data from a first population of patients to provide a first reference data assessment profile, in step 1710. Processor 1504 assesses a set of clinical data from a second population of patients to provide a second reference data assessment profile, in step 1712. Processor 1504 assesses a set of clinical data from a third population of patients to provide a third reference data assessment profile, in step 1708. The first, second, and third populations may have similar demographics as the individual patient and differing treatments such as revascularization. Processor 1504 projects the patient's survival and quality of life probability of the individual patient from any number of clinical options. For example, first, second, and third reference data assessment profiles grouped by type of revascularization procedure may be statistically profiled by a processing algorithm to respectively provide first, second, and third projected post-procedural outcomes for the patient prospectively based upon statistics from other patients who have undergone the respective vascularization procedures and/or treatments, in steps 1714, 1716, and 1718. The revascularization procedures may include a coronary artery bypass grafting (CABG) procedure and assessing a set of medical information parameters from a second population having had a Percutaneous Coronary Intervention (PCI) procedure. The treatment may include, for example, an anti-coronary disease medication, diet modification, herbal remedy, or other non-surgical intervention procedure. Processor 1504 compares the first projected post-procedural outcome to the second projected post-procedural outcome, in step 1720. Processor 1504 selects an appropriate revascularization procedure for the individual patient in response to the step of comparing the projected first to the second projected post-procedural outcome, in step 1722. Operation 1700 ends in step 1724.
+ FIG. 18 shows a flow chart illustrating step 1705 of operation 1700, in accord with one methodology. Step 1705 commences through entry point 1801, designating a specific processing algorithm, for example, one operating off of expert rules or a self training algorithm such as a neural network that associates outcomes with clinical procedures. Processor 1504 assesses the individual patient's data, in step 1802. Step 1705 exits through exit point 1803.
+ FIG. 19 shows a flow chart illustrating step 1710 of operation 1700, in accord with one methodology. Step 1710 commences through entry point 1901. Processor 1504 may collect the first data assessment profile of the first group of patients, in step 1902. Processor 1504 may select the CABG revascularization procedure, in step 1905. Step 1710 exits through exit point 1903.
+ FIG. 20 shows a flow chart illustrating step 1712 of operation 1700, in accord with one methodology. Step 1712 commences through entry point 2001. Processor 1504 may collect the second data assessment profile of the second group of patients, in step 2002. Processor 1504 may select the PCI revascularization procedure, in step 2004. Step 1712 exits through exit point 2003.
+ FIG. 21 shows a flow chart illustrating step 1720 of operation 1700, in accord with one methodology. Step 1720 commences through entry point 2101. Processor 1504 may perform a statistical analysis on the individual patient quality of life profile, in step 2102. Then from the subset of the group data statistical analysis may indicate to the individual patient an appropriate post-cardiac clinical regimen. Processor 1504 may compute a statistical average that indicates the appropriate post-cardiac clinical regimen based on the statistical analysis, in step 2104. Processor 1504 may compute a statistical deviation about the average, in step 2106. Step 1720 exits through exit point 2103.
+ FIG. 22 illustrates an intranet system 2200 including a server 2202 that may be configured with program instructions and data to implement the foregoing instrumentalities, such as the process 100 of FIG. 1, the medical system 1000 of FIG. 10, operation 1100 of FIG. 11, operation 1600 of FIG. 16, and/or operation 1700 of FIG. 17. Intranet system 2202 may, for example, be a proprietary local area network or a wide area network. Server 2202 is connected with a plurality of users 2204 who are able to access the server 2202 for statistical processing of information. Connections 2206, 2208, and 2210 may be any type of data connection including wireless connection, coaxial connection, optical connection, Internet connection, or other type of connection across any geographic area. The intranet 2200 may be implemented in a local hospital or in a plurality of local hospitals across a city, a state, a nation, or countries throughout the world. The users 2204 are each provided with suitable electronic equipment for establishing these connections, such as a personal computer or PDA. This equipment is preferably adapted for compatibility with other extant systems, such as billing systems, patient information systems, emergency response systems, and barcoding identification and tracking systems for patients and materials.
+The server 2202 may, for example, store group data 1010 and/or may provide back-up storage for individual medical evaluation systems 1400, as discussed above. Additionally, server 2202 may provide a local agent or translator for a plurality of individual medical evaluation systems 1400 to exchange information.
+Server 2202 provides centralized control under the supervision of an administrator 2212. A research agency 2214 generates statistical models of any type that may relate validated statistical models with human responses to status questionnaires for any purpose. For example, the statistical model may be used to provide a prognostic indication of a health outcome or to assist a patient in selecting a therapeutic modality, as described above. The program instructions configuring server 2202 for use towards these ends are capable of accepting new models for different purposes, where these models are provided by the research agency 2214. In this manner, the research agency is able to provide updates to existing models that have been revalidated and/or expanded by comparing outcomes and demographics to survey responses. Additionally, the research agency may provide new models that may be selected by users 2204 to meet a particular need in the intended environment of use. One benefit of the administrator 2212 using the services of research agency 2214 is that the server 2202 receives the benefit of extremely specialized expertise in the creation, validation, and maintenance of the statistical models and questionnaires. For example, it is a usual business reality that a single hospital deploying intranet 2200 would not have internal access to this level of expertise. Services of the research agency 2214 may, for example, be contracted for on a subscription basis or an access basis.
+ FIG. 23 illustrates an Internet system 2300, which is one embodiment of Intranet system 2200 shown in FIG. 22. Research agency 2214 provides the aforementioned services to one proprietary intranet 2200, as describe in context of FIG. 22, and to a different proprietary intranet 2200 which is identical to intranet A, as well as any number of other proprietary intranets (not shown). Access to research agency 2214 is provided via the Internet 2302. A single user 2304 may also access research agency 2214, for example, from a geographically isolated medical clinic in a rural area. Internet system 2300 enables a user community, such as users associated with intranet 2200, 2200A, and user 2304 to access a bulletin agent 2306 in sharing information, such as experiences, cautionary warnings, feedback, and observations. Research agency 2214 may choose to respond to this flow of information by updating and disseminating program instructions and/or statistical models among the user community, as the need arises. In some configurations of the present invention, servers 2200A are operated by an intermediary agency, and users 2204A and 2304 communicate with a server 2200A via a local network, an intranet, or via the Internet or other public or private, wired or wireless network. In turn, server 2200A communicates with server 2202.
+One benefit of Internet system 2300 is that the user community may assist and facilitate research and/or statistical validation efforts on behalf of the research agency 2214. For example, if a new statistical model is published in a scientific paper, the research agency may be provided access to a pool of demographic and health outcome information stored in the respective intranets 2200 and 2200A. This data may be used to improve the statistical model and/or expand the modelâsuch as by inverting the model to create a prognostic tool.
+An optional feature of Internet system 2300 is to provide direct monitoring of a plurality of patients 2308. Each patient may use a personal computer to periodically access one of server 2202, 2202A, or research agency 2214 for processing of health questionnaire responses. Computer-assisted processing of these responses according to a system of expert rules, for example, as defined by a cardiologist or made in reference to documented risk factors, may provide a reply to the patient indicating a recommendation. A patient may be informed of an increased risk or change in status.
+In some configurations, a method for supplying information using, for example, an Internet or other networked system 2300 includes operating, or contracting with an agent to operate server 2202 to communicate via one or more networks (in this example, the Internet 2302) with a research agency 2214 and an intermediary agency (not explicitly shown in the figures, but an agency operating server 2200A, for example). In addition, the method further includes contracting with research agency 2214 to supply to server 2202, via at least one of the networks (e.g., 2302), statistical models each using one or more parameters. The models are configured, for example, to determine statistical outcomes of at least one course of procedure, for example, bypass surgery. Other examples of models are those configured to determine outcomes of non-treatment, and those configured to determine risks of developing a pathological condition later in life. The method further includes contracting with the intermediary agency for the intermediary agency to receive, on request from the intermediary agency (e.g., via its server or servers 2200A via at least one of the networks, e.g., 2302), parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results, and with default values of parameters when such default values are available. By âreduced redundancy,â it is meant herein that, where common parameters exist between a plurality of models, and/or where functions of one or more parameters completely determine the values other parameters (e.g., birthday and either age or âyears since 40th birthdayâ), only one request for the same parameter is made and/or parameters not required because they are determinable from other parameters are not requested.
+The intermediary agency is also contracted to receive and reformat the parameters list and default values, when available, for retransmission to end users (e.g., 2204A, 2304) or their agents as queries, to transmit information received in response to the queries to server 2202 for processing the requested models, to receive statistical results from the models (at server 2200A, for example), and to reformat the results and transmit the reformatted results to end users 2204A, 2304 or their agents.
+In some configurations of the present invention, the operator of server 2200A or the operator's agent performs the functions contracted to the research agency and/or intermediary agent, thus eliminating the need for the research agency and/or intermediary agent and their respective contracts. For example, a system may be used to deploy the operator's own models either directly to physicians over the Internet or other public or private, wired or wireless network, or published as (for example) XML web services for consumption of third party vendors.
+In some configurations of the present invention, contracting with the research agency further includes contracting with the research agency to supply updated models to server 2200 at mutually agreed-to intervals. The intervals need not be periodic. For example, the intervals may be aperiodic or defined by the occurrence of an event, such as the publication of a new model or the availability of a predetermined number of statistical observations.
+In some configurations, contracting with the intermediary agency includes agreeing to provide structured lists of parameters and default values (e.g., XML-formatted lists or lists formatted in another structured form, e.g., comma, space, tab, and/or line break delimited data or tables or data and/or tables delimited in another specified manner), when default values are available. The contract can also include the intermediary agency agreeing to provide reformatted results embedded in a format customized dependent upon which of end users 2204A, 2304 or their agents is to receive the reformatted results. For example, end users 2204A may work at a different hospital or clinic than user 2304, and thus receive a result which, when printed, includes a different letterhead or contact information. In some configurations, the customized format is an informed consent agreement between a medical provider and a medical patient.
+In some configurations, end users 2204A, 2304 are medical providers, patients, purchasers, payers, or combinations thereof (The term âend users or their agentsâ is intended to encompass these entities and combinations thereof.) Also, the courses of procedures modeled include at least one of medical procedures, medial treatments, medical procedures combined with medical treatments, and refraining from both a medial treatment and a medical procedure (i.e., doing nothing medical to treat a condition).
+In some configurations of the present invention, contracting with the research agency includes agreeing that the research agency will provide access to a medical database of information relating to specific patients to allow default values of parameters to be obtained. Also, in some configurations, contracting with the intermediary agency includes agreeing that the intermediary agency will transmit medical data relating to specific patients back to server 2202 and allow the medical data to be provided as default data when a subsequent request is received at the server regarding the specific patient, and this configuration also includes transmitting the default parameter data from server 2202 to the intermediary, e.g., to the intermediary agent's server 2200A.
+Some configurations of the present invention include, before sending, to the intermediary agency via at least one of the networks (e.g., Internet 2302), parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results, analyzing the request from the intermediary agency to determine common parameters between the models invoked in the request and transmitting a list of parameters (to be filled in by the users and/or with default values that can be changed by users) sufficient to process a plurality of the requested models without transmitting any repeated parameter (i.e., a parameter used in more than one requested model) more than once.
+In some configurations of the present invention, the contract with the intermediary agent provides that the intermediary supply HTML or WML-formatted pages to end users 2204A, 2304 or their agents, including lists of the parameters and the default values. Where at least some end users or their agents select courses of action corresponding to requested models and an outcome resulting from the course of action is achieved (whether the outcome was desired and expected or otherwise), some configurations also include contracting with the intermediary agent for the intermediary agent to receive information concerning the selected courses of action and the resulting outcomes and for the intermediary agent to transmit these results to the server (e.g., server 2202) for further analysis and model revision. The further analysis and model revision may be performed in some configurations after a transmission of the results from server 2202 to research agency 2214 and be performed by research agency 2214. Thus, in some configurations, contracting with the research agency further includes contracting for research agency 2214 to receive information concerning the selected courses of action and the resulting outcomes via server 2202, for example, and for the research agency to analyze and revise models using the received information concerning the selected courses of action and the resulting outcomes, and to transmit the revised models to server 2202.
+Also in some configurations, a method for risk-stratifying individual patients is provided that includes contracting with a research agency 2214 for research agency 2214 to create statistical health models configured to provide model results including patient risk assessments using health query responses, health parameter data, or both. The method also includes operating a server 2202 to store instructions to receive requests to use the models, to distribute requests for data used by the models, and to apply a redundancy reduction procedure to the requests for data when a plurality of models are requested that pertain to a single patient, to analyze data received in response to the requests, and to transmit results from the analysis. The redundancy reduction procedure is a program or sequence of instructions that removes or reduces requests for duplicated parameters between requested models and/or requests for functions of parameters that can be calculated using only other requested parameters. The method further includes contracting with an intermediary agency for the intermediary agency to receive model requests from users 2204A, 2304, to transmit the model requests to server 2202 to, upon such request, use the stored instructions relating to the model, to disseminate reduced redundancy requests for data relating to requested models, and to transmit data received in response to the data requests to server 2202. The intermediary is also contracted to receive the transmitted results from the analysis, and to format said results from the analysis for transmission to users 2204A, 2304. In some configurations, this method further includes contracting with research agency 2214 to update the models and/or contracting with research agency 2214 to expand the statistical model to accommodate additional health outcomes. Also, some configurations include contracting with research agency 2214 to supply models for a plurality of diseases.
+In yet additional configurations, the present invention includes a statistical processing system that includes a server 2202 operably configured with program instructions implementing a plurality of statistical models to at least one of (a) predict a health outcome based on questionnaire responses, (b) assist a patient's choice of therapeutic modality based on questionnaire responses, and (c) assess a health risk or status based on questionnaire responses. The system further includes a research agency 2214 communicating with server 2202 and contracted to provide the statistical models using a visual interface communicated by server 2202. Server 2202 is configured to analyze requests received from users 2204 over the Internet 2302, an intranet, or another network that relate to a plurality of the statistical models and to reduce redundancy in requests for patient data. Also, in some configurations, the statistical processing system further includes server 2202 operatively configured to present medical information questions to a user 2204 for human response and for receiving human responses to the medical information questions. Further, in some configurations, the statistical processing system has program instructions that are configured to assign a percentage range associated with likelihoods of encountering adverse outcomes.
+In some configurations of the present invention, contracts are not issued to separate research agency and/or a separate intermediary agency, and the operator of server 2202 or a related party performs the functions of either or both of the separate agencies. For example in some configurations, the operator of server 2202 provides, in server 2202, statistical models each using one or more parameters, the models configured to determine statistical outcomes of at least one course of procedure or of non-treatment, or risks of developing a pathological condition later in life. The intermediary agency is contracted as described above. In some other configurations, the research agency is contracted as described above, but the functions described above as being contracted to the intermediary agency are performed by the operator of server 2202. These functions do not necessarily require communication with users via remote servers (such as 2202A) connected to a network (i.e., the functions can be performed by server 2202 in some configurations), but the operator can do so if desired. For example, in some configurations of the present invention the operator operates, or contacts with an agent to operate a server to communicate via one or more networks with a research agency and with either end users or their agents. This method also includes contracting with the research agency for the research agency to supply to the server, via at least one of the networks, statistical models each using one or more parameters, wherein the models are configured to determine statistical outcomes of at least one course of procedure or of non-treatment, or risks of developing a pathological condition later in life. The operator receives, via at least one of the networks, requests for use of the statistical models and constructs parameter lists with reduced redundancy sufficient to apply the requested statistical models to produce model results and with default values of parameters when such default values are available. These reduced redundancy parameter lists and default values, when available, are transmitted to end users or their agents as queries. The operator receives information in response to the queries for processing in the requested models, and transmits statistical results of the models to the end users or their agents.
+It will be appreciated that patient outcomes following clinical procedures selected with the assistance of system 1700 may be monitored by the medical evaluation system 1400, for example, using the Seattle Angina Questionnaire (SAQ) and the Kansas City Cardiomyopathy Questionnaire (KCCQ). The patient self assessment data from these questionnaires may be used as feedback into system 1700 to facilitate better selections of clinical procedures, e.g., to assess the statistical likelihood of accomplishing the patient's desired goals from the clinical procedure. By way of example, one procedure versus another may have a different level of mortality risk that might be incurred for relatively small benefit. The patient would be able to assess whether the benefit of the riskier procedure is worth taking that risk. The patient might also be told, for example, what percentage of patients in their position of selecting a particular clinical procedure, with analogous goals, were ultimately satisfied with the selected procedure in terms of accomplishing the intended goals, or what percentage in hindsight would select a different procedure.
+Other technical effects of configurations of the present invention include the generation of visual displays and printed reports useful for decision making in various fields. Thus, In some configurations of the present invention and referring to FIG. 24, a computer network 2400 is configured for providing decision support. Decision support computer network 2400 may be used, for example, in a medical or clinical health care environment to identify an appropriate regimen for treatment of a medical condition. However, uses for computer network 2400 are not limited to the health field. To give but one of many examples, decision support computer network 2400 is useful in an advertising environment to determine strategies for marketing products. More generally, computer network 2400 is useful in many varied contexts in which statistical regression models can be used to predict outcomes.
+In some configurations, computer network 2400 comprises a server computer 2402 that executes a server module. The server module comprises software instructions recorded on a machine-readable medium or media 2404. The machine readable medium or media may comprise, for example, one or more floppy diskettes, CD-ROMs, CD-RWs, DVDs, DVD+Rs, DVD-Rs, DVD+RWs, DVD-RWs, memory devices such as USB memory sticks or other types of memory cards, internal readable and writable memory 2406 of any of various kinds, such as internal or external RAM, etc., read-only memory (ROM) 2408 of any of various kinds, hard disks, optical drives, and combinations thereof. (As used herein, âmediaâ includes not only âremovableâ media, but also ânon-removableâ media such as primary and secondary storage. For example, RAM, ROM, and hard disk drives are included as âmedia,â as well as the aforementioned types of media.) Server computer 2402 can include devices (not specifically illustrated in FIG. 24) for reading removable media, such as a CD-ROM drive, a DVD drive, a floppy disk drive, etc. In many configurations, server computer 2402 will comprise at least a readable and writeable memory 2406, read-only memory 2408 or non-volatile memory of a suitable type, and a processor 2410 (e.g., a central processing unit or CPU) which may itself comprise one or more microprocessors, coprocessors, etc. Thus, the term âprocessor,â as used herein, is not literally restricted to a single CPU. Moreover, server computer 2402 may itself comprise a network of one or more computers, as can any other device referred to as a âcomputerâ herein.
+Computer network 2400 further comprises one or more first client computers 2412. In many configurations, it is in communication with server computer 2402 via a network 2413, for example, the Internet. In many configurations of the present invention, Client computer 2412 comprises a first client module comprising software instructions recorded on a machine-readable medium or media 2414. In many configurations, client computer 2412 further comprises at least a readable and writable memory 2416, read-only memory 2418, and a processor 2420 that may itself comprise one or more microprocessors, coprocessors, etc. First client computer 2412 may itself comprise one or more computers in a network. First client computer 2412 further comprises a first user display device 2422, such as a CRT display, LCD display, plasma display, and/or a hardcopy device such as a printer. First client computer 2412 also comprises a first user input device 2424, such as a keyboard, a mouse, a touch screen (which may be part of display 2422), and/or a trackball, etc.
+Computer network 2400 further comprises one or more second client computers 2426. In many configurations, second client computer 2426 is in communication with server computer 2402 via network 2413. Also in many configurations, second client computer 2426 comprises a second client module comprising software instructions recorded on a machine-readable medium or media 2428. In many configurations, second client computer 2426 further comprises at least a readable and writable memory 2430, read-only memory 2432, and a processor 2434 that may itself comprise one or more microprocessors, coprocessors, etc. Second client computer 2426 may itself comprise one or more computers in a network. Second client computer 2426 further comprises a second user display device 2436, such as a CRT display, LCD display, plasma display, and/or a hardcopy device such as a printer. Second client computer 2426 also comprises a second user input device 2438, such as a keyboard, a mouse, a touch screen (which may be part of display 2436), and/or a trackball, etc.
+As used herein, software instructions are said to âinstruct a computer to displayâ information even if such information is communicated via a network to another computer for display on a remote display terminal. In this sense code running on a web server instructs a processor executing that code to âdisplayâ a web page, even though the code actually instructs the processor to communicate data via a network that allows a browser program to instruct another computer to construct a display of the web page on the display of the other computer. For example, the server module described in the examples presented herein can include a web server and the client modules can comprise web browsers. Also, in some configurations, client computers 2412 and 2426 comprise laptop, desktop, or mobile computing devices or communication terminals. The broader scope of the phrase âinstruct a computer to displayâ is used because server computer 2402 and the one or more client computers 2412, 2426 need not necessarily be different computers. For example, communication protocols known in the art allow a server software module and a client software module running on a multitasking computer system to communicate with one another on the same computer system, and the same server software module can also communicate with a client software module running on a different computer via a network connection. The examples used herein assume, without loss of generality, that different physical computers and a network are used, as such will be the case in many, but not all, configurations of the present invention.
+The terms âdisplayâ and âacceptâ as used in the descriptions herein refer to a suitably programmed computing apparatus âdisplayingâ or âacceptingâ data, not to a person âdisplayingâ or âacceptingâ something. A person might, however, view the displayed data on an output device or on a page produced by an output device or supply the accepted data using an input device.
+In some configurations of the present invention, a method is provided to provide decision support via software that comprises the server module. Some configurations of the present invention provide server modules that utilize the ASP.NET platform available from Microsoft Corporation as well as MS Internet Information Services (IIS) and MS SQL Server from Microsoft Corporation for web services and data storage, respectively. A multi-tier system architecture provided in some configurations enables scaling of server module components as needed to meet specific demands of a particular deployment. In addition, a modular design framework is provided in some configurations to facilitate extensibility and incorporation of new functionality via custom modules. In some configurations, the server module is written in C# using the code-behind convention; except for its SQL data access components which are stored procedures written in Transact-SQL.
+More particularly, and referring to FIGS. 25 and 26, a server module 2450 is provided on a machine readable medium or media. In some configurations of the present invention, server module 2450 instructs processor 2410 to perform a method illustrated by flow chart 2500 of FIG. 26. Although the flow charts provided herein are illustrative of configurations of methods used herein, it will be understood that the order of steps shown can be varied from the order illustrated in other configurations of the present invention, that steps illustrated as being separate can be combined (e.g., various displays and requests for data can be combined into a single output screen), and that not all steps illustrated are necessarily required in all configurations.
+A technical effect is achieved first by a user logging in with appropriate credentials. Server module 2450 instructs processor 2410 to display, at 2502, a visual selection of parametric regression model forms (on user display device 2422, for example). (An example of such a display is shown in FIG. 27.) A general regression model framework is used for expressing predictions. The model types can include, for example, linear, generalized linear, cumulative multinomial, generalized multinomial and proportional hazard models, thereby providing coverage for major medical prognostic model types. For example, the selection may include a linear regression model of the form f(x)=Î²1x1+Î²2x2+Î²3x3+ . . . +Î²nxn as well as intrinsically non-linear forms and forms that are linear in transformed variables, e.g., x1=ln(y), where y is an input variable. Some configurations provide the ability to implement custom model types using a built-in scripting interface. The visual display of model type is associated with a drop-down list in some configurations, for example, and the visual display of model type changes depending upon the item selected from the drop-down list.
+Model types are defined in terms of a coefficient vector and an optional covariance matrix for calculating confidence intervals. For example, the coefficient vector and covariance matrix are defined as follows:
+In the definitions above, biâ²=(bi1 bi2 . . . bis) is the vector of coefficients associated with the ith predictor in x, with one coefficient for each state s (except the reference state). Also, vikjl=Cov(bik,bjl) denotes the covariance between the (ith predictor, kth state) and (jth predictor, lth state) coefficients.
+The user at client computer 2412 enters a selection of a model type (for example, a selection of one of the following model types: linear, generalized linear, cumulative multinomial, generalized multinomial or proportional hazard model) from a visual menu. (âVisualâ displays and menus include one or more elements such as graphical illustrations, drop-down lists, selection buttons, checklists, etc.) Server computer 2402 is programmed with instructions by the server module to accept this selection at step 2504. Next, at step 2506, instructions in the server module instruct processor 2410 to display a request or requests for an outcome type and one or more regression model parameter names (e.g., in a medical or surgical environment, âblood pressure,â âdiabetes,â âejection fraction,â and/or other statistically significant parameters) and corresponding parameter types (for example, and not necessarily in correspondence to the example parameter names, âbinary,â âenumerated,â âpositive integer,â âdecimal,â etc.) and, in appropriate cases, limits and/or lists of possible input values. An example of an outcome type screen is shown in FIG. 5 and an example of a parameter name screen is shown in FIG. 29. At step 2507, some configurations of the present invention also display a visual selection of at least some of the parameter names along with a visual selection of mathematical transforms for each displayed name. The user selects a transform, which can include, for example, logarithms, exponentials, squares, square roots, and other transformations, so that these functions of the values later used for each corresponding variable name are used in the regression equation instead of the variables themselves.
+At step 2508, these names, types, limits and/or transforms are accepted by processor 2410. At step 2510 (which may be combined with step 2508), values of the coefficients for the selected regression model type and outcome are obtained. In some configurations, these values are obtained by requesting that they be input by a user at first client computer 2412. In other configurations, they are obtained by instructions to processor 2410 to run a regression analysis on data obtained from a database 2440, which may be a local database stored in computer 2404 or a database accessible via a network such as network 2413. The outcome, associated coefficients and accepted names, types, and limits for variables are stored in a memory (e.g., memory 2406 or a secondary storage unit) of server computer 2406 at step 2512.
+In some configurations, the procedure represented by flow chart 2500 can be repeated when necessary to add further outcome models representing different combinations of variables for different procedures, such as medical or surgical procedures. Some configurations further allow the editing and/or deletion of stored models.
+Referring next to flow chart 3000 of FIG. 30, server module 2450 also contains instructions configured to instruct processor 2410 to allow a user (usually different from the user at first client computer 2412) at second client computer 2426 is logged into the server module. The user at second client computer 2426 is able to select one or more of the stored models, input data corresponding to the stored models, run a regression analysis and be presented with results of the regression analysis or analyses. More particularly, at step 3002, processor 2410 is instructed to display a visual selection of previously stored regression models on second user display device 2436 by communicating data via network 2413 with a program (e.g., a web browser) running on second client computer 2426. An example of a display that provides a visual selection of previously stored models is shown in FIG. 31. A user at second client computer 2426 uses second user input device 2438 to indicate a selection of one or more of the displayed regression models, which is communicated to processor 2410 via network 2413, and processor 2410 is instructed to accept this selection at step 3004. At step 3006, the server module determines common regression module parameter names between the one or more selected, stored regression models so that redundant requests for parameters can be eliminated or reduced. By a âreduced redundancyâ of parameters, it is meant herein that common parameters between models and/or parameters that are functions derivable from other parameters, do not result in an unnecessary plurality of requests for similar data.
+Thus, at step 3008, the server module displays a request or requests for parameters that correspond to the regression model parameter names in the set of all such names stored for all the selected regression models at step 3004. An example of such a displayed request is shown in FIG. 32. The server module accepts the collected parameter data at 3010 (which may also include an identification of a person or object to which the parameters apply) and runs the selected regression models. At step 3012, results of the selected regression models are displayed. An example of such a display is shown in FIG. 33. The displayed results can also include a visual representation of a statistical range. In some configurations, at step 3014, processor 2410 is instructed to use customizable letterhead data, previously stored in a memory or database accessible to processor 2410 and optionally including return addresses, logos, etc. to print the results or to cause the results to be printed. The server module can include instructions to print different letterheads depending upon credentials (e.g., login information) provided by the current user. Also, in some configurations, instructions to processor 2410 at step 3016 cause processor 2410 to store parameters accepted at step 3010 and an indication of the person or object to which the parameters apply in a memory or database (such as memory 2404) accessible to processor 2410. Instructions in the server module are provided to instruct processor 2410 to provide default values for the stored parameters when outcome results of the same or different type are requested for that person or object at a different time.
+More particularly, at runtime, collected model parameters (i.e., user inputs) are serialized into a Predictor Vector:
+
+
+
+
+
+x
+â²
+
+=
+
+
+(
+
+
+x
+1
+
+â¢
+
+x
+
+2
+â¢
+
+ 
+
+
+
+â¢
+â¦
+â¢
+
+ 
+
+â¢
+
+x
+r
+
+
+)
+
+=
+
+{
+
+
+
+
+(
+
+l
+â¢
+
+ 
+
+â¢
+
+z
+â²
+
+
+)
+
+
+
+Intercept
+
+
+
+
+
+z
+â²
+
+
+
+NoIntercept
+
+
+
+
+
+
+
+
+
+where z is the transformed response vector, each of whose elements correspond to a single data item (e.g., systolic blood pressure).
+The Linear Predictor is then calculated as
+
+{circumflex over (Î·)}â²={circumflex over (Î·)}1{circumflex over (Î·)}2 . . . {circumflex over (Î·)}s)=(xâ²(e 1 âb)xâ²(e 2 âb) . . . xâ²(e s âb))
+
+in which each ei is an extraction vector derived from the appropriate Extraction Matrix:
+
+
+
+
+E
+=
+
+[
+
+
+
+
+e
+1
+â²
+
+
+
+
+
+
+e
+2
+â²
+
+
+
+
+
+â®
+
+
+
+
+
+e
+3
+â²
+
+
+
+
+]
+
+
+
+
+
+where each row eiâ² identifies the relevant sub-vector of b and the sub-matrix of V needed to predict the ith independent parameter of the predictand. The exact form of E is dependent on the model type (see Table 4).
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+
+
+
+TABLE 4
+
+
+
+
+ 
+
+
+Extraction Matrices
+
+
+
+
+ 
+Model Type
+Intercept
+No Intercept
+
+
+ 
+ 
+
+
+ 
+Linear
+11x(r+1) 
+11xr 
+
+
+ 
+Generalized
+11x(r+1) 
+11xr 
+
+
+ 
+Linear
+ 
+ 
+
+
+ 
+Cumulative
+[Isxs 1sxr]
+[I(sâ1)x(sâ1) 1(sâ1)xr 
+
+
+ 
+Multinomial
+ 
+ 
+
+
+ 
+ 
+
+
+ 
+Generalized Multinomial
+
+
+
+
+[
+
+
+
+
+I
+
+sxs
+â¢
+
+ 
+
+
+
+â¢
+â¦
+â¢
+
+ 
+
+â¢
+
+I
+sxs
+
+
+ï¸¸
+
+
+r
++
+
+1
+â¢
+
+ 
+
+â¢
+times
+
+
+
+]
+
+
+
+
+
+
+
+
+[
+
+
+
+
+I
+
+sxs
+â¢
+
+ 
+
+
+
+â¢
+â¦
+â¢
+
+ 
+
+â¢
+
+I
+sxs
+
+
+ï¸¸
+
+
+r
+â¢
+
+ 
+
+â¢
+times
+
+
+]
+
+
+
+
+
+
+ 
+ 
+
+
+ 
+Proportional
+N/A
+11xr 
+
+
+ 
+Hazards
+
+
+ 
+ 
+
+
+
+
+
+In the table above, I denotes the identity matrix (i.e., a matrix with all diagonal entries=1 and all off-diagonal entries=0), and 1 denotes a matrix of all 1s.
+The Prediction Vector containing the outcome point-estimate(s) is then given by
+
+{circumflex over (Î¼)}=g â1({circumflex over (Î·)})
+
+where gâ1 is the appropriate inverse link function (see Table 5). The Linear Predictor Variance Vector is given by
+
+{circumflex over (Ï)}â²2=(xâ²(e 1 âV)xxâ²(e 2 âV)x . . . xâ²(e s âV)x)
+
+from which confidence intervals can be calculated as:
+
+({circumflex over (Î¼)}LO,{circumflex over (Î¼)}HI)=g â1({circumflex over (Î·)}Â±F v â1(1âÎ±/2)â{square root over ({circumflex over (Ï)}2+{circumflex over (Ï)}2)})
+
+where Fv â1 is the inverse t-distribution function with v degrees of freedom at confidence level Î± and {circumflex over (Ï)}2 is the mean square error ({circumflex over (Ï)}2 defined only for linear models).
+
+
+
+ 
+
+ 
+ 
+ 
+
+
+
+TABLE 5
+
+
+ 
+
+
+Inverse Link Functions
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+Identity
+Î¼ = Î·
+
+
+ 
+Log
+Î¼ = eÎ· 
+
+
+ 
+Logit
+Î¼ = (1 + eâÎ·)â1 
+
+
+ 
+Probit
+Î¼ = Î¦(Î·)*
+
+
+ 
+ 
+
+
+ 
+Power
+
+
+
+
+Î¼
+=
+
+{
+
+
+
+
+Î·
+
+1
+/
+Î»
+
+
+
+
+
+
+if
+â¢
+
+ 
+
+â¢
+Î»
+
+>
+0
+
+
+
+
+
+
+â
+Î·
+
+
+
+
+
+if
+â¢
+
+ 
+
+â¢
+Î»
+
+=
+0
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+ 
+Complementary
+Î¼ = 1 â eâeÎ· 
+
+
+ 
+log-log
+ 
+
+
+ 
+Compulative
+Ï1 = (1 + eâÎ·1)â1 i = 1, . . . , s
+
+
+ 
+logitâ  
+ 
+
+
+ 
+Comulative
+Ï1 = Î¦(Î·1)â¢ i = 1, . . . , s
+
+
+ 
+probitâ  
+ 
+
+
+ 
+Comulative
+Ï1 = 1 â eâe  rH  i = 1, . . . , s
+
+
+ 
+complementary
+ 
+
+
+ 
+log-logâ  
+ 
+
+
+ 
+ 
+
+
+ 
+Generalized logit
+
+
+
+
+
+Î¼
+i
+
+=
+
+{
+
+
+
+
+
+
+â
+
+Î·
+â¢
+
+ 
+
+â¢
+1
+
+
+â¡
+
+(
+
+1
++
+
+
+â
+
+j
+=
+1
+
+s
+
+â¢
+
+â
+
+Î·
+â¢
+
+ 
+
+â¢
+1
+
+
+
+
+)
+
+
+
+-
+1
+
+
+
+
+
+
+i
+=
+1
+
+,
+â¦
+â¢
+
+ 
+
+,
+s
+
+
+
+
+
+
+
+(
+
+1
++
+
+
+â
+
+j
+=
+1
+
+s
+
+â¢
+
+â
+
+Î¼
+â¢
+
+ 
+
+â¢
+j
+
+
+
+
+)
+
+
+-
+1
+
+
+
+
+
+i
+=
+
+s
++
+1
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+ 
+Proportional
+Î¼ = Sj eÎ· 
+
+
+ 
+hazards
+
+
+ 
+ 
+
+
+ 
+ â For multi-state modules, Î¼1 = 
+
+
+ 
+     Î¼ 1  =  {     Ï 1     i = 1        Ï 1  -   â  j = 1   i - 1   â¢  Ï j        i = 2  , â¦ â¢     , s       1 -   â  j = 1   i - 1   â¢  Ï j       i =  s + 1         
+*Î¦ is the standard normal distribution function
+
+
+
+
+
+In various configurations of the present invention, model building is greatly facilitated by a visual editing environment that provides dynamic on-screen instructions and rendering of prediction formulae as well as robust validation services. Parameters are identified that are used in a prediction formula. New parameters can be created de novo or selected from an existing parameter library (thereby allowing for standardization of parameter definitions across all models).
+Once parameters have been defined, one or more data transformations can be assigned to each. A broad array of built-in transformation types are available to the user, and custom transformation types can be readily defined via scripting, allowing configurations of the present invention to handle a wide range of complex formulae.
+Main effects and interaction terms derived from the input parameters and their transformations can be derived in some configurations of the present invention, and regression coefficients for calculating point estimates for outcome of interest and optional covariance estimates can be provided for computing confidence intervals.
+Once models have been built and deployed, health care providers (or, in other environments, other individuals) can readily access them through an integrated and customizable portal interface using a variety of web-enabled devices. Dynamically generated data entry screens are provided based on the parameters required by the selected model(s). For example, in medical environments, data for patients can either be entered de novo or retrieved from a patient information system, which can be readily integrated with existing clinical information systems via XML web services support.
+Some configurations of the present invention render model outputs in a variety of graphical and non-graphical formats, including solid bar plots, gradient bar plots, whisker line plots, pie charts, and/or digital LED-style displays, which can be user-selectable. Output from multiple models can be grouped onto a single plot to facilitate inter-model comparisons (for example, stroke risk with angioplasty versus bypass surgery). In addition, some configurations allow a user to customize the output plot style, the selection of models to include in a final output and the display of confidence intervals (when model covariance data has been provided). In various configurations, users can print outcome plots using customizable report templates in order to generate documents such as patient educational materials and informed consent sheets. Also in some configurations, outcomes researchers can customize report and page content using a built-in Microsoft WordÂ®-like interface or by editing HTML code. A feature rich set of portal content modules, including workgroup directories, discussion threads, and document repositories can be provided in server module configurations of the present invention to allow outcomes research groups to easily create, manage, and build their own collaborative web sites.
+It will thus be appreciated that configurations of the present invention can be used to handle various aspects of data collection, validation, storage/retrieval, and processing, thereby freeing outcomes researchers from intricacies of programming and networking so that they may focus their efforts upon implementation of their research models towards the betterment of patient care.
+While the invention has been described in terms of various specific embodiments, those skilled in the art will recognize that the invention can be practiced with modification within the spirit and scope of the claims.

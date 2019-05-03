@@ -1,0 +1,4855 @@
+Training-free generic object detection in 2-D and 3-D using locally adaptive regression kernels 
+US-8559671-B2
+The Regents Of The University Of California
+2013-10-15
+https://patents.google.com/patent/US8559671B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+This application is a 371 of PCT Patent Application PCT/US2009/006616 filed Dec. 16, 2009, which claims the benefit of U.S. Provisional Application 61/203,183 filed Dec. 18, 2008.
+STATEMENT OF GOVERNMENT SPONSORED SUPPORT
+This invention was made with Government support under contract FA9550-07-1-0365 and F49620-03-1-0387 awarded by Air Force Office of Scientific Research. The Government has certain rights in this invention.
+FIELD OF THE INVENTION
+The invention relates generally to imaging technologies. More particularly, the invention relates to generic detection/localization/recognition algorithm capable of searching for a visual object of interest without training.
+BACKGROUND
+Analysis of visual objects in images is a very important component in computer vision systems, which perform object recognition, image retrieval, image registration, and more. Areas where such systems are deployed are diverse and include such applications as surveillance (security), video forensics, and medical image analysis for computer-aided diagnosis, to mention just a few. In particular, the object recognition problem has attracted much attention recently due to the increasing demand for developing real-world systems.
+Recognition is mainly divided into two parts: category recognition (classification) and detection/localization. The goal of object category recognition is to classify a given object into one of several pre-specified categories, while object detection is to separate objects of interest from the background in a target image. In the current literature, a popular object recognition paradigm is probabilistic constellation or parts-and-shape models that represent not only the statistics of individual parts, but also their spatial layout. These are based on learning-based classifiers that require an intensive learning/training phase of the classifier parameters and thus are called parametric methods. Object detection is also a critical part in many applications such as image retrieval, scene understanding, and surveillance system; however it is still an open problem because the intra-class variation makes a generic detection very complicated, requiring various types of pre-processing steps. The sliding window scheme is usually used by taking the peak confidence values as an indication of the presence of an objet in a given region. Most recent successful localization methods rely on this technique, but these too still required a training phase. Recently, the recognition task with only one query (training-free) has received increasing attention for important applications such as automatic passport control at airports, where a single photo in the passport is the only example available. Another application is in image retrieval from the web. In the retrieval task, a single probe or query image is provided by users and every gallery image in the database is compared with the single probe, posing an image-to-image matching problem. Recently, the face image retrieval task led to intensive activity in this area, culminating in FRGC (Face Recognition Grand Challenge). More generally, by taking into account a set of images, which represents intra-class variations, more robust object recognition can be achieved. Such sets may consist of observations acquired from a video sequence or by multiple still shots. In other words, classifying an unknown set of images into one of the training classes can be achieved through set-to-image or set-to-set matching without an intensive training phase. As a successful example of set-to-image matching, very recently it has been shown that a trivial nearest-neighbor (NN) based image classifier in the space of the local image descriptors such as SIFT and local self-similarity is extremely simple, efficient and even outperforms the leading learning-based image classifiers.
+A huge number of videos are available online today and the number is rapidly growing. Human actions constitute one of the most important parts in movies, TV shows, and consumer-generated videos. Analysis of human actions in videos is considered a very important problem in computer vision because of such applications as human-computer interaction, content-based video retrieval, visual surveillance, analysis of sports events and more. The term âactionâ refers to a simple motion pattern as performed by a single subject, and in general lasts only for a short period of time, namely just a few seconds. Action is often distinguished from activity in the sense that action is an individual atomic unit of activity. In particular, human action refers to physical body motion. Recognizing human actions from video is a very challenging problem due to the fact that physical body motion can look very different depending on the context: for instance, similar actions with different clothes, or in different illumination and background can result in a large appearance variation; or, the same action performed by two different people may look quite dissimilar in many ways.
+The goal of action classification is to classify a given action query into one of several pre-specified categories (for instance, 6 categories from KTH action dataset: boxing, hand clapping, hand waving, jogging, running, and walking). Meanwhile, action detection is meant to separate an action of interest from the background in a target video (for instance, spatiotemporal localization of a walking person). The disadvantages of learning-based methods are that they require a large number of training examples, and explicit motion estimation.
+In general, the target video may contain actions similar to the query, but these will typically appear in completely different context as shown in FIG. 1 and FIGS. 2( a)-2(b), where FIG. 1 shows hand-waving action and possibly similar actions, and FIGS. 2( a)-2(b) show the action detection problem in FIG. 2( a) given a query video Q, where it is desired to detect/localize actions of interest in a target video T, with T divided into a set of overlapping cubes and FIG. 2( b) shows space-time local steering kernels (3-D LSKs) capturing the geometric structure of underlying data. Examples of such differences can range from rather simple optical or geometric differences (such as different clothes, lighting, action speed and scale changes); to more complex inherent structural differences such as for instance a hand-drawn action video clip (e.g., animation) rather than a real human action.
+Over the last two decades, many studies have attempted to tackle this problem and made impressive progress. Approaches can be categorized on the basis of action representation; namely, appearance-based representation, shape-based representation, optical-flow-based representation, interest-point-based representation, and volume-based representation.
+As examples of the interest-point-based approach, which has gained a lot of interest, videos as spatiotemporal bag-of-words have been considered by extracting space-time interest points and clustering the features, and then using a probabilistic Latent Semantic Analysis (pLSA) model to localize and categorize human actions. Another approach also used spatiotemporal features, where they extended the naive Bayes nearest neighbor classifier, which was developed for object recognition, to action recognition. By modifying the efficient searching method based on branch-and-bound for the 3-D case, they provided a very fast action detection method. However, the performance of these methods can degrade due to 1) the lack of enough training samples; 2) misdetections and occlusions of the interest points since they ignore global space-time information.
+Another approach recently employed a three-dimensional correlation scheme for action detection. They focused on sub-volume matching in order to find similar motion between the two space-time volumes, which can be computationally heavy. A further approach uses boosting on 3-D Haar-type features inspired by similar features in 2-D object detection. While these features are very efficient to compute, many examples are required to train an action detector in order to achieve good performance. They further proposed a part-based shape and flow matching framework and showed good action detection performance in crowded videos.
+One approach generalized canonical correlation analysis to tensors and showed very good accuracy on the KTH action dataset, but their method requires a manual alignment process for camera motion compensation. A further approach proposed a system to search for human actions using a coarse-to-fine approach with a five-layer hierarchical space-time model. These volumetric methods do not require background subtraction, motion estimation, or complex models of body configuration and kinematics. They tolerate variations in appearance, scale, rotation, and movement to some extent. Methods which aim at recognizing actions based solely on one query, are very useful for applications such as video retrieval from the web (e.g., viewdle, videosurf). In these methods, a single query video is provided by users and every gallery video in the database is compared with the given query, posing a video-to-video matching problem.
+Accordingly, there is a need to develop an approach to the problem of human action recognition as a video-to-video matching problem, where recognition is generally divided into two parts: category classification and detection/localization. There is a further need for addressing detection and category classification problems simultaneously by searching for an action of interest within other âtargetâ videos with only a single âqueryâ video.
+SUMMARY OF THE INVENTION
+The present invention provides a method of learning-free detection and localization of actions that includes providing a query video action of interest and providing a target video by using an appropriately programmed computer, obtaining at least one query space-time localized steering kernel (3-D LSK) from the query video action of interest and obtaining at least one target 3-D LSK from the target video by using the appropriately programmed computer, determining at least one query feature from the query 3-D LSK and determining at least one target patch feature from the target 3-D LSK by using the appropriately programmed computer, and outputting a resemblance map, where the resemblance map provides a likelihood of a similarity between each the query feature and each target patch feature by using the appropriately programmed computer to output learning-free detection and localization of actions.
+In one aspect of the invention, each 3-D LSK is computed from covariance matrices, where the covariance matrices are estimated by using singular value decomposition (SVD), where the SVD is applied to a collection of space-time gradient vectors in a local neighborhood, and the covariance matrices determine a shape and size of a local kernel, where local geometric structures are encoded.
+According to another aspect of the invention, each resulting 3-D LSK is invariant to illumination changes and robust to a presence of noise.
+In another aspect, each 3-D LSK is densely computed and normalized. Here, each query feature volume and each target feature volume include a principle component analysis (PCA) applied to each densely computed and normalized query 3-D LSK, where the PCA step determines feature spaces for dimensionality reduction of the normalized query 3-D LSK, where the PCA is applied to each densely computed and normalized query 3-D LSK and target 3-D LSK. Further, lower dimensional features of each query 3-D LSK and each target 3-D LSK are determined by projecting each normalized query 3-D LSK and each target 3-D LSK onto the feature space.
+In yet another aspect of the invention, the resemblance map includes nonparametric significance testing and non-maxima suppression.
+According to one aspect, the resemblance map includes a volume of voxels, where each voxel indicates the likelihood of similarity between each query feature and each target patch feature.
+In a further aspect of the invention, the resemblance map is computed by using a matrix cosine similarity (MCS).
+According to another aspect the motion estimation is not required to detect and localize actions of interest.
+In a further aspect of the invention, a space-time saliency detection method is utilized to automatically extract a finite cube that only contains a valid action for the task of action category classification from the query video, where the space-time saliency detection is based on the 3-D LSKs and a self-resemblance measure.
+
+BRIEF DESCRIPTION OF THE FIGURES
+The objectives and advantages of the present invention will be understood by reading the following detailed description in conjunction with the drawing, in which:
+ FIG. 1 shows hand-waving action and possibly similar actions.
+ FIGS. 2( a)-2(b) show the action detection problem.
+ FIGS. 3( a)-3(b) show a face and some possibly similar images, and examples of local steering kernel (LSK) in various regions, respectively according to the current invention.
+ FIG. 4 shows a flow diagram of the local steering kernel system overview according to the current invention.
+ FIGS. 5( a)-5(b) show (a) a given query image Q to detect/localize objects of interest in a target image T divided into a set of overlapping patches (b) local steering kernels represent the geometric structure of underlying data according to the current invention.
+ FIG. 6 shows invariance and robustness of local steering kernel weights W(xiâx; 2) in various challenging conditions according to the current invention.
+ FIGS. 7( a)-7(b) show empirical bin density that is densely computed from 60 images (from Shechtman's general object dataset) using the K-means clustering method according to the current invention.
+ FIGS. 8-9 show what the principal components in XQ and the features FQ, FT look like for some examples such as face and car according to the current invention.
+ FIGS. 10( a)-10(b) show examples of resemblance map (RM) based on |Ïi| and Æ(Ïi) according to the current invention.
+ FIG. 11 shows a comparison of empirical PDF between Ï and
+      Ï 2   1 -  Ï 2    .    
+according to the current invention.
+
+ FIGS. 12( a)-12(d) show the graphical illustration of significance tests and non-maxima suppression idea according to the current invention.
+ FIG. 13 shows how the conditional density function {circumflex over (p)}( F Q| i) is estimated, given Q and Ti according to the current invention.
+       FIG. 14 The approximate version of density estimator using one sample is compared to {circumflex over (p)}( f  Q l| i) estimated using all n samples according to the current invention.
+       FIGS. 15( a)-15(b) show block diagrams of multi-scale object detection system and of multi-rotation object detection system, respectively, according to the current invention.
+ FIGS. 16 (a)-16(c) show the output of the current invention on single-scale test images.
+ FIGS. 17( a)-17(b) show recall-precision curves representing a performance comparison between the current invention and the current invention without PCA using 5 different query images according to the current invention.
+ FIG. 18 shows a comparison of Recall versus 1-Precision curves between the current invention and other methods on the UIUC single-scale test set according to the current invention.
+ FIGS. 19( a)-19(b) show comparison of Recall versus 1-Precision curves between the current invention and state-of-the-art methods on the UIUC single-scale test set according to the current invention.
+ FIGS. 20-22 show that the current invention is capable of detecting and localizing faces at a distinct scale and rotation angle even in the presence of large variations in scale and rotation.
+ FIG. 23 shows the performance of the current invention is little affected by the choice of query image and is quite stable.
+ FIGS. 24-26 show some examples of RM and that they are detected and localized reliably according to the current invention.
+ FIG. 27 shows a Precision-Recall, which verifies that the LSKs according to the current invention has more discriminative power than other local descriptors
+ FIG. 28 shows an overview of the framework for action detection according to the current invention.
+ FIG. 29 shows a graphical description of how LSK values centered at pixel of interest Ã13 are computed in an edge region according to the current invention.
+ FIG. 30 shows how 3-D LSKs are computed in a space-time region according to the current invention.
+ FIG. 31 shows examples of 3-D local steering kernels capturing 3-D local underlying geometric structure in various space-time regions according to the current invention.
+ FIGS. 32( a)-32(b) shows normalization of the kernel function yields invariance to brightness change and robustness to contrast change according to the current invention.
+ FIGS. 33( a)-33(b) show that a collection of 3-D LSKs reveals global space-time geometric information according to the current invention.
+ FIGS. 34( a)-34(b) show some example video sequences (Weizman dataset) where 3-D LSKs were computed and plots of the bin density according to the current invention.
+ FIGS. 35( a)-36(b) show examples of top 4 principal components in AQ for various actions such as surfing, diving hand waving, and bending actions according to the current invention.
+ FIGS. 37( a)-37(b) show AQ learned from a collection of 3-D LSKs WQ, and Feature of FQ and FT are computed from query Q and target video T respectively according to the current invention.
+ FIG. 38 shows results of searching for walking persons on the beach according to the current invention.
+ FIG. 39 shows results of searching ballet turn on the ballet video according to the current invention.
+ FIG. 40 shows results of detecting diving action in a target Olympic relay-match video according to the current invention.
+ FIG. 41 shows the quantitative performance of the current invention (Precision-Recall curves).
+ FIG. 42 shows the results of detecting 4 different actions (walk, wave, cheer, and jump), which occur simultaneously in a target video according to the current invention.
+ FIG. 43 shows a graphical overview of space-time saliency detection system according to the current invention.
+ FIGS. 44( a)-44(b) show space-time saliency maps S generated by computing self-resemblance measure according to the current invention.
+ FIG. 45 shows the confusion matrix for the method on the Weizmann action dataset according to the current invention.
+ FIGS. 46( a)-46(b) the confusion matrices from the current method on the KTH action for each scenario and the average confusion matrix across all scenarios.
+
+DETAILED DESCRIPTION OF THE INVENTION
+Although the following detailed description contains many specifics for the purposes of illustration, anyone of ordinary skill in the art will readily appreciate that many variations and alterations to the following exemplary details are within the scope of the invention. Accordingly, the following preferred embodiment of the invention is set forth without any loss of generality to, and without imposing limitations upon, the claimed invention.
+In one aspect the present invention is a generic detection/localization algorithm capable of searching for a visual object of interest without training. The method of the current invention operates using a single example of an object of interest to find similar matches, where it does not require prior knowledge (learning) about objects being sought and does not require segmentation or pre-processing of a target image. The method is based on the computation of local regression kernels (LSKs) as descriptors from a query, which measure the likeness of a pixel to its surroundings. Salient features are extracted from the descriptors and compared against analogous features from the target image. This comparison is done using a matrix generalization of the cosine similarity measure. The algorithm yields a scalar resemblance map, indicating the likelihood of similarity between the query and all patches in the target image. By employing nonparametric significance tests and non-maxima suppression, the presence and location of objects similar to the given query are detected. The approach is extended to account for large variations in scale and rotation. High performance is demonstrated on several challenging real-world datasets, indicating successful detection of objects in diverse contexts and under different imaging conditions. This framework is also extended to 3-D for such applications as action detection and action recognition using 3-D LSKs.
+One aspect of the current invention resolves the detection/localization problem of searching for an object of interest (for instance a picture of a face) within other âtargetâ images with only a single âqueryâ image. In order to avoid the disadvantages of learning-based methods, which require a large amount of training examples, can result in over-fitting of parameters, and are generally slow in the training phase, the current invention uses a novel and sophisticated feature and a reliable similarity measure for comparing a collection of features. In general, the target images may contain such similar objects (say other faces) but these will typically appear in completely different context and under different imaging conditions. Examples of such differences can range from rather simple optical or geometric differences (such as occlusion, differing view-points, lighting, and scale changes); to more complex inherent structural differences such as for instance a hand-drawn sketch of a face rather than a real face as shown in FIG. 3( a).
+ FIG. 4 shows a flow diagram of the local steering kernel system overview according to the current invention, where the current invention addresses the object detection task in a two-fold approach. First, the invention uses local regression kernels as features, which capture the underlying local structure of the data exceedingly well, even in the presence of significant distortions. Second, a novel approach to the detection problem is provided using a non-parametric nearest-neighbor classifier, along with a generalization of the cosine similarity to the matrix case. The localized nonlinear filters adapt themselves to the underlying structure of the image in order to very effectively perform denoising, interpolation, and even deblurring. The fundamental component of the steering kernel regression method is the calculation of the local steering kernel (LSK) which essentially measures the local similarity of a pixel to its neighbors both geometrically and radiometrically. The key idea is to robustly obtain local data structures by analyzing the radiometric (pixel value) differences based on estimated gradients, and use this structure information to determine the shape and size of a canonical kernel. Denoting the target image (T), and the query image (Q), a dense set of local steering kernels from each are computed. These densely computed descriptors are highly informative, but taken together tend to be over-complete (redundant). Therefore, features are derived by applying dimensionality reduction, namely PCA, to these resulting arrays, in order to retain only the salient characteristics of the local steering kernels. Generally, T is bigger than the query image Q. Hence, the target image T is divided into a set of overlapping patches, which are the same size as Q and assign a class to each patch (Ti). The feature vectors which, belong to a patch, are thought of as training examples in the corresponding class (See FIGS. 5( a)-5(b)). The feature collections from Q and Ti form feature matrices FQ and FT  i . The feature matrices FT  i  and FQ are compared from ith patch of T and Q to look for matches. The invention draws on cosine similarity over the conventional Euclidean distance to employ and justify the use of âMatrix Cosine Similarityâ as a similarity measure which generalizes the cosine similarity between two vectors to the matrix case. The optimality properties of the proposed approach are illustrated using a naive Bayes framework, which leads to the use of the Matrix Cosine Similarity (MCS) measure. Furthermore, this measure is efficiently implemented using a nearest-neighbor formulation. In order to deal with the case where the target image may not include any objects of interest or when there are more than one object in the target, the invention uses Nonparametric significance testing and non-maxima suppression.
+Referring again to FIG. 4, the first stage consists of computing the normalized LSKs WQ, WT and obtaining the salient feature matrices FQ, FT. In the second stage, the feature matrices FT  i  and FQ are compared using the Matrix Cosine Similarity measure. The final output is given after a sequence of significance tests, followed by non-maxima suppression.
+The current invention includes the following important aspects:
+Since the calculation of local regression kernels is stable in the presence of uncertainty in the data, the approach of the current invention is robust even in the presence of noise. In addition, normalized local regression kernels provide a certain invariance to illumination changes as shown in FIG. 6, where shown is invariance and robustness of local steering kernel weights W(xiâx; 2) in various challenging conditions. Note that WGN means White Gaussian Noise. The current invention further applies Principal Components Analysis (PCA) to a collection of LSKs in order to learn the most salient features of the data. Further the invention simply uses âMatrix Cosine Similarityâ which is a generalized version of the cosine similarity, which has been shown to outperform the conventional Euclidean distance for subspace learning and classification tasks. The invention uses âCanonical Cosine Similarityâ in order to extend the framework to the case of vector data such as a color image, the Canonical Cosine Similarity is related to the concept of Canonical Correlation analysis. Additionally, the invention uses nearest-neighbor classification to solve the object detection problem and show that under the naive-Bayes assumption, theoretically optimal Bayes decision rule is approximated by the Matrix Cosine Similarity measure. The Bayes decision rule can be induced by the whitened cosine similarity under four strong assumptions. It is important to note that the current framework operates using a single example of an image of interest to find similar matches, and does not require any prior knowledge (learning) about objects being sought; and does not require any segmentation or pre-processing step of the target image. As will be shown, the framework is extendable to 3-D for such applications as action recognition, suspicious behavior detection etc. using an analogous 3-D local steering kernel.
+According to the current invention, the key idea behind local steering kernel is to robustly obtain the local structure of images by analyzing the radiometric (pixel value) differences based on estimated gradients, and use this structure information to determine the shape and size of a canonical kernel. The local kernel K(â¢) is modeled as a radially symmetric function.
+      K â¡  (    x i  - x  ;  H i   )   =   K â¡  (   H i  - 1   â¡  (   x i  - x  )   )    det â¡  (  H i  )     ,  i = 1  ,  .     .     .  â¢     ,  P 2  ,    
+where xi=[x1  i , x2  i ]T is the spatial coordinates, P2 is the number of pixels in a local window and the so-called steering matrix is defined as
+
+H i =hC i â1/2Îµ (2Ã2),
+
+where h is a global smoothing parameter, and the matrix Ci is a covariance matrix estimated from a collection of spatial (x1, x2) gradient vectors within the local analysis window around a sampling position x. The steering matrix Hi modifies the shape and size of the local kernel in a way which roughly encodes the local geometric structures present in the image as shown in FIG. 3( b), for example. With such steering matrices, a Gaussian function is chosen for K(â¢), which leads to the following form for the LSKs:
+
+    
+
+
+
+
+K
+â¡
+
+(
+
+
+
+x
+i
+
+-
+x
+
+;
+
+H
+i
+
+
+)
+
+
+=
+
+
+
+
+det
+â¡
+
+(
+
+C
+i
+
+)
+
+
+
+
+2
+â¢
+
+ 
+
+â¢
+Ï
+â¢
+
+ 
+
+â¢
+
+h
+2
+
+
+
+â¢
+exp
+â¢
+
+{
+
+-
+
+
+
+
+(
+
+
+x
+i
+
+-
+x
+
+)
+
+T
+
+â¢
+
+
+C
+i
+
+â¡
+
+(
+
+
+x
+i
+
+-
+x
+
+)
+
+
+
+
+2
+â¢
+
+ 
+
+â¢
+
+h
+2
+
+
+
+
+}
+
+
+
+
+
+
+Some discussion of this choice is provided below. In what follows, at a position x, the invention will essentially be using (a normalized version of) the function K(xiâx; Hi) as a function of xi and Hi to represent an image's inherent local geometry. To be more specific, the local steering kernel function Kj(xiâx; Hi) is densely calculated and normalized as follows
+       W Q j  â¡  (   x i  - x  )   =    K Q j  â¡  (    x i  - x  ;  H i   )     â  i = 1   P 2   â¢   K Q j  â¡  (    x i  - x  ;  H i   )      ,  j â  [  1 , â¦ â¢     , n  ]   ,  i â  [  1 , â¦ â¢     ,  P 2   ]   ,  
+  â¢    W T j  â¡  (   x i  - x  )   =    K T j  â¡  (    x i  - x  ;  H i   )     â  i = 1   P 2   â¢   K T j  â¡  (    x i  - x  ;  H i   )      ,  j â  [  1 , â¦ â¢     ,  n T   ]   ,  i â  [  1 , â¦ â¢     ,  P 2   ]   ,    
+where n and nT are the number of LSKs in the query image Q and the target image T respectively.
+
+It has been demonstrated that LSK based on the locally quadratic data model (regression order N=2) consistently outperforms steering kernels based on the locally constant and the locally linear model (regression order N=0 and N=1) in their kernel regression framework for the tasks of image denoising and interpolation. The so-called âequivalent kernelâ formulation has been provided, which is a computationally more efficient and intuitive solution to kernel regression. To simplify the notation, the normalized local steering kernels are described with the regression order N as W(xiâx; N). It is observed that 2nd order LSK W(xiâx; 2) provides better descriptive powers than 0th order LSK W(xiâx; 0) and 1st order LSK W(xiâx; 1) even in complex texture regions or in the presence of moderate levels of noise. Normalization of this kernel function yields invariance to brightness change and robustness to contrast change as shown in FIG. 6, where shown are invariance and robustness of local steering kernel weights W(xiâx; 2) in various challenging conditions. Note again that WGN means White Gaussian Noise. When large amounts of noise are present, the locally quadratic data model tends to be more sensitive to noise than the locally linear and the locally constant model. Hence, there is a trade-off between descriptive power of LSK and sensitivity to noise.
+It has been shown that densely computed local image features give better results in classification tasks than key-point based local image features such as SIFT, which are designed for mainly invariance and compact coding. Accordingly, the distribution of the local image feature both in natural images as well as images of a specific object class follows a power-law (i.e., a long-tail) distribution. In other words, the features are scattered out in a high dimensional feature space, and thus there basically exists no dense cluster in the feature space. In order to illustrate and verify that the normalized LSKs also satisfy this property and follow a power-law distribution, an empirical bin density (100 bins) of the normalized LSKs is (using a total of 31319 LSKs) densely computed from 60 images (from Shechtman's general object dataset) using the K-means clustering method as shown in FIGS. 7( a)-7(b), where shown in FIG. 7( a) are some example images (Shechtman's object dataset) where LSKs were computed, and FIG. 7( b) shows plots of the bin density of LSKs and their corresponding low-dimensional features. It has been observed that while an ensemble of local features with little discriminative power can together offer a significant discriminative power, both quantization and informative feature selection on a long-tail distribution can lead to a precipitous drop in performance. Therefore, instead of any quantization and informative feature selection, reducing the dimension of LSKs using PCA to enhance the discriminative power and reduce computational complexity is the focus of the invention. This idea results in a new feature representation with a moderate dimension, which inherits the desirable discriminative attributes of LSK. The distribution of the resulting features sitting on the low dimensional manifold also tends to follow a power-law distribution as shown in FIG. 7( b) and this attribute of the features will be utilized in applying a nearest-neighbor approximation in the theoretical formulation discussed later. In order to organize WQ j(xiâx; N) and WT j(xiâx; N), which are densely computed from Q and T, let WQ, WT be matrices whose columns are vectors w Q j, w T j  
+which are column-stacked (rasterized) versions of WQ j(xiâx; N), WT j(xiâx; N) respectively:
+
+W Q =[w  Q 1 , . . . ,w  Q n]Îµ P  2  Ãn ,W T =[w  T 1 , . . . ,w  T n  T ]Îµ P  2  Ãn  T .
+
+As described in FIG. 4, the next step is to apply PCA2 to WQ for dimensionality reduction and to retain only its salient characteristics, where it is worth noting that the use of the PCA here is not critical in the sense that any unsupervised subspace learning method such as Kernel PCA, LLE, LPP, CDA, CPCA, and CEA can be used. Applying PCA to WQ we can retain the first (largest) d principal components, which form the columns of a matrix XQ=[x Q  1 , . . . , x Q  d ]Îµ P  2  Ãd. Typically, d is selected to be a small integer such as 3 or 4 so that 80 to 90% of the âinformationâ in the LSKs would be retained (i.e.,
+
+           â  i = 1  d  â¢  Î» i     â  i = 1   P 2   â¢  Î» i    â¥ 0.8    
+(to 0.9) where Î»i are the eigenvalues). Next, the lower dimensional features are computed by projecting WQ and WT onto XQ:
+
+F Q =[f  Q 1 , . . . ,f  Q n ]=X Q T W QÎµ dÃn ,F T =[f  T 1 , . . . ,f  T n  T  ]=X Q T W TÎµ dÃn  T .
+
+     FIGS. 8( a)-8(c) and FIGS. 9( a)-9(c) illustrate the principal components in XQ and show what the features FQ, FT look like for some examples such as face and car, where (a)'s show XQ learned from a collection of LSKs WQ, (b)'s show feature row vectors of FQ from query Q, and (c)'s show feature row vectors FT from target image T. Eigenvectors and feature vectors were transformed to image and up-scaled for illustration purposes.
+The next step in the current invention is a decision rule based on the measurement of a âdistanceâ between the computed features FQ, FT  i . It has been shown that correlation based metrics perform better than the conventional Euclidean and Mahalanobis distances for the classification and the subspace learning tasks, and âMatrix Cosine Similarityâ are introduced for the matrix case. In general, âcorrelationâ indicates the strength and direction of a linear relationship between two random variables. The current invention is directed to two main types of correlation: The Pearson's correlation coefficient, which is the familiar standard correlation coefficient, and the cosine similarity (so-called non-Pearson-compliant). Note that the cosine similarity coincides with the Pearson's correlation when each vector is centered to have zero-mean. It has been shown that the Pearson correlation is less discriminating than the cosine similarity due to the fact that centered values are less informative than the original values, and the computation of centered values is sensitive to zero or small values in the vectors. Since the discriminative power is critical in the detection of the current invention's framework, the cosine similarity is focused on. The cosine similarity is defined as the inner product between two normalized vectors as follows:
+      Ï (    f _  Q  ,   f _   T i    )  =   â©     f _  Q   ï   f _  Q  ï   ,    f _   T i    ï   f _   T i   ï    âª  =      f _  Q T  â¢   f _   T i      ï   f _  Q  ï  â¢  ï   f _   T i   ï    =   cos â¢     â¢  Î¸ i   â  [   - 1  , 1  ]      ,    
+where f Q, f T  i Îµ d are column vectors. The cosine similarity measure therefore focuses only on the angle (phase) information while discarding the scale information.
+
+    Considering the features FQ, FT  i , which consist of a set of vectors, âMatrix Cosine Similarityâ can be defined as a natural generalization using the âFrobenius inner productâ between two normalized matrices as follows:
+
+
+
+
+
+
+Ï
+â¡
+
+(
+
+
+F
+Q
+
+,
+
+F
+
+T
+i
+
+
+
+)
+
+
+=
+
+
+
+â©
+
+
+
+F
+_
+
+Q
+
+,
+
+
+F
+_
+
+
+T
+i
+
+
+
+âª
+
+F
+
+=
+
+
+trace
+(
+
+
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+)
+
+â
+
+[
+
+
+-
+1
+
+,
+1
+
+]
+
+
+
+
+,
+
+
+
+
+â¢
+where
+,
+
+
+
+
+â¢
+
+
+
+F
+_
+
+Q
+
+=
+
+
+
+F
+Q
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+=
+
+
+
+[
+
+
+
+
+f
+_
+
+Q
+1
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+,
+â¦
+â¢
+
+ 
+
+,
+
+
+
+f
+_
+
+Q
+n
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+
+]
+
+â¢
+
+ 
+
+â¢
+and
+â¢
+
+
+
+
+â¢
+
+
+
+F
+_
+
+T
+
+i
+
+
+=
+
+
+
+F
+
+T
+i
+
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+=
+
+[
+
+
+
+
+f
+_
+
+
+T
+i
+
+1
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+,
+â¦
+â¢
+
+ 
+
+,
+
+
+
+f
+_
+
+
+T
+i
+
+n
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+]
+
+
+
+
+
+
+
+
+
+It is worth noting that this generalization is also known as âvector correlationâ in the statistics literature, and it is also been used in a generalized cosine similarity to the tensor case for subspace learning, which showed performance improvement in the task of image classification. Returning to the definition, looking at if we look carefully at
+      Ï â¡  (   F Q  ,  F  T i    )   =    â©    F _  Q  ,   F _   T i    âª  F  =   trace (    F Q T  â¢  F  T i       ï  F Q  ï  F  â¢   ï  F  T i   ï  F    )  â  [   - 1  , 1  ]     ,    
+it is interesting to note that one can rewrite it as a weighted average of the cosine similarities Ï(fQ, fT  i ) between each pair of corresponding feature vectors (i.e., columns) in FQ, FT  i  as follows:
+
+
+
+
+
+
+Ï
+â¡
+
+(
+
+
+F
+Q
+
+,
+
+F
+
+T
+i
+
+
+
+)
+
+
+=
+
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+
+
+f
+_
+
+Q
+
+l
+T
+
+
+â¢
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+=
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+Ï
+â¡
+
+(
+
+
+
+f
+_
+
+Q
+l
+
+,
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+)
+
+
+â¢
+
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+â¢
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+l
+
+ï
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+.
+
+
+
+
+
+
+
+
+The weights are represented as the product of
+     ï   f _  Q l  ï    ï  F Q  ï  F     
+and
+
+      ï   f _   T i  l  ï    ï  F  T i   ï  F   ,    
+which indicate the relative importance of each feature in the feature sets FQ, FT  i . Here, an advantage of the âMatrix Cosine Similarityâ takes care of the strength and angle similarity of vectors at the same time. Hence, this measure not only generalizes the cosine similarity, but also overcomes the disadvantages of the conventional Euclidean distance, which is sensitive to outliers. Ï(FQ, FT  i ) is computed over M (a possibly large number of) target patches and this can be efficiently implemented by column-stacking the matrices FQ, FT  i  and simply computing the cosine similarity between two long column vectors as follows:
+
+         Ï i  â¡  Ï â¡  (   F Q  ,  F  T i    )    =   â¢   â  l = 1  n  â¢     f _  Q  l T   â¢   f _   T i  l      ï  F Q  ï  F  â¢   ï  F  T i   ï  F           =   â¢   â  l = 1  n  â¢   â  j = 1  d  â¢    f Q  (  l , j  )   â¢  f  T i   (  l , j  )        â  l = 1  n  â¢   â  j = 1  d  â¢   ï  f Q  (  l , j  )   ï  2     â¢    â  l = 1  n  â¢   â  j = 1  d  â¢   ï  f  T i   (  l , j  )   ï  2                =   â¢   Ï â¡  (   colstack â¡  (  F Q  )   ,  colstack â¡  (  F  T i   )    )   â  [   - 1  , 1  ]    ,       
+where fQ (l,j), fT  i  (l,j) are elements in lth vector f Q l and f T  i  l respectively, and colstack(â¢) means an operator which column-stacks (rasterizes) a matrix.
+
+It will be shown later that this idea enables further generalization of the cosine similarity to a âCanonical Cosine Similarityâ which is a corresponding version of the canonical correlation analysis (CCA) for the vector data case where we have a set of features separately computed from multiple sources (for instance, color image (YCbCr or CIE L*a*b*) or a sequence of images). It will also be shown that a particular version of optimal Naive-Bayes decision rule can actually lead to the use of âMatrix Cosine Similarityâ (MCS) measure. The next step is to generate a so-called âresemblance mapâ (RM), which will be an image with values indicating the likelihood of similarity between the Q and T. When it comes to interpreting the value of âcorrelationâ, Ïi 2Îµ[0, 1] describes the proportion of variance in common between the two feature sets as opposed to Ïi, which indicates a linear relationship between two feature matrices FQ, FT  i . Here, Ïi is used directly as a measure of resemblance between the two feature sets. However, the shared variance interpretation of Ïi 2 has several advantages. In particular, as for the final test statistic comprising the values in the resemblance map, we use the proportion of shared variance (Ïi 2) to that of the âresidualâ variance (1âÏi 2). More specifically, RM is computed using the mapping function f as follows:
+
+
+
+
+
+RM
+â¢
+
+:
+
+â¢
+
+f
+â¡
+
+(
+
+Ï
+i
+
+)
+
+
+
+=
+
+
+
+Ï
+i
+2
+
+
+1
+-
+
+Ï
+i
+2
+
+
+
+.
+
+
+
+
+
+In FIGS. 10( a)-10(b), examples of resemblance map (RM) based on |Ïi| and Æ(Ïi) are presented. FIG. 10( a) shows a resemblance map (RM) which consists of |Ïi|, and FIG. 10( b) Resemblance map (RM) which consists of Æ(Ïi). Note that Q and T are the same examples shown in FIG. 5. The small annulus regions represent higher resemblance. As is apparent from these typical results, qualitatively, the resemblance map generated from Æ(Ïi) provides better contrast and dynamic range in the result (Æ(Ïi)Îµ[0, â]). More importantly, from a quantitative point of view, it is noted that Æ(Ïi) is essentially the Lawley-Hotelling Trace statistic, which is used as an efficient test statistic for detecting correlation between two data sets. Furthermore, it is worth noting that historically, this statistic has been suggested in the pattern recognition literature as an effective means of measuring the separability of two data clusters.
+If the task is to find the most similar patch (Ti) to the query (Q) in the target image, one can choose the patch, which results in the largest value in the RM (i.e., max Æ(Ïi)) among all the patches, no matter how large or small the value is in the range of [0, â]. This, however, is not wise because there may not be any object of interest present in the target image. Therefore two types of significance tests are of interest. The first is an overall test to decide whether there is any sufficiently similar object present in the target image at all. If the answer is yes, it is desirable to know how many objects of interest are present in the target image and where they are. Therefore, two thresholds are needed: an overall threshold Ïo and a threshold Ï to detect the possibly multiple objects present in the target image.
+In a typical scenario, the overall threshold Ïo is set to be, for instance 0.96, which is about 50% of variance in common (i.e., Ï2=0.49). In other words, if the maximal Æ(Ïi) is just above 0.96, it is decided that there exists at least one object of interest. The next step is to choose Ï based on the properties of Æ(Ïi). When it comes to choosing the Ï, there is need to be more careful. If a basic knowledge of the underlying distribution of Æ(Ïi) is available, then predictions can be made about how this particular statistic will behave, and thus it is relatively easy to choose a threshold which will indicate whether the pair of features from the two images are sufficiently similar. But, in practice, good way to model the distribution of Æ(Ïi) is not available. Therefore, instead of assuming a type of underlying distribution, the idea of nonparametric testing is used. An empirical PDF is computed from M samples Æ(Ïi) and Ï is set so as to achieve, for instance, a 99% confidence level in deciding whether the given values are in the extreme (right) tails of the distribution. This approach is based on the assumption that in the target image, most of patches do not contain the object of interest, and therefore, the few matches will result in values which are in the tails of the distributions of Æ(Ïi), where yet another justification for using Æ(Ïi) instead of Ïi is the observation that the empirical PDF of Ïi is itself heavy-tailed, making the detection of rare events more difficult. The use of Æ(Ïi) instead tends to alleviate this problem as shown in FIG. 11, which shows a comparison of empirical PDF between Ï and
+
+
+
+
+
+
+Ï
+2
+
+
+1
+-
+
+Ï
+2
+
+
+
+.
+
+
+
+
+After the two significance tests with Ïo, Ï are performed, the idea of non-maxima suppression is employed for the final detection. The region with the highest Æ(Ïi) value is taken and the possibility that any other object is detected within some radius of the center of that region is estimated again, where the size of this âexclusionâ region will depend on the application at hand and the characteristics of the query image. This enables one to avoid multiple false detections of nearby objects already detected. Then we iterate this process until the local maximum value falls below the threshold Ï. FIGS. 12( a)-12(c) show the graphical illustration of significance tests and non-maxima suppression idea, where FIG. 12( a) shows Query, FIG. 12( b) shows target with detection, FIG. 12( c) shows two significance tests and FIG. 12( d) shows non-maxima suppression.
+As previously described, the current invention provides a method to detect an object (or objects) of interest in the target image given a single query. Here, the naive-Bayes approach in a multiple hypothesis testing framework leads to the Matrix Cosine Similarity-based decision rule. As described earlier, the target image T is divided into a set of overlapping patches and a class is assigned to each patch. The task at hand is to figure out which class (i) the features from Q are most likely to have come from. Since the class-conditional pdf (p( F Q|class)) is not known of the normalized features extracted from Q, the goal is to estimate it using a kernel density estimation method. Once these estimates are attained, the maximum likelihood (ML) decision rule boils down to Matrix Cosine Similarity, which can be efficiently implemented using a nearest neighbor formulation.
+By associating each patch (Ti) of the target image with a hypothesis, the case now exists where one can discriminate between M hypotheses ( 0, . . . ,  M-1) as follows:
+      0: Q is similar to T0  F Q comes from class 0 ( F T  0 ),   1: Q is similar to T1  F Q comes from class 1 ( F T  1 ). . . . . . .   M-1: Q is similar to TM-1  F Q comes from class Mâ1( F T  M-1 ).   
+The classic Bayes risk formulation provides the proper framework for this multi-hypothesis testing problem. The Bayes cost is as follows:
+     â =   â  i = 0   M - 1   â¢   â  j = 0   M - 1   â¢   C ij  â¢  P â¡  (   â i  |  â j   )   â¢  P â¡  (  â j  )       ,    
+where Cij is the penalty associated with choosing hypothesis i when j is true. Given the query features F Q, a decision rule that minimizes R must be derived. R can be simplified with the particular choice
+
+     C ij  =  {    0    i = j      1    i â  j         
+as:
+
+
+
+
+
+
+â
+â¡
+
+(
+
+
+F
+_
+
+Q
+
+)
+
+
+=
+
+
+
+â
+
+
+j
+=
+0
+
+,
+
+i
+â 
+j
+
+
+
+M
+-
+1
+
+
+â¢
+
+
+C
+ij
+
+â¢
+
+P
+â¡
+
+(
+
+
+â
+j
+
+|
+
+
+F
+_
+
+Q
+
+
+)
+
+
+
+
+=
+
+
+
+â
+
+j
+=
+0
+
+
+M
+-
+1
+
+
+â¢
+
+P
+â¡
+
+(
+
+
+â
+j
+
+|
+
+
+F
+_
+
+Q
+
+
+)
+
+
+
+-
+
+P
+â¡
+
+(
+
+
+â
+i
+
+|
+
+
+F
+_
+
+Q
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+over
+â¢
+
+ 
+
+â¢
+i
+
+=
+0
+
+,
+1
+,
+â¦
+â¢
+
+ 
+
+,
+
+M
+-
+1.
+
+
+
+
+
+Since P( i) is independent of j, ( F Q) is minimized by maximizing P( i| F Q). Therefore, the maximum a posterior (MAP) decision rule for multiple hypothesis testing is as follows:
+    
+
+
+
+
+
+â
+^
+
+i
+
+=
+
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+P
+â¡
+
+(
+
+
+â
+i
+
+|
+
+
+F
+_
+
+Q
+
+
+)
+
+
+
+
+=
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+
+
+p
+â¡
+
+(
+
+
+
+F
+_
+
+Q
+
+|
+
+â
+i
+
+
+)
+
+
+â¢
+
+P
+â¡
+
+(
+
+â
+i
+
+)
+
+
+
+
+p
+â¡
+
+(
+
+
+F
+_
+
+Q
+
+)
+
+
+
+.
+
+
+
+
+
+
+
+
+Assuming that the prior probabilities P(Hi) are equal, then the MAP decision rule boils down to the M-ary maximum likelihood (ML) decision rule.
+
+
+
+
+
+
+â
+^
+
+i
+
+=
+
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+P
+â¡
+
+(
+
+
+â
+i
+
+|
+
+
+F
+_
+
+Q
+
+
+)
+
+
+
+
+=
+
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+p
+(
+
+
+
+F
+_
+
+Q
+
+|
+
+â
+i
+
+
+)
+
+
+
+=
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+p
+â¡
+
+(
+
+
+
+F
+_
+
+Q
+
+|
+
+
+F
+_
+
+
+T
+i
+
+
+
+)
+
+
+.
+
+
+
+
+
+
+
+
+
+Since the conditional probability density function p( F Q| i) is not known of features F Q given the features F T  i , of the target patch Ti, one needs to estimate it using a kernel density estimation method, which results in the naive or empirical Bayes approach.
+    Regarding the locally data-adaptive kernel density estimation, the Parzen density estimator is a simple and generally accurate non-parametric density estimation method. However, if the true conditional density to model is close to a ânon-linearâ lower dimensional manifold embedded in the higher dimensional feature space, Parzen density estimator with an isotropic kernel is not the most appropriate method. As discussed above, the features F Q, F T  i  tend to generically come from long-tailed distributions, and as such, there are generally no tight clusters in the feature space. When estimating a probability density at a particular point, for instance  f  Q l, the isotropic kernel centered on that point will spread its density mass equally along all the feature space directions, thus giving too much emphasis to irrelevant regions of space and too little along the manifold. Therefore, a locally data-adaptive version of the kernel density estimator is used. The estimated conditional density {circumflex over (p)}( F Q| i) is defined as a sum of kernels (weight functions) centered at the features  f  T  i  in Ti which belongs to the hypothesis Hi. More specifically,
+           p ^  â¡  (    F _  Q  |  â i   )   =    â  j = 1  n  â¢   K j  â¡  (      f _  _  Q l  -    f _  _   T i  j   ,    l _  Q l  -   l _   T i  j    )      â  l â  Î© Q    â¢   â  j = 1  n  â¢   K j  â¡  (      f _  _  Q l  -    f _  _   T i  j   ,    l _  Q l  -   l _   T i  j    )       ,  l â  Î© Q   ,    
+where Kj is a locally data adaptive kernel function, Î©Q is the query image domain consisting of |Î©Q| pixels and l Q l, l T  i  j are column vectors denoting spatial coordinates of corresponding features  f  Q l and  f  T  i  j. A simple and intuitive choice of the Kj is to consider two terms for penalizing the spatial distance between the point of interest and its neighbors, and the radiometric âdistanceâ between the corresponding features  f  Q l and  f  T  i  j. More specifically, the kernel function is defined as follows:
+
+          K j  â¡  (      f _  _  Q l  -    f _  _   T i  j   ,    l _  Q l  -   l _   T i  j    )   =   â¢    K r j  â¡  (     f _  _  Q l  -    f _  _   T i  j   )   â¢   K s j  â¡  (    l _  Q l  -   l _   T i  j   )     ,       =   â¢  exp (   -  1  2 â¢  Ï r 2     â¢  dist â¡  (     f _  _  Q l  ,    f _  _   T i  j   )    )          â¢   exp â¡  (   -  1  2 â¢  Ï s 2     â¢   ï    l _  Q l  -   l _   T i  j   ï  2   )   ,  l â  Î© Q          
+where dist( f  Q l,  f  T  i  j) is defined as:
+
+
+
+
+
+
+
+(
+
+
+
+
+f
+_
+
+_
+
+Q
+l
+
+,
+
+
+
+f
+_
+
+_
+
+
+T
+i
+
+j
+
+
+)
+
+=
+
+
+
+ï
+
+
+
+
+f
+_
+
+Q
+l
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+-
+
+
+
+f
+_
+
+
+T
+i
+
+j
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+ï
+
+2
+
+=
+
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+2
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+2
+
+
++
+
+
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+j
+
+ï
+
+2
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+2
+
+
+-
+
+2
+â¢
+
+Ï
+â¡
+
+(
+
+
+
+f
+_
+
+Q
+l
+
+,
+
+
+f
+_
+
+
+T
+i
+
+j
+
+
+)
+
+
+â¢
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+â¢
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+j
+
+ï
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+
+
+
+,
+
+
+
+
+     (   Ï â¡  (    f _  Q l  ,   f _   T i  j   )   =      f _  Q  l T   â¢   f _   T i  j     ï   f _  Q l  ï  â¢  ï   f _   T i  j  ï    â  [   - 1  , 1  ]    )  ,    
+and ÏÏ, Ïs are parameters controlling the fall-off of weights in radiometric and spatial domains.
+
+Inserting
+             K j  â¡  (     f _ _  Q l  -   f _ _   T i  j   ,    l _  Q l  -   l _   T i  j    )   =    K r j  â¡  (    f _ _  Q l  -   f _ _   T i  j   )   â¢   K s j  â¡  (    l _  Q l  -   l _   T i  j   )     ,        =   exp â¡  (   -  1  2 â¢  Ï r 2     â¢  dist â¡  (    f _ _  Q l  ,   f _ _   T i  j   )    )   â¢  exp â¡  (   -  1  2 â¢  Ï s 2     â¢   ï    l _  Q l  -   l _   T i  j   ï  2   )     ,              â¢  l â  Î© Q         
+into
+
+       p ^  â¡  (    F _  Q  â  â i   )   =    â  j = 1  n  â¢   K j  â¡  (     f _ _  Q l  -   f _ _   T i  j   ,    l _  Q l  -   l _   T i  j    )      â  l â  Î© Q    â¢   â  j = 1  n  â¢   K j  â¡  (     f _ _  Q l  -   f _ _   T i  j   ,    l _  Q l  -   l _   T i  j    )       ,     â¢  l â  Î© Q   ,    
+the estimated conditional density {circumflex over (p)}( F Q| i) becomes
+
+           p ^  â¡  (    F _  Q  â  â i   )   =   1 Î²  â¢   â  j = 1  n  â¢   exp â¡  (   -  1  2 â¢  Ï r 2     â¢  dist â¡  (    f _ _  Q l  ,   f _ _   T i  j   )    )   â¢  exp â¡  (   -  1  2 â¢  Ï s 2     â¢   ï    l _  Q l  -   l _   T i  j   ï  2   )       ,  
+  â¢     â¢  l â  Î© Q   ,    
+where Î² is a normalization factor (Î²=Î£lÎµÎ©  Q Î£j=1 nKj ( f  Q lâ f  T  i  j, l Q lâl T  i  j)). FIG. 13 shows how the conditional density function {circumflex over (p)}( F Q| i) is estimated, given Q and Ti. Here, the estimated conditional density {circumflex over (p)}( F Q| i) is a sum of kernels (weight functions) centered at the features  f  T  i  in Ti which belongs to the hypothesis  i. In the Density Estimate Map, light grey value means a high conditional probability density {circumflex over (p)}( F Q| i) while black value represents a low conditional probability density {circumflex over (p)}( F Q| i). In principle, all n features should be employed to obtain an accurate density estimation. However, this is too computationally time-consuming. Hence, as we describe next, we use an efficient approximation of this locally data-adaptive kernel density estimator.
+
+    Regarding the approximation of locally data-adaptive kernel density estimation, assuming that  f  Q 1,  f  Q 2, . . . ,  f  Q n are i.i.d. given hypothesis  i, the ML decision rule can be rewritten by taking the log probability of the ML decision rule
+          â ^  i  =   arg â¢     â¢   max i  â¢  P â¡  (   â i  â   F _  Q   )     =   arg â¢     â¢   max i  â¢  p â¡  (    F _  Q  â  â i   )     =  arg â¢     â¢   max i  â¢  p â¡  (    F _  Q  â   F _   T i    )          
+as:
+
+
+
+
+
+
+
+â
+^
+
+i
+
+=
+
+
+arg
+â¢
+
+ 
+
+â¢
+
+
+max
+i
+
+â¢
+
+log
+â¢
+
+
+p
+^
+
+â¡
+
+(
+
+
+
+F
+_
+
+Q
+
+â
+
+â
+i
+
+
+)
+
+
+
+
+
+=
+
+
+arg
+â¢
+
+ 
+
+â¢
+
+
+max
+i
+
+â¢
+
+log
+â¢
+
+
+p
+^
+
+â¡
+
+(
+
+
+
+f
+_
+_
+
+Q
+1
+
+,
+â¦
+â¢
+
+ 
+
+,
+
+
+
+f
+_
+_
+
+Q
+n
+
+â
+
+â
+i
+
+
+
+)
+
+
+
+
+
+=
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+â
+
+l
+=
+1
+
+
+â¢
+
+log
+â¢
+
+
+p
+^
+
+â¡
+
+(
+
+
+
+f
+_
+_
+
+Q
+l
+
+â
+
+â
+i
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
+
+Each local individual probability density {circumflex over (p)}( f  Q l| i) is estimated separately:
+           p ^  â¡  (    f _ _  Q l  â  â i   )   =   1  Î² â²   â¢   â  j = 1  n  â¢   K j  â¡  (     f _ _  Q l  -   f _ _   T i  j   ,    l _  Q l  -   l _   T i  j    )      ,     â¢  l = 1  , â¦ â¢     , n ,    
+where Î²â² is a normalization factor (Î²â²=Î£l=1 nÎ£j=1 nKj( f  Q lâ f  T  i  j, l Q lâl T  i  j)).
+
+Since the distribution of the features on the low-dimensional manifold tends to follow a power-law (i.e., long-tail or heavy-tail), it should be sufficient to use just a few features in Ti to get a reasonable estimate of the conditional density {circumflex over (p)}( f  Q l| i). Therefore, a single (spatially nearest) neighbor is used for the approximation, which yields:
+    
+
+
+
+
+
+
+
+
+
+
+
+
+p
+^
+
+â¡
+
+(
+
+
+
+f
+_
+_
+
+Q
+l
+
+â
+
+â
+i
+
+
+)
+
+
+â
+ 
+â¢
+
+exp
+â¡
+
+(
+
+
+-
+
+1
+
+2
+â¢
+
+Ï
+r
+2
+
+
+
+
+â¢
+
+dist
+â¡
+
+(
+
+
+
+f
+_
+_
+
+Q
+l
+
+,
+
+
+f
+_
+_
+
+
+T
+i
+
+l
+
+
+)
+
+
+
+)
+
+
+
+,
+
+
+
+
+
+
+
+=
+ 
+â¢
+
+exp
+(
+
+
+-
+
+1
+
+2
+â¢
+
+Ï
+r
+2
+
+
+
+
+â¢
+
+(
+
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+2
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+2
+
+
++
+
+
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+l
+
+ï
+
+2
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+2
+
+
+-
+
+2
+â¢
+
+p
+â¡
+
+(
+
+
+
+f
+_
+
+Q
+l
+
+,
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+)
+
+
+â¢
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+â¢
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+l
+
+ï
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+
+)
+
+
+)
+
+
+,
+
+
+
+
+
+
+
+
+
+
+ 
+
+â¢
+
+
+l
+=
+1
+
+,
+â¦
+â¢
+
+ 
+
+,
+
+n
+.
+
+
+
+
+
+
+
+
+
+The approximate version of density estimator using one sample is compared to {circumflex over (p)}( f  Q l| i) estimated using all n samples in FIG. 14. Here the estimated conditional probability densities {circumflex over (p)}( f  Q l| i) are shown using n samples and 1 sample are shown in the middle and the scores on right side means Î£l=1 n log {circumflex over (p)}( f  Q l| i) where the higher this score is, the more likely F Q comes from class i ( F T  i ). Qualitatively, it is observed that the resulting estimates are quite similar. More precisely, it has been verified that the use of the approximation takes little away from the performance of the overall algorithm.
+    Since log log {circumflex over (p)}( f  Q l| i) is approximately proportional to
+        -  (     ï   f _  Q l  ï  2    ï  F Q  ï  F 2   +    ï   f _   T i  l  ï  2    ï  F  T i   ï  F 2   -  2 â¢  p â¡  (    f _  Q l  ,   f _   T i  l   )   â¢    ï   f _  Q l  ï  â¢  ï   f _   T i  l  ï      ï  F Q  ï  F  â¢   ï  F  T i   ï  F      )     
+the ML decision rule becomes
+
+
+
+
+
+
+
+
+â
+^
+
+i
+
+=
+
+
+arg
+â¢
+
+ 
+
+â¢
+
+
+max
+i
+
+â¢
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+log
+â¢
+
+p
+^
+
+â¢
+
+(
+
+
+
+f
+_
+_
+
+Q
+l
+
+â
+
+â
+i
+
+
+)
+
+
+
+
+
+â
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+-
+
+(
+
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+2
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+2
+
+
++
+
+
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+l
+
+ï
+
+2
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+2
+
+
+-
+
+2
+â¢
+
+p
+â¡
+
+(
+
+
+
+f
+_
+
+Q
+l
+
+,
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+)
+
+
+â¢
+
+
+
+ï
+
+
+f
+_
+
+Q
+l
+
+ï
+
+â¢
+
+ï
+
+
+f
+_
+
+
+T
+i
+
+l
+
+ï
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+
+)
+
+
+
+
+
+
+
+,
+
+=
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+(
+
+
+-
+2
+
++
+
+2
+â¢
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+
+
+
+f
+_
+
+Q
+l
+
+T
+
+â¢
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+
+
+)
+
+
+
+
+,
+
+=
+
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+
+
+
+f
+_
+
+Q
+l
+
+T
+
+â¢
+
+
+f
+_
+
+
+T
+i
+
+l
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+
+
+=
+
+arg
+â¢
+
+
+max
+i
+
+â¢
+
+
+
+â©
+
+
+
+F
+Q
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+,
+
+
+F
+
+T
+i
+
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+âª
+
+F
+
+.
+
+
+
+
+
+
+
+
+
+It is clear that the ML decision rule in the above equation boils down to the computation of the Matrix Cosine Similarity, due to the relationship
+
+
+
+
+
+
+â©
+
+
+
+F
+Q
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+
+,
+
+
+F
+
+T
+i
+
+
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+âª
+
+F
+
+â
+
+
+
+2
++
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+log
+â¢
+
+
+p
+^
+
+â¡
+
+(
+
+
+
+f
+_
+_
+
+Q
+l
+
+â
+
+â
+i
+
+
+)
+
+
+
+
+
+2
+
+.
+
+
+
+
+
+Since Matrix Cosine Similarity decision rule is optimal under the naive Bayes assumption, this measure provides a reliable score of how likely the hypothesis Hi is. To summarize, the overall pseudo-code for the algorithm is given in the following algorithm.
+
+
+
+ 
+
+
+
+ 
+
+
+
+
+Stage1: Feature representation
+
+
+1) Construct WQ, WT which are a collection of normalized LSK associated with Q, T.
+
+
+2) Apply PCA to WQ and obtain projection space XQ from its top d eigenvectors.
+
+
+3) Project WQ and WT onto XQ to construct FQ and FT.
+
+
+Stage2: Compute Matrix Cosine Similarity
+
+
+for every target patch Ti, where i Îµ [0, . . . , M â 1] do
+
+
+ 
+
+
+ââ
+    Ï i  =    â©    F Q    ï  F Q  ï  F   ,   F  T i     ï  F  T i   ï  F    âª  â¢ F â¢     â¢ and â¢     â¢ compute â¢     â¢ resemblance â¢     â¢ map â¢     â¢  ( RM )  â¢  :  â¢     â¢  ?? â¡  (  Ï i  )    =    Ï i 2   1 -  Ï i 2    .     
+
+
+
+ 
+
+
+end for
+
+
+Then, find max Æ(Ïi).
+
+
+Stage3: Significance tests and Non-maxima suppression
+
+
+1) If max Æ(Ïi) > Ïo, go on to the next test. Otherwise, there is no object of interest in T.
+
+
+2) Threshold RM by Ï which is set to achieve 99% confidence level (Î± = 0.99) from the empirical PDF of Æ(Ïi).
+
+
+3) Apply non-maxima suppression to RM until the local maximum value is below Ï.
+
+
+ 
+
+
+Q: Query image,
+
+
+T: Target image,
+
+
+Ïo: Overall threshold,
+
+
+Î±: Confidence level,
+
+
+p2: Size of local steering kernel (LSK) window
+
+
+
+
+
+To this point, only the detection of objects in a gray image at a single scale have been addressed. Although the detection framework can handle modest scale and rotation variations by adopting a sliding window scheme, robustness to larger scale and rotation changes (for instance above +/â20% in scale, 30 degrees in rotation) are desirable. Furthermore, the use of color images as input should be also considered from a practical point of view. In this section, the approach described in the previous sections for detecting objects at a single scale is extended to detect objects at different scales and at different orientations in an image. In addition, we deal with a color image by defining and using âCanonical Cosine Similarityâ.
+In order to cope with large-scale variations, a multi-scale pyramid of the target image T is constructed. This is a non-standard pyramid as the target image size is reduced by steps of 10Ë15%, so that a relatively fine quantization of scales are taken into account. FIG. 15 (a) shows a block diagram of multi-scale object detection system, and FIG. 15( b) shows a block diagram of multi-rotation object detection system. The first step is to construct the multi-scale pyramid T0, T1, . . . , TS where S is the coarsest scale of the pyramid. As shown in FIG. 12( a), FQ, FT  0 , FT  1 , FT  2  (S=2) are obtained by projecting WQ and WT  0 , WT  1 , WT  2  onto the principal subspace defined by XQ as follows:
+
+F Q =X Q T W Q ,F T  0  =X Q T W T  0  ,F T  1  =X Q T W T  1  ,F T  2  =X Q T W T  2 .
+
+Three resemblance maps RM0, RM1, RM2, are obtained by computing
+     f â¡  (  Ï i  )   =    Ï i 2   1 -  Ï i 2    .     
+These resemblance maps represent the likelihood functions p(Æ(Ïi)|Si) where Si is the scale at ith point. However the sizes of the respective resemblance maps RM0, RM1, RM2 are naturally different. Therefore, all the resemblance maps are simply upscaled by pixel replication so that they match the dimensions of the finest scale map RM0. Next, the maximum likelihood estimate of the scale at each position is arrived at by comparing the upscaled resemblance maps as follows:
+
+       S ^  i  =  arg â¢     â¢   max  S i   â¢  p â¡  (    RM _  â¡  [  f â¡  (  Ï i  )   ]   â  S i   )      ,    
+where by RM it is meant that the collection of RM indexed by i at each position.
+
+In order to cope with large rotations, a similar approach is taken to generate rotated images (this time of the query image Q) in roughly 30 degree steps. As seen in FIG. 15 (b), FQ 0, FQ 1, . . . , FQ 11 and FT are obtained by projecting WQ 0, . . . , WQ 11 and WT onto the principal subspace defined by XQ  0 , . . . , XQ  11 . After computing
+     f â¡  (  Ï i  )   =   Ï i 2   1 -  Ï i 2       
+from 12 pairs by employing the sliding window scheme, we obtain twelve resemblance maps RM0, . . . , RM11. The maximum likelihood estimate of the best matching pattern is computed accounting for rotation as follows:
+
+
+
+
+
+
+
+R
+^
+
+i
+
+=
+
+arg
+â¢
+
+
+max
+
+R
+i
+
+
+â¢
+
+
+p
+â¡
+
+(
+
+
+
+
+R
+â¢
+
+ 
+
+â¢
+M
+
+_
+
+â¡
+
+[
+
+f
+â¡
+
+(
+
+p
+i
+
+)
+
+
+]
+
+
+â
+
+R
+i
+
+
+)
+
+
+.
+
+
+
+
+
+
+
+Now, Canonical Cosine Similarity (CCS) is now defined to extend the proposed framework with a single gray-scale query image to vector-valued images. In particular, suppose at each pixel, the image has q values. As per the earlier discussion, q feature sets are generated FQ l, FT  i  l(l=[1, . . . , q]) by projecting WQ l, FT  i  l onto the subspaces XQ l respectively and form the overall feature set as follows:
+
+F Q=[colstack(F Q 1), . . . ,colstack(F Q q)]Îµ (dÃn)Ãq,
+
+F T  i =[colstack(F T  i  1), . . . ,colstack(F T  i  q)]Îµ (dÃn)Ãq.
+
+    The key idea is to find the vectors u Q and uT  i , which maximally correlate two data sets (FQ, FT  i ).
+
+ d  Q =F Q  u  Q =u Q  1 colstack(F Q 1)+ . . . +u Q  q colstack(F Q q)Îµ (dÃn),
+
+ d  T  i  =F T  i   u  T  i  =u T  1 colstack(F T  i  1)+ . . . +u T  q colstack(F T  i  q)Îµ (dÃn),
+
+where u Q=[uQ  1 , . . . , uQ  q ]TÎµ q and u T  i =[uT  1 , . . . , uT  q ]TÎµ q.
+
+    Then, the objective function being maximized is the cosine similarity between d Q and d T  i  as follows.
+     Ï =    max    u _  Q  ,   u _   T i     â¢     â _  Q T  â¢   â _   T i      ï   â _  Q  ï  â¢  ï   â _   T i   ï     =   max    u _  Q  ,   u _   T i     â¢     u _  Q T  â¢  F Q T  â¢  F  T i   â¢   u _   T i      ï   F Q  â¢   u _  Q   ï  â¢  ï   F  T i   â¢   u _   T i    ï       ,    
+such that â¥FQ u Qâ¥=â¥FT  i  u T  i â¥=1, where u Q and u T  i  are called canonical variates and Ï is the canonical cosine similarity. The above is inspired by canonical correlation analysis (CCA).
+
+The canonical cosine similarity Ï and canonical variates u Q, u T  i  can be obtained by solving the coupled eigenvalue problems as follows:
+
+(F Q T F Q)â1(F Q T F T  i )(F T  i  T F T  i )â1(F T  i  T F Q) u  Q=Ï2  u  Q,
+
+(F T  i  T F T  i )â1(F T  i  T F Q)(F Q T F Q)â1(F Q T F T  i ) u  T  i =Ï2  u  T  i .
+
+The proof is as follows:
+The Lagrangian objective function to the minimization problem in
+
+
+
+
+
+ 
+
+â¢
+
+
+Ï
+=
+
+
+
+max
+
+
+
+u
+_
+
+Q
+
+,
+
+
+u
+_
+
+
+T
+i
+
+
+
+
+â¢
+
+
+
+
+â
+_
+
+Q
+T
+
+â¢
+
+
+â
+_
+
+
+T
+i
+
+
+
+
+
+ï
+
+
+â
+_
+
+Q
+
+ï
+
+â¢
+
+ï
+
+
+â
+_
+
+
+T
+i
+
+
+ï
+
+
+
+
+=
+
+
+max
+
+
+
+u
+_
+
+Q
+
+,
+
+
+u
+_
+
+
+T
+i
+
+
+
+
+â¢
+
+
+
+
+u
+_
+
+Q
+T
+
+â¢
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+
+
+ï
+
+
+F
+Q
+
+â¢
+
+
+u
+_
+
+Q
+
+
+ï
+
+â¢
+
+ï
+
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+ï
+
+
+
+
+
+
+,
+
+
+
+
+â¢
+
+ 
+
+â¢
+is
+
+
+
+
+
+
+
+
+f
+â¡
+
+(
+
+
+Î»
+Q
+
+,
+
+Î»
+T
+
+,
+
+
+u
+_
+
+Q
+
+,
+
+
+u
+_
+
+
+T
+i
+
+
+
+)
+
+
+=
+
+
+
+
+u
+_
+
+Q
+T
+
+â¢
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+-
+
+
+
+Î»
+Q
+
+2
+
+â¢
+
+(
+
+
+
+
+u
+_
+
+Q
+T
+
+â¢
+
+F
+Q
+T
+
+â¢
+
+F
+Q
+
+â¢
+
+
+u
+_
+
+Q
+
+
+-
+1
+
+)
+
+
+-
+
+
+
+Î»
+
+T
+i
+
+
+2
+
+â¢
+
+(
+
+
+
+
+u
+_
+
+
+T
+i
+
+T
+
+â¢
+
+F
+
+T
+i
+
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+-
+1
+
+)
+
+
+
+
+
+
+
+Taking derivatives with respect to u Q and u T  i , we obtain
+
+
+
+
+
+
+â
+f
+
+
+â
+
+
+u
+_
+
+Q
+
+
+
+=
+
+
+
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+-
+
+
+Î»
+Q
+
+â¡
+
+(
+
+
+F
+Q
+T
+
+â¢
+
+F
+Q
+
+â¢
+
+
+u
+_
+
+Q
+
+
+)
+
+
+
+=
+0
+
+
+
+
+
+
+
+
+
+â
+f
+
+
+â
+
+
+u
+_
+
+
+T
+i
+
+
+
+
+=
+
+
+
+
+F
+
+T
+i
+
+T
+
+â¢
+
+F
+Q
+
+â¢
+
+
+u
+_
+
+Q
+
+
+-
+
+
+Î»
+
+T
+i
+
+
+â¡
+
+(
+
+
+F
+
+T
+i
+
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+)
+
+
+
+=
+0
+
+
+
+
+
+Pre-multiply u T  i  T to
+      â f   â   u _   T i     =     F  T i  T  â¢  F Q  â¢   u _  Q   -   Î»  T i   â¡  (   F  T i  T  â¢  F  T i   â¢   u _   T i    )    = 0     
+and also pre-multiply u Q T to
+
+
+
+
+
+
+
+â
+f
+
+
+â
+
+
+u
+_
+
+Q
+
+
+
+=
+
+
+
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+â¢
+
+
+u
+_
+
+
+T
+i
+
+
+
+-
+
+
+Î»
+Q
+
+â¡
+
+(
+
+
+F
+Q
+T
+
+â¢
+
+F
+Q
+
+â¢
+
+
+u
+_
+
+Q
+
+
+)
+
+
+
+=
+0.
+
+
+
+
+
+Subtracting these two equations, gives
+
+ u  Q T F Q T F T  i   u  T  i âÎ»Q( u  Q T F Q T F Q  u  Q)â u  T  i  T F T  i  T F Q  u  QâÎ»T  i ( u  T  i  T F T  i  T F T  i   u  T  i )=0,
+
+where (u Q TFQ TFT  i  u T  i )T=u T  i  TFT  i  TFQ u Q is a scalar.
+
+Enforcing the constraints (u Q TFQ TFQ u Q)T=(u T  i  TFT  i  TFT  i  u T  i )T=1, leads to the conclusion that Î»Q=Î»T  i . Defining Ï=Î»Q=Î»T  i . Assuming FT  i  TFT  i  is invertible from
+       â f   â   u _   T i     =     F  T i  T  â¢  F Q  â¢   u _  Q   -   Î»  T i   â¡  (   F  T i  T  â¢  F  T i   â¢   u _   T i    )    = 0   , that         u _   T i   =     (   F  T i  T  â¢  F  T i    )   - 1   â¢  F  T i   â¢  F Q  â¢   u _  Q   Ï     
+and so plugging in
+
+       â f   â   u _  Q    =     F Q T  â¢  F  T i   â¢   u _   T i    -   Î» Q  â¡  (   F Q T  â¢  F Q  â¢   u _  Q   )    = 0   ,    
+gives
+
+
+
+
+
+
+
+
+(
+
+
+F
+Q
+T
+
+â¢
+
+F
+
+T
+i
+
+
+
+)
+
+â¢
+
+
+(
+
+
+F
+
+T
+i
+
+T
+
+â¢
+
+F
+
+T
+i
+
+
+
+)
+
+
+-
+1
+
+
+â¢
+
+(
+
+
+F
+
+T
+i
+
+
+â¢
+
+F
+Q
+
+
+)
+
+â¢
+
+
+u
+_
+
+Q
+
+
+Ï
+
+=
+
+
+Ï
+â¡
+
+(
+
+
+F
+Q
+T
+
+â¢
+
+F
+Q
+
+
+)
+
+
+â¢
+
+
+
+u
+_
+
+Q
+
+.
+
+
+
+
+
+
+Assuming FQ TFQ is also invertible, gives
+
+(F Q T F Q)â1(F Q T F T  i )â1(F T  i  T F Q) u  Q=Ï2  u  Q.
+
+Similarly,
+
+(F T  i  T F T  i )â1(F T  i  T F Q)(F Q T F Q)â1(F Q T F T  i ) u  T  i =Ï2  u  T  i .
+
+The positive square root of eigenvalues Ï2 is the âCanonical Cosine Similarityâ. If FQ, FT  i  are each composed of a single vector (colstack(FQ), colstack(FT  i )), the above equations reduce to
+        (    colstack â¡  (  F Q  )   T  â¢  colstack â¡  (  F  T i   )    )  2     ï  colstack â¡  (  F Q  )   ï  2  â¢   ï  colstack â¡  (  F  T i   )   ï  2    =  Ï 2   ,    
+which is just the squared cosine similarity defined earlier.
+
+Here, a closer look at the particular case of color images where q=3 is provided. A natural question here is whether more can be gained if we the color information is used instead of using only the luminance channel as provided so far. The answer to this question is positive. There exist many color models such as RGB, YCbCr, CIE L*a*b* etc., it is observed that CIE L*a*b color model provides the most discriminative information among all. FIG. 16 (b) shows examples of correct detections on the UIUC single-scale car test set. FIG. 16 (c) shows examples of correct detections on the UIUC multi-scale car test set. Confidence level Î± was set to 0.99 and RM only above the threshold Ï corresponding to Î± is embedded in test images. Bounding boxes can be drawn at the correct locations. In case of a multiple detection, a red bounding box cab indicate higher resemblance to Query than a blue bounding box.
+Defining the respective RM7 as the summation of mapping function Æ(Ïi(l)) of CCS Ïi(l) between a set of features which are calculated from each channel over l=1, . . . , l, where
+      â  l = 1   d c   â¢    Ï i 2  â¡  ( l )    1 -   Ï i 2  â¡  ( l )      )    
+(dc is the number of canonical cosine similarity values Ïi (l) greater than zero). Also illustrated in the next section, the color approach based on CCS not only provides better discriminative power, but also gives more accurate localization results than the luminance channel only does.
+
+The performance of the current invention is demonstrated with comprehensive experiments on three datasets; namely, the UIUC car dataset, MIT-CMU face dataset, and Shechtman's general object dataset. The current invention provides a series of bounding boxes around objects of interest. More specifically, if the detected region by the current invention lies within an ellipse of a certain size centered around the ground truth, it is evaluated as a correct detection. Otherwise, it is counted as a false positive. Eventually, a Precision and Recall is computed and defined as
+     Recall =   T â¢     â¢ P   n â¢     â¢ P    ,  Precision =   T â¢     â¢ P    T â¢     â¢ P  +  F â¢     â¢ P     ,    
+where, T P is the number of true positives, F P is the number of false positives, nP is the total number of positives in dataset, and
+
+
+
+
+
+
+1
+-
+Precision
+
+=
+
+
+
+F
+â¢
+
+ 
+
+â¢
+P
+
+
+
+T
+â¢
+
+ 
+
+â¢
+P
+
++
+
+F
+â¢
+
+ 
+
+â¢
+P
+
+
+
+.
+
+
+
+
+
+Experimental results on each dataset are presented as recall versus (1-precision) curve and Detection equal-error rate in the following sections, note that Detection equal-error rate is a detection (recall) rate when a recall rate is the same as the precision rate.
+Regarding car detection the UIUC car dataset consists of learning and test sets. The learning set contains 550 positive (car) images and 500 negative (non-car) images. The test set is divided into two parts: 170 gray-scale images containing 200 side views of cars with size of 100Ã40, and 108 grayscale images containing 139 cars at various sizes with a ratio between the largest and smallest car of about 2.5. Since the method according to the current invention is training-free, only one query image at a time is used from the 550 positive examples.
+Computing LSK of size 9Ã9 as descriptors, as a consequence, every pixel in Q and T yields an 81-dimensional local descriptor WQ and WT respectively. The smoothing parameter h for computing LSKs was set to 2.1. Resulting in FQ, FT by reducing dimensionality from 81 to d=4 and then, obtaining RM by computing the MCS measure between FQ, FT  i . The threshold Ï for each test example was determined by the confidence level Î±=0.99. FIG. 16 (b) shows the output of the current invention on single-scale test images.
+An experiment was conducted by computing RM without performing PCA in order to verify that the use of dimensionality reduction step (PCA) plays an important role in extracting only salient features and improving the performance. These experiments were repeated by changing the query image and computing precision and recall. In FIGS. 17( a) and 17(b), recall-precision curves represent a performance comparison between the current invention and the current invention without PCA using 5 different query images. FIG. 17( a) shows recall versus 1-Precision curves of the current invention, FIG. 17( b) shows recall versus 1-Precision curves of the current invention without PCA on the UIUC single-scale car test set using 5 different query images. It is clearly shown that the performance of the current invention is not terribly affected by a choice of the query images, but is quite consistent. Furthermore, PCA consistently contributes to a performance improvement. The detection equal-error rates comparison is provided in Table I as well.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE I
+
+
+ 
+
+
+SINGLE-SCALE RESULT: DETECTION EQUAL-ERROR RATES ON
+
+
+THE UIUC SINGLE-SCALE CAR TEST SET [44]
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+The proposed
+ 
+ 
+ 
+ 
+ 
+Agarwal et al.
+Wu and Nevatia
+
+
+method w/o PCA
+Query 1
+Query 2
+Query 3
+Query 4
+Query 5
+[44] (1)
+[46]
+
+
+ 
+
+
+Detection rates
+79.29%
+88.12%
+81.11%
+80.41%
+87.11%
+77.08%
+97.5%
+
+
+ 
+
+
+The proposed
+ 
+ 
+ 
+ 
+ 
+Agarwal et al.
+Kapoor and Winn
+
+
+method
+Query 1
+Query 2
+Query 3
+Query 4
+Query 5
+[44] (2)
+[47]
+
+
+ 
+
+
+Detection rates
+85.26%
+87.27%
+87.13%
+80.57%
+86.73%
+76.72%
+94.0%
+
+
+ 
+
+
+
+
+
+To show an overall performance of the purposed method on five different query images, T P and F P were summed up over the entire experiment, then computed recall and precision at various steps of the threshold value Ï according to the confidence level Î±. The current invention, which is training-free, performs favorably against state-of-the-art methods which use extensive training as shown in FIG. 18 shows a comparison of Recall versus 1-Precision curves between the current invention and other methods on the UIUC single-scale test set.
+In a multi-scale test set, as explained above, a multi-scale pyramid was constructed of the target image T:5 scales with scale factors 0.4, 0.6, 0.8, 1, and 1.2. More specifically, the target image size is reduced by steps of 20% up to 40% of the original size and upscale the target image by 20% so that we can deal with both cases of either the size of objects in the target images being bigger or smaller than the query. The rest of the process is similar to the single-scale case. FIG. 19 (b) shows examples of correct detections using Ï corresponding to Î±=0.99. Here, FIG. 19 (a) shows a Recall versus 1-Precisions curve using 5 different query images and FIG. 19 (b) shows a comparison of Recall versus 1-Precision curves between the current invention and other methods on the UIUC multi-scale test set. The overall performance improvement of the current invention (using 5 different query images) is even greater (over 30%) on the multi-scale test set as shown in Table II and FIG. 18.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE II
+
+
+
+
+ 
+
+
+MULTI-SCALE RESULT: DETECTION EQUAL-ERROR RATES ON
+
+
+THE UIUC MULTI-SCALE CAR TEST SET [44]
+
+
+
+
+The proposed
+ 
+ 
+ 
+ 
+ 
+Agarwal et al.
+Mutch
+Kapoor
+
+
+method
+Query 1
+Query 2
+Query 3
+Query 4
+Query 5
+[44]
+and Lowe [48]
+and Winn [47]
+
+
+ 
+
+
+Detection
+75.47%
+77.66%
+70.21%
+75.00%
+74.22%
+43.77~44.00%
+90.6%
+93.5%
+
+
+rates
+
+
+ 
+
+
+
+
+
+Regarding face detection, the performance of the current invention is shown in the presence of a moderate scale variation (a ratio between the largest and smallest object of about 2.5) in the previous section. In this section, the invention is evaluated on more general scenario where the scale ratio between the largest and smallest is over 10 and large rotations of objects may exist. Therefore, a test set is chosen from a subset of the MIT-CMU face dataset. The test set is composed of 43 gray-scale images containing 149 frontal faces at various sizes and 20 gray-scale images containing 30 faces with various rotations. A query face image of size 35Ã36 was employed as shown in FIG. 20, and images for a rotation experiment were resized so that faces are about the same size as the query face. Such parameters as the smoothing parameter (h), LSK size (P), confidence level (Î±) remain same as the ones used in the UIUC car test sets. However, the scale steps are increased for the multi-scale pyramid up to 29, and rotation steps were set to 24 (i.e., rotate the query image by 15 degrees) to achieve an accurate rotation estimation. FIG. 20, FIG. 21, and FIG. 22 show that the current invention is capable of detecting and localizing faces at distinct scale and rotation angle even in the presence of large variations in scale and rotation. FIG. 20 shows the detection results on the MIT-CMU multi-scale test set. Î± was set to 0.99. Hand-drawn faces on the white board were also detected using a real face query image. FIG. 21 shows detection results on the MIT-CMU multi-scale test set. Î± was set to 0.99. Among 57 faces present, 54 faces were detected at a correct location with 4 false alarms. FIG. 22 shows detection results on the MIT-CMU multi-rotation test set. Î± was set to 0.99. FIG. 23 shows Precision-Recall Curves on the MIT-CMU test set using 2 different query images.
+The experiment was repeated by changing the query image. As shown in FIG. 23, the performance of the current invention on this test set is consistent with the results in the UIUC car test sets. More specifically, the performance of the current invention is little affected by the choice of query image and is quite stable.
+For general object detection, the performance of the current invention is demonstrated on data sets composed of gray-scale images, which contain specific objects such as car and face. The current invention is applied here to a more difficult scenario where general real-world images containing flowers, hearts, and human poses are considered. Furthermore, rough hand-drawn sketches are used as a query instead of real images. In order to justify the usefulness of the MCS measure for this dataset and to further verify the advantage of the CCS defined in Section IV-C over the MCS measure, the current invention is first evaluated on the luminance channel only. In FIG. 24, some examples of RM are shown. FIG. 25 and FIG. 26 show that the current invention is able to detect and localize reliably.
+The use of LSKs is further justified by comparing the performance with state-of-the-art local descriptors. Such local descriptors are densely computed as gradient location-orientation histogram (GLOH), Shape Context, and SIFT. By replacing LSKs with these descriptors, but keeping the rest of the steps the same, the experiment was repeated on this test set. The Precision-Recall curve in FIG. 27 verifies that the LSKs according to the current invention has more discriminative power than other local descriptors. The current invention is also evaluated on full CIE L*a*b* data. Looking at recall rates in the range of 0â¦(1-precision)â¦0.1 in FIG. 27, full CIE L*a*b* data is seen to provide more information, and thus CCS outperforms the MCS measure.
+The current invention is a novel and powerful training-free non-parametric object detection framework by employing local steering kernels (LSKs), which well-capture underlying data structure, and by using the âMatrix Cosine Similarityâ (MCS) measure. The invention is justified using a naive Bayes decision, which leads to the use of MCS measure. The invention can automatically detect in the target image the presence, the number, as well as location of similar objects to the given query image. To deal with more general scenarios, accounting for large variations in scale and rotation, a multi-scale and -rotation approach is provided. The âCanonical Cosine Similarityâ (CCS) has proven to be more effective than MCS when vector-valued images are available though this requires further study. Challenging sets of real-world object experiments have demonstrated that the current invention achieves a high detection accuracy of objects of interest even in completely different context and under different imaging conditions. Unlike other learning-based detection methods, the current invention operates using a single example of an image of interest to find similar matches, and does not require any prior knowledge (learning) about objects being sought; and does not require any segmentation or pre-processing step of the target image. The invention is general enough as to be extendable to 3-D for such applications as action recognition, suspicious behavior detection etc. using analogous 3-D LSKs.
+The task of action recognition are mainly two-fold. First, feature representation is required that is derived from space-time local (steering) regression kernels (3-D LSKs), which capture the underlying structure of the data quite well, even in the presence of significant distortions and data uncertainty. Second, generalizing a training-free nonparametric detection scheme to 3-D, which is provided for 2-D object detection. The current invention uses 3-D LSKs for the problems of detection/localization of actions of interest between a query video and a target video. The key idea behind 3-D LSKs is to robustly obtain local space-time geometric structures by analyzing the radiometric (voxel value) differences based on estimated space-time gradients, and use this structure information to determine the shape and size of a canonical kernel (descriptor). The 3-D LSKs implicitly contain information about the local motion of the voxels across time, thus requiring no explicit motion estimation.
+Referring to FIG. 28, by denoting the target video (T), and the query video (Q), a dense set of 3-D LSKs from each is computed. These densely computed descriptors are highly informative, but taken together tend to be over-complete (redundant). Therefore, features are derived by applying dimensionality reduction (namely PCA) to these resulting arrays, in order to retain the most salient characteristics of the 3-D LSKs. The feature collections from Q and Ti (a chunk of the target which is the same size as the query; See FIG. 1 (b)) form feature volumes FQ and FT  i . comparing the feature volumes FT  i  and FQ from the ith cube of T and Q to look for matches. One aspect of the invention takes advantage of cosine similarity over the conventional Euclidean distance, Matrix Cosine Similarity (MCS) is employed as a similarity measure, which generalizes the notion of cosine similarity between two vectors. The optimality properties of this approach are described within a naive Bayes framework.
+In general, it is assumed that the query video is smaller than target video. However, this is not true in practice and a query video may indeed include a complex background, which deteriorates recognition accuracy. In order to deal with this problem, it is necessary to have a procedure, which automatically segments from the query video a small cube that only contains a valid human action. For this, space-time saliency detection is employed. This idea not only allows one to extend the current detection framework to action category classification, but also improve both detection and classification accuracy by automatically removing irrelevant background from the query video. FIG. 28 shows an overview of the framework for action detection according to the current invention and category classification.
+The action detection method of the current invention is distinguished from the 2-D work above for object detection, in the following respects; 1) action detection addressed in this here is considered to be more challenging than static (2-D) object detection due to additional problems such as variations in individual motion and camera motion, 2) space-time local steering kernels are used, which capture both spatial and temporal geometric structure, 3) while earlier it is assumed that a query image is always smaller than a target and only contains an object of interest, this assumption is relaxed to deal with more realistic scenarios by incorporating space-time saliency detection, and 4) while the 2-D work focused on detection tasks, the current invention, achieves state-of-the art action classification performance as well as high detection accuracy. Therefore, a nontrivial extension of 2-D framework to 3-D for action recognition, and the careful examination of the current invention on challenging action datasets are disclosed herein.
+Before providing a more detailed description, some key aspects are highlighted of the current invention.
+    A novel feature representation derived from densely computed 3-D LSKs is proposed.   
+Since the calculation of 3-D LSKs is stable in the presence of uncertainty in the data, the invention is robust even in the presence of noise. In addition, normalized 3-D LSKs provide a certain invariance to illumination changes (see FIG. 32.).
+    As opposed to filtering out ânon-informativeâ descriptors in order to reduce the time complexity, the current invention automatically obtains the most salient feature volumes by applying Principal Components Analysis (PCA) to a collection of 3-D LSKs. The method of the invention is feasible in practice because the dimension of features after PCA is significantly reduced (e.g., from say 3Ã3Ã7=64, to 3 or 4), even though the descriptors are densely computed. The current invention is tolerant to modest deformations (i.e., Â±20% scale change (in space-time), Â±15 degree rotation change) of the query and can detect multiple actions that occur simultaneously in the field of view using multiple queries. From a practical standpoint, it is important to note that the current invention operates using a single example of an action of interest to find similar matches; does not require any prior knowledge (learning) about actions being sought; and does not require any pre-processing step or segmentation of the target video. Since the invention does not require background subtraction, the current invention can work with cluttered scenes with dynamic backgrounds.   
+As outlined above, the approach to detect actions according to the current invention consists broadly of three stages (see FIG. 28). Below, each of these steps is described in detail. In order to make the concepts more clear, the local steering kernels in 2-D are reiterated.
+ FIG. 29 shows a graphical description of how LSK values centered at pixel of interest Ã13 are computed in an edge region. Note that each pixel location has its own CÎµ 2Ã2 computed from gradient vector field within a local window. In K values, red means higher values (higher similarity).
+    Indeed, the covariance matrix Cl modifies the shape and size of the local kernel in a way which robustly encodes the local geometric structures. The shape of the LSK's is not simply a Gaussian, despite the simple definition in
+
+
+
+
+
+
+K
+â¡
+
+(
+
+
+x
+l
+
+-
+
+x
+i
+
+
+)
+
+
+=
+
+
+
+
+det
+â¡
+
+(
+
+C
+l
+
+)
+
+
+
+
+h
+2
+
+
+â¢
+exp
+â¢
+
+{
+
+
+
+
+(
+
+
+x
+l
+
+-
+
+x
+i
+
+
+)
+
+T
+
+â¢
+
+
+C
+l
+
+â¡
+
+(
+
+
+x
+
+l
+â¢
+
+ 
+
+
+
+-
+xi
+
+)
+
+
+
+
+
+-
+2
+
+â¢
+
+h
+2
+
+
+
+}
+
+
+
+,
+
+
+
+
+â¢
+
+l
+=
+1
+
+,
+â¦
+â¢
+
+ 
+
+,
+P
+,
+
+
+
+
+It is important to note that this is because for each pixel xl in the vicinity of xi, a different matrix Cl is used, therefore leading to a far more complex and rich set of possible shapes for the resulting LSKs. The same idea is valid in 3-D as well, as will be describe below.
+The time axis is introduced to the data model here so that xl=[x1, x2, t]l T: x1 and x2 are the spatial coordinates, and t is the temporal coordinate. Similar to the 2-D case, the covariance matrix Cl can be naively estimated as Jl TJl with
+     J l  =  [       z  x 1   â¡  (  x 1  )   ,       z  x 2   â¡  (  x 1  )   ,      z t  â¡  (  x 1  )       â®   â®   â®        z  x 1   â¡  (  x P  )   ,       z  x 2   â¡  (  x P  )   ,      z t  â¡  (  x P  )      ]     
+where zx  1 (â¢), zx  2 (â¢), and zt(â¢) are the first derivatives along x1-, x2-, and t-axes, and P is the total number of samples in a space-time local analysis window (or cube) around a sample position at xi. Again, Cl is estimated by invoking the singular value decomposition (SVD) of Jl with regularization as:
+
+     C l  =   Î³ â¢   â  q = 1  3  â¢   a q 2  â¢  v q  â¢  v q T     â  â  (  3 Ã 3  )         with        a 1  =    s 1  +  Î» â²       s 2  â¢  s 3    +  Î» â²     ,  
+  â¢   a 2  =    s 2  +  Î» â²       s 1  â¢  s 3    +  Î» â²     ,  
+  â¢   a 3  =    s 3  +  Î» â²       s 1  â¢  s 2    +  Î» â²     ,  
+  â¢  Î³ =   (     s 1  â¢  s 2  â¢  s 3   +  Î» â³   P  )  Î±   ,    
+where Î»â² and Î»â³ are parameter that dampen the noise effect and restrict Î³ and the denominators of Î±q's from being zero (Î»â², Î»â³, Î±, and h are set to the same values as 2-D LSKs and fixed for all experiments). As mentioned earlier, the singular values (s1, s2, and s3) and the singular vectors (Î½1, Î½2, and Î½3) are given by the compact SVD of
+
+J l =U l S l V l T =U ldiag[s 1 ,s 2 ,s 3]l [v 1 ,v 2 ,v 3]l T.
+
+In the 3-D case, orientation information captured in 3-D LSK contains the motion information implicitly. FIG. 30 is a graphical description of how 3-D LSK values centered at voxel of interest Ã38 are computed in a space-time edge region. Note that each voxel location has its own CÎµ 3Ã3 computed from space-time gradient vector field within a local space-time window.
+     FIG. 31 shows examples of 3-D local steering kernels capturing 3-D local underlying geometric structure in various space-time regions. As can be seen in
+      K â¡  (   x l  -  x i   )   =     det â¡  (  C l  )     h 2   â¢ exp â¢  {     (   x l  -  x i   )  T  â¢   C l  â¡  (   x  l â¢       - xi  )      - 2  â¢  h 2    }    ,  
+  â¢  l = 1  , â¦ â¢     , P ,    
+the values of the kernel K are based on the covariance matrices Cl along with their space-time locations xl. It is worth noting that a significant strength of using this implicit framework (as opposed to the direct use of estimated motion vectors) is the flexibility it provides in terms of smoothly and adaptively changing descriptors. This flexibility allows the accommodation of even complex motions, so long as their magnitudes are not excessively large. In FIG. 31, in order to compute 3-D LSKs, 5 frames (frame 13 to frame 17) were used. Intuitively, Cl's computed from the local analysis window are similar to one another in the motion-free region (see FIG. 31). On the other hand, in the region where motion exists (see FIG. 31), the kernel size and shape depend on both Cl and its space-time location xl in the local space-time window. Thus, high values in the kernel are yielded along the space-time edge region whereas the rest of kernel values are near zero.
+
+In what follows, at a position xi, the description will essentially be using (a normalized version of) the function. K(xlâxi) as descriptors, representing a video's inherent local space-time geometry. To be more specific, the 3-D LSK function K(xlâxi) is densely calculated and normalized as follows
+      W I i  =   K â¡  (   x l  -  x i   )     â  l = 1  P  â¢  K â¡  (   x l  -  x i   )      ,    
+where I can be Q or T for query or target, respectively.
+
+Normalization of this kernel function yields invariance to brightness change and robustness to contrast change as shown in FIGS. 32( a)-32(b), where shown are invariance and robustness of 3-D LSK weights W(xlâx) in various challenging conditions. Note that WGN means White Gaussian Noise.
+ FIGS. 33( a)-33(b) show that a collection of 3-D LSKs reveals global space-time geometric information. Here, the 3D-LSKs are computed from two actions such as hand-waving FIG. 33 (a) and bending FIG. 33 (b) are shown. For graphical description, only the 3-D LSKs are computed at non-overlapping 5Ã5Ã5 cubes, even though 3-D LSKs are computed densely in practice. The LSKs of the current invention are based on the similarity between a center voxel and surrounding voxels in a space-time neighborhood measured with the help of gradients. These descriptors capture higher-level contextual information than the histogram of space-time gradients. Furthermore, salient characteristics of 3-D LSKs are extracted by further applying Principal Component Analysis (PCA) as described below.
+In describing feature representation, it has been shown that the normalized LSKs in 2-D follow a power-law (i.e., a long-tail) distribution. That is to say, the features are scattered out in a high dimensional feature space, and thus there basically exists no dense cluster in the descriptor space. The same principle applies to 3-D LSK. In order to illustrate and verify that the normalized 3-D LSKs also satisfy this property, an empirical bin density (100 bins) of the normalized 3-D LSKs is computed (using a total of 50,000 3-D LSKs) computed from 90 videos of the Weizmann action dataset using the K-means clustering method as shown in see FIGS. 34( a)-(b), where FIG. 34( a) shows some example video sequences (Weizmann dataset) where 3-D LSKs were computed and FIG. 34( b) shows plots of the bin density of 3-D LSKs and their corresponding low-dimensional features. The utility of this observation becomes clear in the next paragraphs.
+In the previous section, a dense set of 3-D LSKs were computed from Q and T. These densely computed descriptors are highly informative, but taken together tend to be over-complete (redundant). Therefore, features are derived by applying dimensionality reduction (namely PCA) to these resulting arrays, in order to retain only the salient characteristics of the 3-D LSKs. As also observed, an ensemble of local features with even little discriminative power can together offer significant discriminative power. However, both quantization and informative feature selection on a long-tail distribution can lead to a precipitous drop in performance. Therefore, instead of any quantization and informative feature selection, focus is on reducing the dimension of 3-D LSKs using PCA.
+This idea results in a new feature representation with a moderate dimension, which inherits the desirable discriminative attributes of 3-D LSK. The distribution of the resulting features sitting on the low dimensional manifold also tends to follow a power-law distribution as shown in FIG. 34( b) and this allows us to the use Matrix Cosine Similarity (MCS) measure which will be discussed below.
+In order to organize WQ and WT, which are densely computed from Q and T, let WQ, WT be matrices whose columns are vectors wQ, wT, which are column-stacked (rasterized) versions of WQ, WT respectively:
+
+W Q =[w Q 1 , . . . ,w Q n]Îµ PÃn,
+
+W T =[w T 1 , . . . ,w T n  T ]Îµ PÃn  T :
+
+where n and nT are the number of cubes where 3-D LSKs are computed in the query Q and the target T respectively.
+
+    As described in FIG. 28, the next step is to apply PCA to WQ and retain the first (largest) d principal components, which form the columns of a matrix AQÎµ PÃd. Typically, d is selected to be a small integer such as 3 or 4 so that 80 to 90% of the information in the LSKs would be retained. (i.e.,
+           â  i = 1  d  â¢  Î» i     â  i = 1  P  â¢  Î» i    â¥ 0.8    
+(to 0.9) where Î»i are the eigenvalues. Next, the lower dimensional features are computed by projecting WQ and WT onto AQ:
+
+F Q =[f Q 1 , . . . ,f Q n ]=A Q T W QÎµ dÃn ,F T =[f T 1 , . . . ,f T n  T  ]=A Q T W TÎµ dÃn  T .
+
+     FIGS. 35( a)-35(b) and FIGS. 36( a)-36(b) illustrate that the principal components AQ learned from different actions such as surfing, diving, hand waving, and bending actions are quite distinct from one another. Here, FIGS. 35( a)-35(b) shows examples of the top 4 principal components in AQ for various actions such as surfing and diving. Note that these eigenvectors reveal geometric characteristic of queries in both space and time domain, and thus they are totally different from linear 3-D Gabor filters. FIGS. 37( a)-37(b) show what the features FQ, FT look like for a walking action and a jumping action. Here, AQ is learned from a collection of 3-D LSKs WQ, and Feature row vectors of FQ and FT are computed from query Q and target video T respectively. Eigenvectors and feature vectors were transformed to volume and up-scaled for illustration purposes. Note that even though there is cluttered background in T (jumping action), this feature representation can capture only salient characteristics of actions. In order to show where actions appear, ovals are drawn around each action in the target video. These examples illustrate (as quantified later) that the derived feature volumes have a good discriminative power even though we do not involve any learning over a set of training examples.
+Regarding Matrix Cosine Similarity, the next step according to the invention is a decision rule based on the measurement of a distance between the computed feature volumes FQ, FT  i   
+The Matrix Cosine Similarity (MCS) between two feature matrices FQ, FT  i , which consist of a set of feature vectors can be defined as the Frobenius inner product between two normalized matrices as follows:
+      Ï â¡  (   F Q  ,  F  T i    )   =    â©    F _  Q  ,   F _   T i    âª  F  =   trace â¡  (    F Q T  â¢  F  T i       ï  F Q  ï  F  â¢   ï  F  T i   ï  F    )   â  [   - 1  , 1  ]     ,  
+  â¢ where ,  
+  â¢    F _  Q  =    F Q    ï  F Q  ï  F   =    1   ï  F Q  ï  F   â¡  [   f Q 1  , â¦ â¢     ,  f Q n   ]   â¢     â¢ and            F _   T i   =    F  T i     ï  F  T i   ï  F   =    1   ï  F  T i   ï  F   â¡  [   f  T i  1  , â¦ â¢     ,  f  T i  n   ]   .      
+Rewriting the previous equation as a weighted sum of the vector cosine similarities
+
+     Ï â¡  (   f Q  ,  f  T i    )   =    f Q T  â¢  f  T i      ï  f Q  ï  â¢  ï  f  T i   ï       
+between each pair of corresponding feature vectors (i.e., columns) in FQ, FT  i  as follows:
+
+
+
+
+
+
+Ï
+â¡
+
+(
+
+
+F
+Q
+
+,
+
+F
+
+T
+i
+
+
+
+)
+
+
+=
+
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+
+f
+Q
+
+l
+T
+
+
+â¢
+
+f
+
+T
+i
+
+l
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+
+=
+
+
+â
+
+l
+=
+1
+
+n
+
+â¢
+
+
+Ï
+â¡
+
+(
+
+
+f
+Q
+l
+
+,
+
+f
+
+T
+i
+
+l
+
+
+)
+
+
+â¢
+
+
+
+
+ï
+
+f
+Q
+l
+
+ï
+
+â¢
+
+ï
+
+f
+
+T
+i
+
+l
+
+ï
+
+
+
+
+
+ï
+
+F
+Q
+
+ï
+
+F
+
+â¢
+
+
+ï
+
+F
+
+T
+i
+
+
+ï
+
+F
+
+
+
+.
+
+
+
+
+
+
+
+
+The weights are represented as the product of
+     ï  f Q l  ï    ï  F Q  ï  F     
+and
+
+      ï  f  T i  l  ï    ï  F  T i   ï  F   ,    
+which indicate the relative importance of each feature in the feature sets FQ, FT  i . Seen here is an advantage of the MCS in that it takes account of the strength and angle similarity of vectors at the same time. Hence, this measure not only generalizes the cosine similarity naturally, but also overcomes the disadvantages of the conventional Euclidean distance which is sensitive to outliers. By computing Ï(FQ, FT  i ) over M (a possibly large number of) target cubes and this can be efficiently implemented by column-stacking the matrices FQ, FT  i  and simply computing the (vector) cosine similarity between two long column vectors as follows:
+
+       Ï i  â¡  Ï â¡  (   F Q  ,  F  T i    )    =    â  l = 1  n  â¢    f Q  l T   â¢  f  T i  l      ï  F Q  ï  F  â¢   ï  F  T i   ï  F     =   â  l = 1  n  â¢   â  j = 1  d  â¢    f Q  (  l , j  )   â¢  f  T i   (  l , j  )         â  l = 1  n  â¢  â  j = 1  d   |  f Q  (  l , j  )   â¢  | 2    â¢     â  l = 1  n  â¢  â  j = 1  d   |  f  T i   (  l , j  )   â¢  | 2          ,  =   Ï â¢  (   colstack â¡  (  F Q  )   ,  colstack â¡  (  F  T i   )    )   â  [   - 1  , 1  ]    ,    
+here ÆQ (l,j), ÆT  i  (l,j) are elements of lth vector fQ l and fT  i  l and colstack (â¢) means an operator which column-stacks (rasterizes) a matrix.
+
+It has been proposed that 3-D volume correlation score (global consistency measure between query and target cube) by computing a weighted average of local consistency measures. The difficulty with that method is that local consistency values should be explicitly computed from each corresponding subvolume of the query and target video. Furthermore, the weights to calculate a global consistency measure are based on a sigmoid function, which is somewhat ad-hoc. Here, the MCS measure of the current invention is better motivated, more general, and effective than their global consistency measure for action detection as previously alluded to.
+The next step is to generate a so-called resemblance volume (RV), which will be a volume of voxels, each indicating the likelihood of similarity between the Q and T. As for the final test statistic comprising the values in the resemblance volume, we use the proportion of shared variance (Ïi 2) to that of the âresidualâ variance (1âÏi 2). More specifically, RV is computed as follows:
+
+
+
+
+
+RV
+â¢
+
+:
+
+â¢
+
+ 
+
+â¢
+
+f
+â¡
+
+(
+
+Ï
+i
+
+)
+
+
+
+=
+
+
+
+Ï
+i
+2
+
+
+1
+-
+
+Ï
+i
+2
+
+
+
+.
+
+
+
+
+
+The resemblance volume generated from f(Ïi)) provides better contrast and dynamic range in the result (Æ(Ïi)Îµ[0, â]). More importantly, from a quantitative point of view, it is noted that Æ(Ïi) is essentially the Lawley-Hotelling trace statistic, which is used as an efficient test statistic for detecting correlation between two data sets. Furthermore, historically, this statistic has been suggested in the pattern recognition literature as an effective means of measuring the separability of two data clusters.
+Regarding the Non-Parametric Significance Test, if the task is to find the most similar cube (Ti) to the query (Q) in the target video, one can choose the cube which results in the largest value in the RV (i.e., max Æ(Ïi)) among all the cubes, no matter how large or small the value is in the range of [0, â]. This, however, is unwise because there may not be any action of interest present in the target video. Therefore two types of significance tests are of interest. The first is an overall test to decide whether there is any sufficiently similar action present in the target video at all. If the answer is yes, then it is desirable to know how many actions of interest are present in the target video and where they are. Therefore, two thresholds are needed: an overall threshold Ïo and a threshold Ï to detect the (possibly) multiple occurrences of similar actions in the target video.
+In a typical scenario, we set the overall threshold Ïo=1, which is about 50% of variance in common (i.e., Ï2=0.5), which represents an unbiased choice reflecting our lack of prior knowledge about whether any similar actions are present at all. In other words, if the maximal Æ(Ïi) is just above 1, it is decided that there exists at least one action of interest. The next step is to choose Ï based on the properties of Æ(Ïi). When it comes to choosing the Ï, there is need to be more careful. If one has a basic knowledge of the underlying distribution of Æ(Ïi), then one can make predictions about how this particular statistic will behave, and thus it is relatively easy to choose a threshold, which will indicate whether the pair of features from the two videos are sufficiently similar. But, in practice, one does not have a very good way to model the distribution of Æ(Ïi). Therefore, instead of assuming a type of underlying distribution, the idea of nonparametric testing is employed. Namely, an empirical probability density function (PDF) is computed from the samples Æ(Ïi) in the given resemblance volume, and set Ï so as to achieve, for instance, a 99 percent significance level in deciding whether the given values are in the extreme (right) tails of the distribution. This approach is based on the assumption that in the target video, most cubes do not contain the action of interest (in other words, an action of interest is a relatively rare event), and therefore, the few matches will result in values, which are in the tails of the distribution of Æ(Ïi).
+Regarding Non-maxima Suppression, after the two significance tests with Ïo, Ï are performed, the idea of non-maxima suppression is employed for the final detection. The volume region with the highest Æ(Ïi) value is taken and the possibility that any other action is detected is eliminated within some radius of the center of that volume again, where the size of this exclusion region will depend on the application at hand and the characteristics of the query video. This enables one to avoid multiple false detections of nearby actions already detected. Then this process is then iterated until the local maximum value falls below the threshold Ï.
+The performance of the current invention is demonstrated here with comprehensive experiments on three datasets; namely, the general action dataset, the Weizmann action dataset, and the KTH action dataset. The general action dataset is used to evaluate detection performance of the current invention, while the Weizmann action dataset and the KTH action dataset are employed for action categorization. Comparison is made with other methods that have reported their results on these datasets.
+In this section, shown are several experimental results on searching with a short query video against a (typically longer and larger) target video. The current method detects the presence and location of actions similar to the given query and provides a series of bounding cubes with resemblance volume embedded around detected actions. Note again that no background/foreground segmentation is required in the current method. The method of the current invention can also handle modest variations in rotation (up to Â±15 degree), and spatial and temporal scale change (up to Â±20%). Given Q and T, the image is spatially blur and downsample both Q and T by a factor of 3 in order to reduce the time-complexity. Then 3-D LSK of size 3Ã3 (space) Ã7 (time) as descriptors are computed so that every space-time location in Q and T yields a 63-dimensional local descriptor WQ and WT respectively. The reason a lager time axis size than space axis of the cube is chosen is that it is desired to focus on detecting similar actions regardless of different appearances. Thus providing a higher priority to temporal evolution information than spatial appearance. The end result here is FQ, FT by reducing dimensionality from 63 to d=4 and then, RV is obtained by computing the MCS measure between FQ, FT. The method of the invention is applied to 4 different examples: for detecting 1) walking people, 2) ballet turn actions, 3) swim jump actions and 3) multiple actions in one video.
+Turning not to FIG. 38, shown are results of searching for walking persons on the beach, where Top: a short walk query, Left: resemblance volume (RV), Middle: detected walking actions after two significance tests (Ï0=1, Ï=2.07) followed by non-maxima suppression. Darkareas among detected volumes mean higher resemblance to the given query. Right: ground truth volume. Note that shades in the ground truth volume are used to distinguish individual actions from each other. This figure is better illustrated in color. These results of searching for instances of walking people in a target beach video are provided from 456 frames of 180Ã360 pixels. The query video contains a very short walking action moving to the right (14 frames of 60Ã70 pixels) and has a background context, which is not the beach scene. In order to detect walking actions in either direction, two queries (Q and its mirror-reflected version) were used and generated two RVs. By voting the higher score among values from two RVs at every space-time location, one RV was determined, which includes correct locations of walking people in the correct direction. Dark and wide shade color represents higher resemblance while narrow shade denotes lower resemblance values. The threshold Ï for each test example was determined by the 99.97 percent confidence level.
+ FIG. 39 shows results of searching ballet turn on the ballet video, where Top: a short ballet turn query, Left: resemblance volume (RV), Middle: detected turning actions after two significance tests (Ï0=1, Ï=1.53) followed by non-maxima suppression, Right: ground truth volume. Note that shades in the ground truth volume are used to distinguish individual actions from each other. This figure is better illustrated in color. Here the results of detecting ballet turning action in a target ballet video (766 frames of 144Ã192 pixels). The query video contains a single turn of a male dancer (13 frames of 90Ã110 pixels). Note that this video contains very fast moving parts and contains large variability in spatial scale and appearance (the female dancer wearing a skirt) as compared to the given query Q. After two significance testing with Ï0=1, Ï=1.53, most of the turns of the two dancers (a male and a female) with two false positives and one miss were detected. However, if one set the confidence level to 0.998 instead of 0.9997, all of the turns are detected with more false positives.
+ FIG. 40 shows the results of searching for diving on the Olympic swim-relay match video. Top: a short dive query, Left: resemblance volume (RV), Middle: detected diving actions after two significance tests (Ï0=1, Ï=0.36) followed by non-maxima suppression. Right: ground truth volume. Note that colors in the ground truth volume are used to distinguish individual actions from each other. This figure is better illustrated in color. Here, Precision-Recall curves of the current method for three different actions (walk, ballet turn, and dive) are shown in FIGS. 38-40. (757 frames of 240Ã360 pixels). This target video was severely MPEG compressed. The query video contains a single dive into a pool (16 frames of 70Ã140 pixels). Most of the dives with a few false positives were detected even though this video contains the severe noise and various actions such as a variety of swim styles, flips under the water, and splashes of water. Note that other action detection methods do not provide any quantitative performance on these examples. It is worth noting here that other training-free action detection methods, which also tested on this dataset, only presented qualitative results with either empirically chosen threshold values or no description about how the threshold values are determined. On the other hand, the threshold values are automatically chosen in the algorithm of the current invention with respect to the confidence level.
+ FIG. 41 shows a quantitative performance (Precision-Recall curves) of the current invention on three pairs of Irani's action dataset. The detection result of the current invention on this dataset outperforms other state-of-the art methods, which had a number of miss detection and false positives.
+ FIG. 42 shows the results of detecting 4 different actions (walk, wave, cheer, and jump), which occur simultaneously in a target video (300 frames of 288Ã360 pixels). Four query videos were matched against the target video independently. Most of the actions were detected although one of two cheer actions on the target video was missed because it contains head shaking as well while the query video does not have any head motion.
+In all the above examples, the same parameters were used. It is evident, based on all the results above, that the training-free action detection based on 3-D LSK of the current invention works well and is robust to modest variations in spatiotemporal scale.
+As opposed to action detection, action category classification aims to classify a given action query into one of several pre-specified categories. In earlier discussion on action detection, it was assumed that in general the query video is smaller than the target video. Now this is assumption is relaxed assumption, and thus a preprocessing step is needed, which selects a valid human action from the query video. This idea allows one not only to extend the proposed detection framework to action category classification, but also improves both detection and classification accuracy by removing unnecessary background from the query video.
+Once the query video is cropped to a short action clip, the cropped query is searched against each labeled video in the database, and the value of the resemblance volume (RV) is viewed as the likelihood of similarity between the query and each labeled video. Then one classify a given query video as one of the predefined action categories using a nearest neighbor (NN) classifier.
+Regarding Action Cropping in Videos a procedure is introduced which automatically extracts from the query video a small cube that only contains a valid action. Space-time saliency detection can provide such a mechanism as shown in FIG. 43, where each frame of query video Q is downsampled to a coarse spatial scale (64Ã64) in order to reduce the time-complexity, where the video in the time domain is not downsampled. The 3-D LSK of size 3Ã3Ã3 is computed as features and generate feature matrices Fi in a (3Ã3Ã7) local space-time neighborhood. Space-time saliency maps S are generated by computing self-resemblance measure as shown in FIGS. 44( a)-44(b). Then, the idea of non-parametric significance testing is again used to detect space-time proto-objects. Namely, an empirical PDF is computed from all the saliency values and set a threshold so as to achieve, a 95% significance level in deciding whether the given saliency values are in the extreme (right) tails of the empirical PDF. Here, a somewhat loose confidence level is selected here since one does not wish to miss the relevant action in the query. The approach is based on the assumption that in the video, a salient action is a relatively rare event and thus results in values, which are in the tails of the distribution of saliency map values. After making a binary map by thresholding the space-time saliency map, a morphological filter is applied. More specifically, the binary object map is dilated with a disk shape of size 5Ã5. Proto-objects are extracted from corresponding locations of the original video. FIGS. 44( a)-44(b) show that the space-time saliency detection method successfully detects only salient human actions in both the Weizmann dataset and the KTH dataset. Next, valid human action region is cropped by fitting a 3-D rectangular box to space-time proto-objects.
+The Weizmann action dataset contains 10 actions (bend, jumping jack, jump forward, jump in place, jump sideways, skip, run, walk, wave with two hands, and wave with one hand) performed by 9 different subjects. This dataset contains videos with static cameras and simple background, but it provides a good testing environment to evaluate the performance of the algorithm when the number of categories is large compared to the KTH dataset (a total of 6 categories). The testing was performed in a âleave-one-outâ setting, i.e., for each run the videos of 8 subjects are labeled and the videos of the remaining subject are used for testing (query). The automatic action cropping method, introduced in the previous section, to the query video. Then the resulting short action clip is matched against the remaining labeled videos using the current invention. Each testing video is classified as one of the 10 action types by 3-NN (nearest neighbor). The results are reported as the average of nine runs. A recognition rate of 96% is achieved for all ten actions. The recognition rate comparison is provided in Table III as well. The method of the current invention, which is training-free, performs favorably against other methods, which largely depend on training.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE III
+
+
+ 
+
+
+COMPARISON OF AVERAGE RECOGNITION
+
+
+RATE ON THE WEIZMANN DATASET ([2])
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+Our approach
+3-NN
+2-NN
+1-NN
+
+
+ 
+Recognition rate
+96%
+90%
+90%
+
+
+ 
+ 
+
+
+
+
+Method
+Juenjo et al. [62]
+Liu et al. [21]
+Klaser et al. [56]
+Schindler and Gool [68]
+
+
+Recognition rate
+95.33%
+90%
+84.3%
+100%
+
+
+Method
+Niebles et al. [15]
+Ali et al. [13]
+Sun et al. [69]
+Fathi and More [70]
+
+
+Recognition rate
+ââ90%
+95.75%ââ
+97.8%
+100%
+
+
+Method
+Jhuang et al. [63]
+Batra et al. [64]
+Bregonzio et al. [66]
+Zhang et al. [65]
+
+
+Recognition rate
+â98.8%
+92%
+96.6%
+92.89%â 
+
+
+ 
+
+
+
+
+
+Results using 1-NN and 2-NN are further provided for comparison. It is observed that these results also compare favorably to several other methods even though the current method involves no training phase, and requires no background/foreground segmentation. As an added bonus, the current method provides localization of actions as a side benefit. FIG. 45 shows the confusion matrix for the method according to the current invention. Note that our method is mostly confused by similar action classes, such as skip with jump, run, and side.
+In order to further quantify the performance of the algorithm in the current invention, experiments were conducted on the KTH dataset. The KTH action dataset contains six types of human actions (boxing, hand waving, hand clapping, walking, jogging, and running), performed repeatedly by 25 subjects in 4 different scenarios: outdoors (c1), outdoors with camera zoom (c2), outdoors with different clothes (c3), and indoors (c4). This dataset seems more challenging than the Weizmann dataset because there are large variations in human body shape, view angles, scales, and appearance. The âleave-one-outâ cross validation is again used to measure the performance.
+ FIGS. 44( a)-44(b) show the confusion matrices from the current method for each scenario and the average confusion matrix across all scenarios. One is able to achieve a recognition rate of 95.66% on these six actions. The recognition rate comparison with competing methods is provided in Table IV as well. It is worth noting that our method outperforms all the other state-of-the-art methods and is fully automatic. Table V further shows that the scenario-wise recognition rates of the current invention are consistently higher than those reported by others.
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE IV
+
+
+
+
+ 
+
+
+DETAILED COMPARISON OF RECOGNITION
+
+
+RATE ON THE KTH DATASET.
+
+
+
+
+Methods
+c1 
+c2 
+c3 
+c4 
+Avg
+
+
+ 
+
+
+Our Approach
+97.33%
+92.67%
+95.3%
+97.32%
+95.66%
+
+
+Ning et al. [25] (3-NN)
+95.56%
+82.41%
+90.66%
+94.72%
+92.09%
+
+
+Jhuang et al. [63]
+â96.0%
+â89.1%
+â89.8%
+â94.8%
+â91.7%
+
+
+ 
+
+
+Avg IS THE AVERAGE ACROSS 4 SCENARIOS.
+
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+TABLE V
+
+
+ 
+
+
+COMPARISON OF AVERAGE RECOGNITION RATE ON THE KTH DATASET
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+Our approach
+3-NN
+2-NN
+1-NN
+
+
+ 
+Recognition rate
+95.66%
+93%
+89%
+
+
+ 
+ 
+
+
+
+
+Method
+Kim et al. [24]
+Ning et al. [25]
+Klaser et al. [56]
+Schindler and Gool [68]
+
+
+Recognition rate
+95.33%
+92.31% (3-NN)
+91.4%
+92.7%
+
+
+Method
+Ali et al. [13]
+Niebles et al. [15]
+Liu and Shah [71]
+Sun et al. [69]
+
+
+Recognition rate
+â87.7%
+81.5%
+94.2%
+ â94%
+
+
+Method
+Dollar et al. [72]
+Wong et al. [73]
+Rapantzikos et al. [67]
+Laptev et al. [55]
+
+
+Recogniton rate
+81.17%
+ â84%
+88.3%
+91.8%
+
+
+ 
+
+
+
+
+
+The current invention is designed with recognition accuracy as a high priority. A typical run of the action detection system implemented in Matlab takes a little over 1 minute on a target video T (50 frames of 144Ã192 pixels, Intel Pentium CPU 2.66 Ghz machine) using a query Q (13 frames of 90Ã110). Most of the run-time is taken up by the computation of MCS (about 9 seconds, and 16.5 seconds for the computation of 3-D LSKs from Q and T respectively, which needs to be computed only once.) There are many factors that affect the precise timing of the calculations, such as query size, complexity of the video, and 3-D LSK size. By applying coarse-to-fine search or branch and bound can be applied to speed up the method. As another way of reducing time-complexity, one could use look-up table instead of computing the local covariance matrix C at every pixel. A multi-scale approach can also be applied to improve efficiency. Even though the current method is stable in the presence of moderate amount of camera motion, the invention can benefit from camera stabilization methods as done in case of large camera movements.
+In the Weizmann dataset and the KTH dataset, target videos contain only one type of action. However, as shown in FIG. 42, target video may contain multiple actions in practice. In this case, simple nearest neighbor classifiers can possibly fail. Therefore, one might benefit from contextual information to increase accuracy of action recognition systems. In fact, there is a broad agreement in the computer vision community about the valuable role that context plays in any image understanding task.
+The present invention has now been described in accordance with several exemplary embodiments, which are intended to be illustrative in all aspects, rather than restrictive. Thus, the present invention is capable of many variations in detailed implementation, which may be derived from the description contained herein by a person of ordinary skill in the art. For example the locally adaptive regression kernels may be used to establish similarity between a center region and a surrounding region either in a single image or in a video. This measure of similarity, or more precisely its complement, can be used to establish the saliency of a region in an image or video. Salient regions are those regions on which humans tend to automatically and involuntarily focused attention.
+All such variations are considered to be within the scope and spirit of the present invention as defined by the following claims and their legal equivalents.

@@ -1,0 +1,1170 @@
+Spiking neuron network adaptive control apparatus and methods 
+US-9367798-B2
+Brain Corporation
+2016-06-14
+https://patents.google.com/patent/US9367798B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+This application is related to a co-owned U.S. patent application Ser. No. 13/487,533, entitled âSYSTEMS AND APPARATUS FOR IMPLEMENTING TASK-SPECIFIC LEARNING USING SPIKING NEURONSâ filed Jun. 4, 2012, which issued on Sep. 29, 2015 as U.S. Pat. No. 9,146,546, U.S. patent application Ser. No. 13/487,499, entitled âSTOCHASTIC APPARATUS AND METHODS FOR IMPLEMENTING GENERALIZED LEARNING RULESâ, filed Jun. 4, 2012, which issued on Aug. 11, 2015 as U.S. Pat. No. 9,104,186, U.S. patent application Ser. No. 13/487,621, entitled âLEARNING STOCHASTIC APPARATUS AND METHODSâ, filed Jun. 4, 2012, U.S. patent application Ser. No. 13/487,576, entitled âDYNAMICALLY RECONFIGURABLE STOCHASTIC SPIKING NETWORK APPARATUS AND METHODSâ, filed Jun. 4, 2012, which issued on Apr. 21, 2015 as U.S. Pat. No. 9,015,092, and U.S. patent application Ser. No. 13/489,280 entitled âAPPARATUS AND METHODS FOR REINFORCEMENT LEARNING IN ARTIFICIAL NEURAL NETWORKSâ, filed Jun. 5, 2012, which issued on Jan. 27, 2015 as U.S. Pat. No. 8,943,008, co-pending U.S. patent application Ser. No. 13/560,902, entitled, âAPPARATUS AND METHODS FOR GENERALIZED STATE-DEPENDENT LEARNING IN SPIKING NEURON NETWORKSâ, filed Jul. 27, 2012, co-pending U.S. patent application Ser. No. 13/560,891, entitled, âAPPARATUS AND METHODS FOR EFFICIENT UPDATES SPIKING NEURON NETWORKSâ, filed Jul. 27, 2012, co-pending U.S. patent application Ser. No. 13/588,774, entitled âAPPARATUS AND METHODS FOR IMPLEMENTING EVENT-BASED UPDATES IN SPIKING NEURON NETWORKâ, filed Aug. 17, 2012, U.S. patent application Ser. No. 13/554,980, entitled âAPPARATUS AND METHODS FOR REINFORCEMENT LEARNING IN LARGE POPULATIONS OF ARTIFICIAL SPIKING NEURONSâ, filed Jul. 20, 2012, U.S. patent application Ser. No. 13/313,826, entitled âAPPARATUS AND METHODS FOR IMPLEMENTING LEARNING FOR ANALOG AND SPIKING SIGNALS IN ARTIFICIAL NEURAL NETWORKSâ, filed Dec. 7, 2011, U.S. patent application Ser. No. 13/238,932, entitled âADAPTIVE CRITIC APPARATUS AND METHODSâ, filed Sep. 21, 2011, which issued on Oct. 13, 2015 as U.S. Pat. No. 9,156,165, U.S. patent application Ser. No. 13/489,280 entitled âAPPARATUS AND METHODS FOR REINFORCEMENT LEARNING IN ARTIFICIAL NEURAL NETWORKSâ, filed Jun. 5, 2012, which issued on Jan. 27, 2015 as U.S. Pat. No. 8,943,008, and co-pending U.S. patent application Ser. No. 13/623,801 entitled âMODULATED STOCHASTICITY SPIKING NEURON NETWORK CONTROLLER APPARATUS AND METHODSâ, filed herewith, each of the foregoing incorporated herein by reference in its entirety.
+COPYRIGHT
+A portion of the disclosure of this patent document contains material that is subject to copyright protection. The copyright owner has no objection to the facsimile reproduction by anyone of the patent document or the patent disclosure, as it appears in the Patent and Trademark Office patent files or records, but otherwise reserves all copyright rights whatsoever.
+BACKGROUND
+1. Field of the Disclosure
+The present disclosure relates to robotic control using spiking neuron networks.
+2. Description of Related Art
+Robotic control systems, such as the system 100 shown in FIG. 1, may comprise a controller apparatus 120 configured to control a plant 110. The plant 110 may include, for example, a robotic arm. The controller 120 may receive an input signal 102, and may generate a control signal 108. The plant 110 may provide feedback signal 106 to the adaptive controller 120.
+Artificial neuron networks (ANN) may be used to implement controller 120 logic. Spiking neuron networks (SNN) may represent a special class of ANN, where neurons communicate by sequences of spikes. These networks may typically employ a pulse-coded mechanism, which may encode information using timing of the pulses. Such pulses (also referred to as âspikesâ or âimpulsesâ) may be short-lasting (typically on the order of 1-2 ms) discrete temporal events. Several exemplary embodiments of such encoding are described in a commonly owned and co-pending U.S. patent application Ser. No. 13/152,084 filed Jun. 2, 2011 and entitled APPARATUS AND METHODS FOR PULSE-CODE INVARIANT OBJECT RECOGNITIONâ³, and U.S. patent application Ser. No. 13/152,119 filed Jun. 2, 2011 and entitled âSENSORY INPUT PROCESSING APPARATUS AND METHODSâ, each being incorporated herein by reference in its entirety.
+As shown in FIG. 1, the controller may receive one or more physical inputs (102, 106) that may individually comprise continuous (e.g., analog) and/or discrete (e.g., digital) signals describing various variables. Examples of such various variables may include one or more of temperature, voltage, current, orientation, position, plant state, and other signals. The inputs 102, 106 may generally be referred to as sensory data and are encoded into spikes by an analog-to-spike converter, which inputs to the SNN of the controller 120. Different strategies may be used to encode sensory data, including, for example, modeling the transformation of sensory receptors in the central nervous system (e.g. the tactile mechanoreceptor of the skin), which may take a (physical) variable (e.g., skin deformation) and transform it into trains of spikes. Such sensory response models may be cumbersome to construct, particularly when converting inputs of varying dynamical range and/or different nature. Furthermore, sensor upgrade and/or replacement may necessitate changes of the sensor model and, hence, controller logic (e.g., software, firmware and or hardware).
+The controller may receive a non-spiking reinforcement signal. The controller may be configured to generate a non-spiking (e.g., continuous analog and/or discrete digitized) control signal 108. In order to generate a control signal, the controller (e.g., the controller 120 of FIG. 1) may combine multiple encoded sensory streams.
+Existing control systems may need to treat inputs differently depending on their origin, and may thus be able to treat only labeled inputs, e.g. an input is for velocity, another acceleration from particular labeled modalities (e.g. tactile, vision, auditory). If the inputs are inadvertently mixed, the system may not function properly (e.g. if the acceleration signal is connected to the controller velocity input, or the tactile signal is connected to the controller visual input). Another possibility is for the sensors signals to change due to sensor degradations, external conditions, or other reasons, the controller, expecting particular pre-defined signals may not be able to deal with such changes.
+SUMMARY
+One aspect of the disclosure relates to an adaptive controller apparatus. The apparatus may comprise one or more computer-readable storage media and a spiking neuron network. The one or more computer-readable storage media may be configured to store an encoder block. The encoder block may comprise a continuous-to-spiking expansion kernel. The expansion kernel may comprise a plurality of spiking neurons. Individual ones of the plurality of spiking neurons may include a plurality of receptive fields associated therewith. The encoder block may be configured to encode a continuous input signal into a spiking output signal using the expansion kernel. A spiking neuron network may be configured to receive the spiking output from the plurality of spiking neurons via one or more connections. The spiking neuron network may be further configured to generate a control signal using a reinforcement learning process and an external signal.
+In some implementations, individual ones of the plurality of receptive fields may be characterized by an input range associated with the continuous input signal. Individual ones of the plurality of spiking neurons may be configured to generate one or more spikes based on at least a portion of the continuous input signal corresponding to respective individual ones of the plurality of receptive fields. The spiking output signal may comprise the one or more spikes. The spiking neuron network may be characterized by a first plasticity mechanism modulated by the external signal.
+In some implementations, individual ones of the one or more connections may be characterized by a connection efficacy. The spiking neuron network may be characterized by a second plasticity mechanism configured to adjust the connection efficacy in accordance with the external signal.
+In some implementation, the adjustment of the connection efficacy may comprise one or both of a connection potentiation or a connection depression. The potentiation may comprise increasing the connection efficacy. The depression may comprise reducing the connection efficacy.
+In some implementations, the increasing of the connection efficacy may be characterized by a first time-dependent function having a time window associated therewith. The one or more spikes may be characterized by a pre-synaptic time. The external signal may comprise a reinforcement signal. The reinforcement signal may comprise one or more spikes characterized by a reinforcement spike time. The time window may be selected based on at least one of the pre-synaptic time and the reinforcement spike time. Integration of the time-dependent function over the time window may generate a positive value.
+In some implementations, the reinforcement learning process may be configured to produce a target outcome. The external signal may comprise a reinforcement indication configured based on whether a current outcome associated with the control signal is within a pre-determined range from the target outcome.
+In some implementations, the reinforcement learning process may be characterized by a performance measure comprising a distance between a target outcome and current outcome associated with a current state. A current value of the performance measure may be based on the adjustment of the connection efficacy causing a transition of the process from a prior state to the current state. The reinforcement may be positive when the current outcome is closer to the target outcome as characterized by a smaller value of the distance. The reinforcement may be negative when the current outcome is farther from the target outcome as characterized by a greater value of the distance.
+In some implementations, the continuous input signal may include one or more of an analog signal, a polyadic signal with arity greater than 2, an n-bit long discrete signal with n-bits greater than 2, or a real-valued signal.
+In some implementations, the spike output signal may comprise a bit stream.
+In some implementations, the spiking network may comprise one or more spiking neurons. Individual ones of the plurality of spikes may be configured to cause individual ones of the one or more spiking neurons to generate one or more spiking responses. The control signal may comprise a combination of individual ones of the one or more spiking responses.
+In some implementations, individual ones of the plurality of receptive fields may be effectuated using individual ones of a plurality of band-pass filters. The continuous input signal may be characterized by an input signal extent comprising a range of values of the input signal. Individual ones of the plurality of band-pass filters are characterized by a pass band in the input signal extent.
+In some implementations, individual ones of the plurality of band-pass filters may comprise a gain and a temporal component. The temporal component may be configured to modify one or both of (i) the gain with time or (ii) the pass band with time.
+In some implementations, the temporal component may be obtained using a time derivative of the input signal.
+In some implementations, the external signal may comprise a reinforcement spike. The temporal component may be obtained using a time integration of the input signal over a time window. The time window may proceed a time of the reinforcement spike.
+In some implementations, the input signal may comprise two or more dimensions. Individual ones of the two or more dimensions may be configured to describe an input property. Individual ones of the plurality of receptive fields may be characterized by a dimensional space configured to match the two or more dimensions. At least the portion of the continuous input signal may comprise two or more properties. The two or more properties may include the input property.
+In some implementations, the plurality of receptive fields may comprise an overlapping set of receptive fields.
+In some implementations, the plurality of receptive fields may comprise a non-overlapping set of receptive fields so that individual ones of the plurality of receptive fields cover non-overlapping portions of the input signal extent.
+In some implementations, the continuous input signal may be characterized by an input extent comprising a range of values of the continuous input signal. Individual ones of the plurality of receptive fields may be characterized by a unimodal concave function of at least a portion of the range.
+In some implementations, the unimodal concave function may comprise a combination of two or more of (i) a Gaussian distribution, (ii) a sigmoid distribution, or (iii) a linear distribution.
+Another aspect of the disclosure relates to a computer-readable storage medium having instructions embodied thereon. The instructions are executable by one or more processors to perform a method of implementing reinforcement learning. The method may include receiving a non-spiking input signal characterized by an input range of values. The method may include transforming the input signal into one or more spiking signals using one or more filters. The method may include operating one or more stochastic spiking neurons in accordance with a stochastic reinforcement learning process. The method may include combining the one or more spiking signals into an output using the one or more stochastic spiking neurons and a reinforcement signal.
+Yet another aspect of the disclosure relates to an adaptive controller apparatus. The apparatus comprises one or more processors configured to execute computer program modules. The computer program modules may be executable to cause the one or more processors to: encode a continuous input signal into one or more spiking signals using a continuous-to-spiking expansion kernel, the expansion kernel comprising of a plurality of basis components; and adapt one or more stochastic spiking neurons in accordance with a stochastic reinforcement learning process, the adapting of the one or more stochastic spiking neurons being configured to combine the one or more spiking signals into a control signal, the adaptation configured to maximize the performance.
+In some implementations, the expansion kernel may be effectuated by a plurality of spiking neurons. Individual ones of the plurality of spiking neurons may have a plurality of receptive fields associated therewith. Individual ones of the plurality of receptive fields may effectuate individual ones of the plurality of the basis components.
+In some implementation, the learning process may be characterized by: a prior state and a current state, the learning process being described by at least a state variable configured to transition the learning process from the prior state to the current state; a current performance measure associated with the current state and a prior performance measure, the prior performance measure being associated with the prior state; and a target outcome having a target state associated therewith. The adaptation of the one or more stochastic spiking neurons may be based on a reinforcement signal configured external to the apparatus so that it provides: positive reinforcement when a distance measure between the current state and the target state is smaller compared to the distance measure between the prior state and the target state; and negative reinforcement when the distance measure between the current state and the target state is greater compared to the distance measure between the prior state and the target state. Performance maximization may comprise minimizing the distance measure.
+These and other objects, features, and characteristics of the present disclosure, as well as the methods of operation and functions of the related elements of structure and the combination of parts and economies of manufacture, will become more apparent upon consideration of the following description and the appended claims with reference to the accompanying drawings, all of which form a part of this specification, wherein like reference numerals designate corresponding parts in the various figures. It is to be expressly understood, however, that the drawings are for the purpose of illustration and description only and are not intended as a definition of the limits of the disclosure. As used in the specification and in the claims, the singular form of âaâ, âanâ, and âtheâ include plural referents unless the context clearly dictates otherwise.
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+ FIG. 1 is a block diagram illustrating a controller system according to the prior art.
+ FIG. 2 is a block diagram depicting artificial spiking neural network according to some implementations.
+ FIG. 3 is a graphical illustration depicting spike timing in the spiking network of FIG. 1, according to some implementations.
+ FIG. 3A is a plot depicting spike time dependent plasticity spike timing in the spiking network of FIG. 1, according to some implementations.
+ FIG. 4 is a block diagram illustrating spiking neural network configured to effectuate multiple learning rules, in accordance with some implementations.
+ FIG. 5 is a block diagram illustrating exemplary unmanned vehicle adaptive controller system in accordance with some implementations.
+ FIG. 6A is a block diagram illustrating spiking neuron network for use with the adaptive controller apparatus of FIG. 5, in accordance with some implementations.
+ FIG. 6B is a block diagram illustrating input/output configurations for use with the neuron network of FIG. 6A, in accordance with one or more implementations.
+ FIG. 7A is a graphical illustration depicting the âkernel expansionâ input encoding methodology, according to some implementations.
+ FIG. 7B is a plot presenting basis functions for use with the âkernel expansionâ input encoding methodology of FIG. 7A, in accordance with some implementations.
+ FIG. 7C is a graphical illustration depicting the two-dimensional basis functions for use with the âkernel expansionâ input encoding methodology of FIG. 7A, according to some implementations.
+ FIG. 8A is a plot illustrating simulation results of sensory encoding by an UAV controller, in accordance with some implementations.
+ FIG. 8B is a plot illustrating simulation results of UAV controller operation, in accordance with some implementations.
+ FIG. 8C is a plot illustrating simulation results of UAV controller performance, in accordance with some implementations.
+ FIG. 9A is a graphical illustration depicting a double inverted pendulum used for evaluating performance of adaptive encoder and control methodology, in accordance with some implementations.
+ FIG. 9B is a plot illustrating simulation results of inverted pendulum position, in accordance with some implementations.
+ FIG. 9C is a plot illustrating simulation results of the inverted pendulum controller performance, in accordance with some implementations.
+ FIG. 10A is a logical flow diagram illustrating reinforcement learning, in accordance with some implementations.
+ FIG. 10B is a logical flow diagram illustrating operation of a robotic controller comprising kernel expansion encoding, in accordance with one or more implementations.
+ FIG. 10C is a logical flow diagram illustrating reinforcement signal generation for use with methods of FIGS. 10A-10B, in accordance with one or more implementations.
+ FIG. 11A is a block diagram illustrating computerized system useful for efficient connection plasticity update mechanism in a spiking network, in accordance with one or more implementations.
+ FIG. 11B is a block diagram illustrating a neuromorphic computerized system useful with efficient connection plasticity update mechanism in a spiking network, in accordance with one or more implementations.
+ FIG. 11C is a block diagram illustrating a hierarchical neuromorphic computerized system architecture useful with efficient connection plasticity update mechanism in a spiking network, in accordance with one or more implementations.
+ FIG. 11D is a block diagram illustrating cell-type neuromorphic computerized system architecture useful with efficient connection plasticity update mechanism in a spiking network, in accordance with one or more implementations.
+ FIG. 12 is a plot illustrating effects of neuron stochasticity on a probability of neuron response generation, in accordance with some implementations.
+
+All Figures disclosed herein are Â© Copyright 2012 Brain Corporation. All rights reserved.
+DETAILED DESCRIPTION
+Exemplary implementations of the present disclosure will now be described in detail with reference to the drawings, which are provided as illustrative examples so as to enable those skilled in the art to practice the disclosure. Notably, the figures and examples below are not meant to limit the scope of the present disclosure to a single implementation, but other implementations are possible by way of interchange of or combination with some or all of the described or illustrated elements. Wherever convenient, the same reference numbers will be used throughout the drawings to refer to same or similar parts.
+Where certain elements of these implementations can be partially or fully implemented using known components, only those portions of such known components that are necessary for an understanding of the present disclosure will be described, and detailed descriptions of other portions of such known components will be omitted so as not to obscure the disclosure.
+In the present specification, an implementation showing a singular component should not be considered limiting; rather, the disclosure is intended to encompass other implementations including a plurality of the same component, and vice-versa, unless explicitly stated otherwise herein.
+Further, the present disclosure encompasses present and future known equivalents to the components referred to herein by way of illustration.
+As used herein, the term âbusâ is meant generally to denote all types of interconnection or communication architecture that is used to access the synaptic and neuron memory. The âbusâ may be optical, wireless, infrared, and/or another type of communication medium. The exact topology of the bus could be for example standard âbusâ, hierarchical bus, network-on-chip, address-event-representation (AER) connection, and/or other type of communication topology used for accessing, e.g., different memories in pulse-based system.
+As used herein, the terms âcomputerâ, âcomputing deviceâ, and âcomputerized deviceâ may include one or more of personal computers (PCs) and/or minicomputers (e.g., desktop, laptop, and/or other PCs), mainframe computers, workstations, servers, personal digital assistants (PDAs), handheld computers, embedded computers, programmable logic devices, personal communicators, tablet computers, portable navigation aids, J2ME equipped devices, cellular telephones, smart phones, personal integrated communication and/or entertainment devices, and/or any other device capable of executing a set of instructions and processing an incoming data signal.
+As used herein, the term âcomputer programâ or âsoftwareâ may include any sequence of human and/or machine cognizable steps which perform a function. Such program may be rendered in a programming language and/or environment including one or more of C/C++, C#, Fortran, COBOL, MATLABâ¢, PASCAL, Python, assembly language, markup languages (e.g., HTML, SGML, XML, VoXML), object-oriented environments (e.g., Common Object Request Broker Architecture (CORBA)), Javaâ¢ (e.g., J2ME, Java Beans), Binary Runtime Environment (e.g., BREW), and/or other programming languages and/or environments.
+As used herein, the terms âconnectionâ, âlinkâ, âtransmission channelâ, âdelay lineâ, âwirelessâ may include a causal link between any two or more entities (whether physical or logical/virtual), which may enable information exchange between the entities.
+As used herein, the term âmemoryâ may include an integrated circuit and/or other storage device adapted for storing digital data. By way of non-limiting example, memory may include one or more of ROM, PROM, EEPROM, DRAM, Mobile DRAM, SDRAM, DDR/2 SDRAM, EDO/FPMS, RLDRAM, SRAM, âflashâ memory (e.g., NAND/NOR), memristor memory, PSRAM, and/or other types of memory.
+As used herein, the terms âintegrated circuitâ, âchipâ, and âICâ are meant to refer to an electronic circuit manufactured by the patterned diffusion of trace elements into the surface of a thin substrate of semiconductor material. By way of non-limiting example, integrated circuits may include field programmable gate arrays (e.g., FPGAs), a programmable logic device (PLD), reconfigurable computer fabrics (RCFs), application-specific integrated circuits (ASICs), and/or other types of integrated circuits.
+As used herein, the terms âmicroprocessorâ and âdigital processorâ are meant generally to include digital processing devices. By way of non-limiting example, digital processing devices may include one or more of digital signal processors (DSPs), reduced instruction set computers (RISC), general-purpose (CISC) processors, microprocessors, gate arrays (e.g., field programmable gate arrays (FPGAs)), PLDs, reconfigurable computer fabrics (RCFs), array processors, secure microprocessors, application-specific integrated circuits (ASICs), and/or other digital processing devices. Such digital processors may be contained on a single unitary IC die, or distributed across multiple components.
+As used herein, the term ânetwork interfaceâ refers to any signal, data, and/or software interface with a component, network, and/or process. By way of non-limiting example, a network interface may include one or more of FireWire (e.g., FW400, FW800, etc.), USB (e.g., USB2), Ethernet (e.g., 10/100, 10/100/1000 (Gigabit Ethernet), 10-Gig-E, etc.), MoCA, Coaxsys (e.g., TVnetâ¢), radio frequency tuner (e.g., in-band or OOB, cable modem, etc.), Wi-Fi (802.11), WiMAX (802.16), PAN (e.g., 802.15), cellular (e.g., 3G, LTE/LTE-A/TD-LTE, GSM, etc.), IrDA families, and/or other network interfaces.
+As used herein, the terms ânodeâ, âneuronâ, and âneuronal nodeâ are meant to refer, without limitation, to a network unit (e.g., a spiking neuron and a set of synapses configured to provide input signals to the neuron) having parameters that are subject to adaptation in accordance with a model.
+As used herein, the terms âstateâ and ânode stateâ is meant generally to denote a full (or partial) set of dynamic variables used to describe node state.
+As used herein, the term âsynaptic channelâ, âconnectionâ, âlinkâ, âtransmission channelâ, âdelay lineâ, and âcommunications channelâ include a link between any two or more entities (whether physical (wired or wireless), or logical/virtual) which enables information exchange between the entities, and may be characterized by a one or more variables affecting the information exchange.
+As used herein, the term âWi-Fiâ includes one or more of IEEE-Std. 802.11, variants of IEEE-Std. 802.11, standards related to IEEE-Std. 802.11 (e.g., 802.11a/b/g/n/s/v), and/or other wireless standards.
+As used herein, the term âwirelessâ means any wireless signal, data, communication, and/or other wireless interface. By way of non-limiting example, a wireless interface may include one or more of Wi-Fi, Bluetooth, 3G (3GPP/3GPP2), HSDPA/HSUPA, TDMA, CDMA (e.g., IS-95A, WCDMA, etc.), FHSS, DSSS, GSM, PAN/802.15, WiMAX (802.16), 802.20, narrowband/FDMA, OFDM, PCS/DCS, LTE/LTE-A/TD-LTE, analog cellular, CDPD, satellite systems, millimeter wave or microwave systems, acoustic, infrared (i.e., IrDA), and/or other wireless interfaces.
+The present disclosure provides, among other things, a computerized apparatus and methods for facilitating adaptive controller implementation using spiking neuron networks.
+The controller may comprise an encoder block, configured to encode one or more continuous âreal-worldâ analog/and or digital signals into spikes using the âkernel expansionâ (KE) technique. The KE encoding may be effectuated using one or more spiking neurons (encoder neurons) characterized by their respective receptive fields. The encoder neuron may be configured to generate spiking output that is based on a component of input signal present in their receptive field. The receptive fields of several encoder neurons may form a basis component set that may be used to decompose an arbitrary input signal {X} into a set of spiking output components {S}. Various types of receptive fields (basis functions) may be utilized with the disclosure such as a combination of Gaussian, sigmoid, and linear functions, one or higher dimensional functions, overlapping and/or non-overlapping, constant and or varying gain, and/or other functions.
+The spiking output S may be coupled to a learning block of the network via one or more connections. Parameters (e.g., connection plasticity, weights, and/or other parameters) may be adjusted in accordance with a reinforcement learning process. The controller may receive a reinforcement signal. The reinforcement signal may be initiated internally or externally. Internally, the reinforcement signal may be derived from internal neuron state(s) and/or variables (e.g. activity and/or energy levels), parameters (e.g. weights), and/or other signals (e.g. motivational signal, motor commands). Externally, the reinforcement signal may be derived from a single or multiple sensors. In some implementations, such sensors may comprise generic sensors (e.g., vision sensors, proximity sensors). In one or more implementations, such sensors may comprise specialized sensors, such as, for example, sensors configured to detect feedback from a user and/or the environment (e.g. boundary beacon, force sensors).
+Some parameters, (e.g., connection plasticity, weights, and/or other parameters) may be adjusted based on the reinforcement signal so as to maximize a measure of controller performance. In some implementation, the controller performance measure may comprise a squared error between current position and a target position. In one or more implementations, the performance measure may be based on a minimum distance to a boundary, cumulative energy use, and/or other metrics.
+Most common spiking neuron models may use the timing of spikes, rather than the specific shape of spikes, in order to encode neural information. A spike âtrainâ may be described as follows:
+         S â¡  ( t )   =   â f      â¢     â¢  Î´ â¡  (  t -  t f   )     ,     (  Eqn .     â¢ 1  )       
+where f=1, 2, . . . is the spike designator and Î´(â¢) is the Dirac function with Î´(t)=0 for tâ 0 and
+
+â«ââ âÎ´(t)dt=1ââ(Eqn. 2)
+
+One implementations of an artificial spiking neural network is shown in FIG. 2. The network 200 may comprise a plurality of units (or nodes) 202, which may correspond to neurons in a biological neural network. A given unit 102 may receive input via connections 204, which may be referred to as communications channels or synaptic connections. A given unit 202 may further be connected to other units via connections 212, which may be referred to as communications channels or synaptic connections. The units (e.g., the units 206 in FIG. 2) providing inputs to a given unit via, for example, connections 204, may be referred to as the pre-synaptic units. The unit receiving the inputs (e.g., the units 202 in FIG. 2) may be referred to as the post-synaptic unit. The post-synaptic unit of one unit layer (e.g. the units 202 in FIG. 2) may act as the pre-synaptic unit for the subsequent upper layer of units (not shown).
+Individual ones of the connections (204, 212 in FIG. 2) may be assigned, inter alia, a connection efficacy. A connection efficacy may refer to a magnitude and/or probability of influence of pre-synaptic spike to firing of post-synaptic neuron. A connection efficacy may comprise one or more parameters. An exemplary parameter of connection efficacy may include a synaptic weight, by which one or more state variables of post synaptic unit are changed. During operation of the pulse-code network (e.g., the network 200), synaptic weights may be adjusted using what may be referred to as the spike-timing dependent plasticity (STDP) in order to implement, among other things, network learning.
+One such adaptation mechanism is illustrated with respect to FIGS. 3-3A. Traces 300, 310 in FIG. 3 depict pre-synaptic input spike train (delivered for example via connection 304_1 in FIG. 3) and post synaptic output spike train (generated, for example, by the neuron 302_1 in FIG. 3), respectively.
+Properties of the connections 204 (e.g., weights w) may be adjusted based on relative timing between the pre-synaptic input (e.g., the pulses 302, 304, 306, 308 in FIG. 3) and post-synaptic output pulses (e.g., the pulses 314, 316, 318 in FIG. 3). One exemplary STDP weight adaptation rule is illustrated in FIG. 3A, where rule 330 depicts synaptic weight change Îw as a function of time difference between the time of post-synaptic output generation and arrival of pre-synaptic input Ît=tpostâtpre. In some implementations, synaptic connections (e.g., the connections 304 in FIG. 3) delivering pre-synaptic input prior to the generation of post-synaptic response may be potentiated (as indicated by Îw>0 associated with the curve 330 in FIG. 3A). Synaptic connections (e.g., the connections 304 in FIG. 3) delivering pre-synaptic input subsequent to the generation of post-synaptic response may be depressed. By way of illustration, when the post-synaptic pulse 308 in FIG. 3 is generated: (i) connection associated with the pre-synaptic input 314 may precede the output pulse (indicated by the line denoted 324 in FIG. 3) and may be potentiated (Îw>0 in FIG. 3A and the weight is increased); and (ii) connections associated with the pre-synaptic input 316, 318 that follow may be depressed.
+Generalized dynamics equations for spiking neurons models may be expressed as a superposition of input, interaction between the input current and the neuronal state variables, and neuron reset after the spike as follows:
+          â  q â    â t   =   V â¡  (  q â  )   +   â  t out       â¢     â¢   R â¡  (  q â  )   â¢  Î´ â¡  (  t -  t out   )     +   G â¡  (  q â  )   â¢  I â¡  ( t )      ,     (  Eqn .     â¢ 3  )       
+the neuron may spike whenever a state variable reaches a threshold Î¸; the neuron reset may occur immediately after the spikes at the spike times t=tout,
+
+where:
+    {right arrow over (q)} is a vector of internal state variables (e.g., comprising membrane voltage); l(t) is an external input into the neuron; V({right arrow over (q)}) is the function that defines evolution of the state variables; G({right arrow over (q)}) describes the interaction between the external input and the state variables (for example, to model postsynaptic potentials); and R({right arrow over (q)}) is the reset function, which resets the state variables immediately after the output spikes at times t=tout.   
+For example, for the leaky integrate-and-fire (IF) model the state vector and the state model may be expressed as:
+           q â  â¡  ( t )   â¡  u â¡  ( t )    ;  â¢  
+  â¢    V â¡  (  q â  )   =  -   u â¡  ( t )    Ï m     ;  â¢  
+  â¢    R â¡  (  q â  )   =   u res  -  u â¡  ( t )     ;  â¢  
+  â¢    G â¡  (  q â  )   =  1 / C   ,      (  Eqn .     â¢ 4  )       
+where u(t) is the membrane voltage; Ïm=R C is the membrane time constant with R and C the resistance and capacitance of the membrane, respectively (not to be confused with the reset function R ({right arrow over (q)})); and ures is the value to which the voltage is set immediately after an output spike (reset value). Accordingly, Eqn. 4 may become:
+
+         Ï m  â¢   â u   â t    =   -  u â¡  ( t )    +   â  t out       â¢   (   u res  -  u â¡  ( t )    )  â¢  Î´ â¡  (  t -  t out   )     +  RI â¡  ( t )        (  Eqn .     â¢ 5  )       
+with the reset of the delta function occurring whenever u(tout)=Î¸, which defines tout.
+
+The Izhikevich (IZ) neuron model may be expressed as:
+           â v   â t   =   0.04 â¢  v 2   +  5 â¢ v  + 140 - u +   â  t out       â¢   (  c - v  )  â¢  Î´ â¡  (  t -  t out   )     + I   ,  
+  â¢ and  â¢  
+  â¢     â u   â t   =   a â¡  (  bv - u  )   +  d â¢   â  t out       â¢  Î´ â¡  (  t -  t out   )       ,      (  Eqn .     â¢ 6  )       
+the spike may occur whenever v exceeds the threshold v(tout)=Î¸=30, and both v and u are reset, immediately after the spikes. Thus:
+
+           q ->  â¡  ( t )   â¡  (     v â¡  ( t )        u â¡  ( t )      )   ;   V â¡  (  q ->  )   =  (      0.04 â¢     â¢  v 2   +  5 â¢     â¢  v â¡  ( t )    + 140 -  u â¡  ( t )         a â¡  (   b â¢     â¢  v â¡  ( t )    -  u â¡  ( t )    )      )   ;  â¢  
+  â¢    R â¢  (  q ->  )   =  (     c -  v â¡  ( t )        d    )   ;   G â¡  (  q ->  )   =  (    1     0    )        (  Eqn .     â¢ 7  )       
+and a, b, c, d are parameters of the simple neuron model.
+
+An arrival of a pre-synaptic spike (illustrated by the spike train 310 in FIG. 3) via a connection (e.g., the connection 204 in FIG. 2) may provide an input signal I(t) into the post-synaptic neuron (e.g., the neuron 202 in FIG. 2). This input signal may correspond to the synaptic electric current flowing into the biological neuron, and, as a first approximation, may be modeled using an exponential function as follows:
+
+I(t)=â«0 â S(tâs)exp(âs/Ï s)dsââ(Eqn. 8)
+
+where Ïs is the synaptic time constant and S(t) denotes here a pre-synaptic spike train.
+
+Detailed descriptions of the various implementation of apparatus and methods of the disclosure are now provided. Although certain aspects of the disclosure may be best understood in the context of autonomous robotic devices, the disclosure is not so limited. Implementations of the disclosure may also be used for implementing a variety of learning applications wherever a performance function may be defined, such as, for example, optimizing internet traffic routing, visual, auditory or tactile recognition, assisted air-traffic controller, robust airplane controller, adaptive electronic assistant or other applications for mobile or other devices, adaptive toys for humans or animals.
+Implementations of the disclosure may be, for example, deployed in a hardware and/or software implementation of a neuromorphic computer system. In some implementations, a robotic system may include a processor embodied in an application specific integrated circuit, which can be adapted or configured for use in an embedded application (e.g., a prosthetic device).
+Referring now to FIG. 4, some implementations of spiking network apparatus for effectuating the learning framework of the disclosure is shown and described in detail. The network 400 may comprise at least one stochastic spiking neuron 430, operable according to, for example, a Spike Response Process (SRP), and configured to receive M-dimensional input spiking stream X(t) 402 via M-input connections 414. In some implementations, the M-dimensional spike stream may correspond to M-input synaptic connections into the neurons 430. As shown in FIG. 4, individual input connections may be characterized by a connection parameter 412 wij that may be configured to be adjusted during learning. In one or more implementations, the connection parameter may comprise connection efficacy (e.g., weight). In some implementations, the parameter 412 may comprise synaptic delay. In some implementations, the parameter 412 may comprise probabilities of synaptic transmission. In some implementations, the adjusted parameters may comprise parameters in the processing logic 411.
+The following signal notation may be used in describing operation of the network 400, below:
+    y(t)=Î£kÎ´(tâtk out) denotes the output spike pattern, corresponding to the output signal 408 produced by the control block 410, where tk denotes the times of the output spikes generated by the neuron; and yd (t)=Î£t  k  Î´(tâtk d) denotes the teaching spike pattern, corresponding to the desired (or reference) signal that may be part of external signal 404 of FIG. 4, where tk d denotes the times when the spikes of the reference signal are received by the neuron.   
+In some implementations, the neuron 430 may be configured to receive positive and negative reinforcement signals via the connection 404. The parameters r+, râ in of FIG. 4 denotes the reinforcement signal spike stream, which may be expressed as:
+
+r +(t)=Î£iÎ´(tât i +),r â(t)=Î£iÎ´(tât i â),ââ(Eqn. 9)
+
+where ti +, ti â denote the spike times associated, for example, with positive and negative reinforcement, respectively.
+
+The neuron 430 may be configured to implement the control block 410. In some implementations, control block 410 may be configured to control a robotic arm. The learning process of the neuron 430 may be parameterized by the learning parameters w. In some implementations, the parameters may comprise weights of connection 414 providing inputs into the neuron 430. The neuron may implement learning comprising adaptation (e.g., changes) of the connection weights.
+The control block 410 may receive an input signal (x, or X), and may generate an output signal (y or Y). The output signal y may include motor control commands configured to move a robotic arm along a desired trajectory. The control block 410 may be characterized by a system model comprising system internal state variables q. The internal state variable q may include a membrane voltage of the neuron, conductance of the membrane, and/or other variables. The control block 410 may be characterized by learning parameters, which may comprise weights wji of the connections, firing threshold, resting potential of the neuron, and/or other parameters. In one or more implementations, the learning parameters may comprise probabilities of signal transmission between the units (e.g., neurons) of the network.
+The input signal x(t) may comprise data used for solving a particular control task. In one or more implementations, such as those involving a robotic arm or autonomous robot, the signal x(t) may comprise a stream of raw sensor data (e.g., proximity, inertial, terrain imaging, and/or other raw sensor data) and/or preprocessed data (e.g., velocity, extracted from accelerometers, distance to obstacle, positions, and/or other preprocessed data). In some implementations, such as those involving object recognition, the signal x(t) may comprise an array of pixel values (e.g., RGB, CMYK, HSV, HSL, grayscale, and/or other pixel values) in the input image, and/or preprocessed data (e.g., levels of activations of Gabor filters for face recognition, contours, and/or other preprocessed data). In one or more implementations, the input signal x(t) may comprise desired motion trajectory, for example, in order to predict future state of the robot or motor commands on the basis of current state and desired motion. In some implementations, the input signal x(t) may comprise a multi-dimensional input, comprising two or more input streams from individual sensor channels (e.g., velocity, acceleration, and/or other sensor channels).
+The control block 410 of FIG. 4 may comprise a stochastic dynamic system. In some implementations, the stochastic system may be characterized by an analytical input-output (xÎy) probabilistic relationship having a conditional probability distribution associated therewith:
+
+P=p(y|x,w).ââ(Eqn. 10)
+
+In Eqn. 10, parameter w may denote various system parameters including connection efficacy, firing threshold, resting potential of the neuron, and/or other parameters. The analytical relationship of Eqn. 10 may be selected such that the gradient of ln[p(y|x,w)] with respect to the system parameter w exists and can be calculated. The neuronal network shown in FIG. 4 may be configured to estimate rules for changing the system parameters (e.g., learning rules) so that the performance function F(x,y,q,r) may be optimized for the current set of inputs and outputs and system dynamics, where the reference signal r may comprise desired output yd, positive r+, and/or negative râ reinforcement signal, and/or other reference signals.
+In some implementations, the control performance function may be configured to reflect the properties of inputs and outputs (x,y,q). The values F(x,y,q,r)=F(x,y,q) may be calculated directly by the learning block 420 without relying on signal r when providing solutions of unsupervised learning tasks.
+In some implementations, the value of the function F may be calculated based on a difference between the output y of the control block 410 and a reference signal r=yd characterizing the desired control block output. This configuration may provide solutions for supervised learning tasks, as described in detail below.
+In some implementations, the value of the performance function F may be determined based on the external signal r. This configuration may provide solutions for reinforcement learning tasks, where r represents reward and/or punishment.
+The learning block 420 may comprise learning framework according to the implementation described in co-owned owned U.S. patent application Ser. No. 13/487,533 entitled âSYSTEMS AND APPARATUS FOR IMPLEMENTING TASK-SPECIFIC LEARNING USING SPIKING NEURONSâ, incorporated supra, which may enable generalized learning methods without relying on calculations of the performance function F derivative in order to solve unsupervised, supervised and/or reinforcement learning tasks. The learning block 420 may receive the input x and output y signals (denoted by the arrow 402_1, 408_1, respectively, in FIG. 4), as well as the state information q 405. In some implementations, such as those involving supervised and reinforcement learning, external supervisory signal r may be provided to the block 420 as indicated by the arrow 404 in FIG. 4. The supervisory signal may comprise, in some implementations, the desired motion trajectory, and/or reward and punishment signals from the external environment.
+In one or more implementations, the learning block 420 may optimize performance of the control system (e.g., the network 400 of FIG. 4) that is characterized by optimization of the average value of the performance function F(x,y,q,r) as described in detail below.
+Optimization of performance of the control system (e.g., the network 430 of FIG. 4) may, in some implementations, be achieved via maximization/minimization of the average of the performance function, as described in detail for example, in a co-owned and U.S. patent application Ser. No. 13/487,499, entitled âSTOCHASTIC APPARATUS AND METHODS FOR IMPLEMENTING GENERALIZED LEARNING RULES, incorporated supra.
+In one or more implementations, instantaneous probability density of the neuron producing a response may be determined using neuron membrane voltage u(t) for continuous time chosen as an exponential stochastic threshold:
+
+Î»=Î»0 e (u(t)-u  th  )/Îºââ(Eqn. 11)
+
+where:
+
+u(t) is the membrane voltage of the neuron;
+uth is the voltage threshold for generating a spike;
+Îº is the stochasticity parameter; and
+Î»0 is the average firing rate of the neuron.
+For discrete time steps, an approximation for the probability Î(u(t))Îµ(0,1] of firing in the current time step may be given by:
+
+Î(u(t))=1âe âÎ»(u(t))Îtââ(Eqn. 12)
+
+where Ît is time step length.
+
+ FIG. 5 illustrates one exemplary adaptive control system useful to the disclosure. The system 500 shown in FIG. 5 may comprise an adaptive controller apparatus 520, a plant 510, and/or other components. The plant 510 may comprise an unmanned robotic vehicle, drone, and/or other plants.
+In some implementations, the controller 520 may receive an input signal 502, and may generate an output signal 508. In one or more implementations, the plant 510 may provide feedback signal 504 to the adaptive controller 520. In some implementations, the feedback signal may comprise e.g., control plane position, motor speed and/or current, remaining battery level, and/or other parameters. Within the framework of adaptive control, the controller input signal 502 and the feedback 504 may be referred to as the sensory input, as they describe inputs to the control process.
+In some implementations, the input signal 502 may comprise data x(t) used for solving a particular control task. In one or more implementations, such as those involving a robotic arm or autonomous robot, the signal x(t) may comprise a stream of sensor data, generated, for example, by the sensor block 516 in FIG. 5. In some implementations, the sensor data may comprise raw sensor stream such as, for example, proximity, inertial, terrain imaging, and/or other data. In one or more implementations, the sensor data may comprise preprocessed data, such as velocity, extracted from accelerometers, distance to obstacle, positions, and/or other preprocessed data. In some implementations, such as those involving object recognition, the signal x(t) may comprise an array of pixel values (e.g., RGB, CMYK, HSV, HSL, grayscale, and/or other pixel values) in the input image, or preprocessed data (e.g., levels of activations of Gabor filters for face recognition, contours, optic flow and/or other preprocessed data). In one or more implementations, the input signal x(t) may comprise desired motion trajectory, for example, in order to predict future state of the robot on the basis of current state and desired motion.
+In one or more implementations, the controller may receive a supervisory input (e.g., the signal 514 in FIG. 5) that may comprise a desired signal and/or positive and/or negative reinforcement signals and/or other reinforcement and/or reward signals. In some implementations, the reinforcement signal may be provided by an external agent. In one or more implementations, the external agent may comprise a human and/or computerized operator communicating supervisory signal via, for example, remote commands when the drone approaches the target and/or an area of danger (an obstacle) and/or by a programing the controller to perform certain safety checks (e.g., speed less than 5 m/s). In other implementations, the reinforcement signal may comprise a sensor input from the environment (e.g., a perimeter beacon alarm) and/or robot sensor (e.g., a proximity alarm).
+Whereas the reinforcement signal may provide an input into the controller (e.g., the adaptive controller 520 of FIG. 5), the reinforcement signal 514 may be distinguished from the sensory inputs (e.g., the inputs 502, 504 in FIG. 5) based on their origin and/or their role in the controller. Whereas, the sensory inputs may encode any physical or other quantities, which may be detected and/or quantified by the sensors, the reinforcement signal may not be restricted to sensory inputs and may comprise many other quantities, such as internal state variables, q, or output states, y, or other signals, e.g. motivational and task definition signals. In one or more implementations, the reinforcement signal may be based on the performance of the controller (e.g., as determined using the Eqn. 14-Eqn. 17, described below). The reinforcement signal may be utilized by the controller in order to directly affect learning. In the case of unsupervised learning, learning may take place without the reinforcement signal. In some implementations, the controller may use the reinforcement signal through the performance function in order to modify the learning parameters (e.g., the F(t) term in the Eqn. 19). In one or more implementations, the sensory inputs may be utilized by the adaptive controller to update the control process through the eligibility trace to modify the adaptive parameters (e.g., the eligibility trace e(t) term in the Eqn. 19)
+In one or more implementations, the controller 520 may comprise sensory encoding block (e.g., the block 624 described with respect to FIG. 6A below) and a spiking network controller block (e.g., the block 634 described with respect to FIG. 6A below). In some implementations, the encoder block may be configured to encode analog and/or analog and spiking inputs into spiking outputs.
+The controller may generate an output signal 508 configured to manipulate the plant (e.g., a drone 510). In some implementations, the output 508 may include motor control commands. Exemplary motor control commands may be configured to activate one or more actuators, change control plant angle, and/or effectuate one or more other actions. In some implementations, the motor control block of the drone 510 may control one parameters of the sensor block (e.g., to maintain orientation of a camera in response to drone movement, and/or maintain drone position) as depicted by the arrow 518 in FIG. 5.
+In one or more implementations, the input x(t), may be used to determine one or more measures of the performance of the plant controller operation. In some implementations, the performance function F may be a function of the input x(t), supervisory signal r(t), and/or the internal state variables q(t), and/or the output y(t). In one or more implementations, the performance function may be dependent on time and expressed in the following general form:
+
+F=F(x(t),y(t),q(t),r(t),t)ââ(Eqn. 13)
+
+In one or more implementations, M multiple performance measures Pl(x,y,q,r,t), l=1 . . . M, may be utilized in order to, for example, implement more than one learning rule simultaneously, and potentially in parallel, and/or to different sections of the preprocessing pathways. In one or more implementations, some of the multiple performance measures may be associated with sensory processing areas. In some implementations some of the multiple performance measures may correspond to areas providing state information and/or other type of information to the controllers. In some implementations multiple performance measures may be used by the controller in order to implement different constraints of a single and/or multiple tasks. In one or more implementations, the task constrains may comprise minimizing energy while following particular trajectories with an end effector, and/or to implement different tasks at different times.
+In one or more implementations, one or multiple and different performance measures may be applied to some sensory processing neurons, whereas one or multiple and different measures may be used in the different neurons of the controller.
+In one or more implementations, the performance F may be determined as a weighted linear combination of individual performance measures corresponding to individual learning tasks (e.g., supervised, reinforcement, unsupervised, and/or other learning tasks), as described for example, in U.S. patent application Ser. No. 13/487,499, entitled âSTOCHASTIC APPARATUS AND METHODS FOR IMPLEMENTING GENERALIZED LEARNING RULES, incorporated supra.
+The measure F may be determined, for example, based on a time average of an error measure e, that may be expressed as:
+
+E=  e(x(t),y(t) tââ(Eqn. 14)
+
+    The controller 520 may be configured to generate the output 508 so as to optimize the performance measure. Optimizing the performance measure may minimize the error of Eqn. 14. In one or more implementations, the performance optimization may comprise maximizing the performance function F.
+In one or more implementations, the input 502 x(t) may comprise a desired trajectory, yd(t) for the plant (e.g., a desired route for a garbage collecting robot). Accordingly, the performance function of Eqn. 13 may be expressed as:
+
+F(t)=âE(x i(t)ây d(t))2ââ(Eqn. 15)
+
+where the variable xi(t) of the multidimensional input x(t) may be used to characterize the actual plant trajectory.
+
+In some implementations, the learning parameters Î¸(t) of the dynamic control process that governs the input to output transformations by the controller 520 may be adapted (e.g., changed) in accordance with the performance measure F. In one or more implementations, the parameters Î¸(t) may form a subset of the state parameters q(t) of the control process. In some implementations, the learning parameters Î¸(t) may vary slower, compared to the variability time scale of the input, neuron membrane voltage, and/or other state parameters.
+In some implementations, the controller may be configured to calculate the baseline of the performance function values (e.g., as a running average) and subtract it from the instantaneous value of the performance function in order to increase learning speed of learning. The learning process may be operated in accordance with a difference between the current value F(t)cur of the performance function and its time average F:
+
+F(t)=F(t)cur â  F  .ââ(Eqn. 16)
+
+    In some implementations, the time average of the performance function may comprise an interval average, where learning occurs over a predetermined interval. A current value of the performance function may be determined at individual steps within the interval and may be averaged over all steps. In some implementations, the time average of the performance function may comprise a running average, where the current value of the performance function may be low-pass filtered according to:
+          â  F â¡  ( t )     â t   =    - Ï  â¢     â¢  F â¡  ( t )    +   F â¡  ( t )   cur    ,     (  Eqn .     â¢ 17  )       
+thereby producing a running average output.
+
+An average and/or a running average may provide methodology for determining predictive qualities of a quantity. The learning process may comprise a difference between the current value F(t)cur of the performance function and its predicted value {tilde over (F)}(t):
+
+F(t)=F(t)cur â{tilde over (F)}(t).ââ(Eqn. 18)
+
+In one or more implementations, the input 502 and/or the output 508 may be multidimensional. In some implementations, the multidimensional input may comprise multiple channels corresponding, for example, to a particular sensory input such as visual or audio. In one or more implementations, the multichannel input may comprise multiple frequency channels for audio, and/or multiple pixels from an imaging camera, and/or distributed tactile sensors from an artificial skin, and/or distributed proprioceptive sensors on one and/or multiple actuators) In some implementations, the input and/or the output may multiple mixed channels, for example, analog and/or spiking signals, as described in U.S. patent application Ser. No. 13/313,826, entitled âAPPARATUS AND METHODS FOR IMPLEMENTING LEARNING FOR ANALOG AND SPIKING SIGNALS IN ARTIFICIAL NEURAL NETWORKSâ, filed Dec. 7, 2011, incorporated herein by reference in its entirety.
+Reinforcement learning in spiking neural networks may be represented using the following general equation described, for example, in co-owned U.S. patent application Ser. No. 13/489,280 entitled âAPPARATUS AND METHODS FOR REINFORCEMENT LEARNING IN ARTIFICIAL NEURAL NETWORKSâ, filed Jun. 5, 2012, incorporated supra:
+          â   Î¸ i  â¡  ( t )     â t   =  Î· â¢     â¢  F â¡  ( t )   â¢   e i  â¡  ( t )     ,     (  Eqn .     â¢ 1  )       
+where:
+    Î¸i(t) is an adaptation (learning) parameter of a synaptic connection between the pre-synaptic neuron i and the post-synaptic neuron j; Î· is a parameter referred to as the learning rate, Î· can be a constant parameter or it can be a function of some other system parameters; F(t) is a performance function; and ei(t) is eligibility trace, configured to characterize the relations between pre-synaptic and post-synaptic activity.   
+An exemplary eligibility trace may comprise a temporary record of the occurrence of an event, such as visiting of a state or the taking of an action, or a receipt of pre-synaptic input. The trace may mark the parameters associated with the event as eligible for undergoing learning changes. Examples of the parameters associated with the event may include one or more of the synaptic connection; pre- and/or post-synaptic neuron IDs; and/or other parameters. In some implementations, when a reward signal occurs, only eligible states or actions may be âassigned creditâ or âblamedâ for the error. Thus, the eligibility traces may aid in bridging the gap between the events and the training information.
+In some implementations, the adaptive controller 520 of FIG. 5 may comprise spiking neuron network (e.g., the network 400 of FIG. 4). In some implementations, the controller network 400 may be configured to implement the control block 410 and the learning block 420, as illustrated in FIG. 4.
+The controller network 400 may comprise the learning block (e.g., the block 420 of FIG. 4), which may implement learning according to the framework described in detail in U.S. patent application Ser. No. 13/487,499, entitled âSTOCHASTIC APPARATUS AND METHODS FOR IMPLEMENTING GENERALIZED LEARNING RULESâ, filed Jun. 4, 2012. Such implementations may enable generalized learning without relying on calculations of the performance function F derivative in order to solve, for example, reinforcement and/or other learning tasks.
+In one or more implementations, the controller 520 may optimize performance of the control system (e.g., the system 500 of FIG. 5) that is characterized by minimization of the average value of the performance function F(x,y,r). The above-referenced application describes, in one or more implementations, minimizing the average performance F x,y,r using, for example, gradient descend algorithms where
+              â       â  w i    =    â©  F â¡  (  x , y , r  )   âª   x , y , r   =   â©   â©   F â¡  (  x , y , r  )   â¢   â       â  w i    â¢  ln â¡  (  p â¡  (   y â x  , w  )   )    âª   x , y   âª  r    ,     (  Eqn .     â¢ 20  )       
+where:
+
+âln(p(y|x,w))=h(y|x,w)ââ(Eqn. 21)
+
+is the per-stimulus entropy of the system response (or âsurprisalâ). The probability of the external signal p(r|x,y) may be characteristic of the external environment and may not change due to adaptation. That property may allow omission of averaging over external signals r in subsequent consideration of learning rules.
+
+Several exemplary implementations of parameter adjustment learning algorithms applicable with spiking control signals are described below. In some implementations, the learning algorithms may comprise a multiplicative online learning rule, where control parameter changes are determined as follows:
+
+Îw ji =Î·F(x,y,q,r)âw  ji  h p(y|x,q),ââ(Eqn. 22)
+
+where F is the performance function (cost) and âw  ji hp(y|x)â¡gji is the score function described above, and Î· is the learning rate configured to determine speed of learning adaptation. The learning method implementation may be advantageous in applications where the performance function F(t) may depend on the current values of the inputs x, outputs y, state variables q, and/or signal r. In some implementations, the control process of the block 520 of FIG. 5 may comprise a stochastic dynamic system. In one or more implementations, the stochastic system may be characterized by an analytical input-output (xÎy) stochastic relationship having a conditional probability distribution (e.g., described by Eqn. 10) associated therewith. In some implementations, the reinforcement learning process of the controller 520 of FIG. 5 may be based on the sensor input 504, 502 and the reinforcement signal 514 (e.g., obstacle collision signal from robot bumpers, distance from robotic arm endpoint to the target position). The reinforcement signal r(t) may inform the adaptive controller that the previous behavior led to âdesiredâ or âundesiredâ results, corresponding to positive and negative reinforcements, respectively. While the plant (e.g., the drone 510 in FIG. 5) must be controllable (e.g., via the motor commands 508 in FIG. 5) and the control system may be required to have access to appropriate sensory information (e.g., the data 502 in FIG. 5), the detailed knowledge of motor actuator dynamics or of structure and significance of sensory signals may not be required to be known by the controller apparatus 520.
+The SNN of the controller 520 may be characterized by a control process comprising the control process internal state variables q. Internal state variables q may comprise a membrane voltage of the neuron, conductance of the membrane, learning parameters, and/or other variables.
+The SNN of the control process of the controller 520 may be characterized by learning parameters Î¸(t), which may comprise weights w of synaptic connections, firing threshold, resting potential of the neuron, and/or other parameters. In one or more implementations, the parameters Î¸(t) may comprise probabilities of signal transmission between the units (e.g., neurons) of the network.
+As illustrated in FIG. 4, the learning block 420 of the controller may have access to the system's inputs and outputs, and/or system internal state q. In some implementations, the learning block may be provided with additional inputs 404 (e.g., reinforcement signals) that are related to the current task of the control block.
+The learning block may estimate changes of one or more learning parameters Î¸(t), (e.g., connection weights w in FIG. 4) in order to minimize the performance function F. The learning block may provide parameter adjustment information Îw to the control block 410, for example, as indicated by the arrow 406 in FIG. 4. In some implementations, the learning block may be configured to modify the learning parameters w of the controller block. In one or more implementations (not shown), the learning block may be configured to communicate parameters w (as depicted by the arrow 406 in FIG. 4) for further use by the controller block 410, or to another entity (not shown).
+It will be appreciated by those skilled in the arts that the reinforcement learning configuration of the generalized learning controller apparatus 520 of FIG. 5 is used to illustrate exemplary implementations of the disclosure and myriad other configurations may be used with the generalized learning framework described herein.
+The learning block (e.g., the block 4202 of FIG. 4) may receive multidimensional sensory input signals x(t) and internal state variables, q(t). A multidimensional sensor input signal x(t) may include the input 502 from the environment and/or the input 504 from the plant and/or the input 508 from the control signal. In one or more implementations, the input {x(t), r(t), q(t)} may be combined by the controller process in order to produce one or multidimensional output signal 508 to, for example, control the plant (e.g., the plant 510).
+The adaptive controller may receive, for example, multidimensional feedback signals from the plant, which, in some implementations, may comprise a subset of the sensor inputs.
+In some implementations, a score function
+     g i  â¡   â  h â¡  (  y â x  )     â  w i       
+may be utilized in order to determine changes for individual spiking neuron parameters. If spiking patterns are viewed on finite interval length T as an input x and output y of the neuron, then the score function may take the following form:
+
+         g i  =    â  h â¡  (   y T  |  x T   )     â  w i    =   -   â   t l  â  y T    â¢   1  Î» â¡  (  t l  )    â¢   â  Î» â¡  (  t l  )     â  w i       +   â« T      â¢    â  Î» â¡  ( s )     â  w i    â¢   â s  .       ,     (  Eqn .     â¢ 23  )       
+where time moments tl belong to neuron's output pattern yT (neuron generates spike at these time moments). If an output of the neuron at individual time moments may be considered (e.g., whether there is an output spike or not), then an instantaneous value of the score function may be calculated using a time derivative of the interval score function:
+
+         g i  =    â  h  Î â¢     â¢ t     â  w i    =    â Î»   â  w i    â¢  (  1 -   â l  â¢    1 -  Î â¡  ( t )     Î â¡  ( t )    â¢   Î´ d  â¡  (  t -  t l   )      )     ,     (  Eqn .     â¢ 24  )       
+where tl is the time of output spike, and Î´d (t) is the Kronecker delta.
+
+In one or more implementations, the score function values for the stochastic Integrate-and-Fire neuron discrete time may be determined as follows:
+         g i  =    â   h  Î â¢     â¢ t   â¡  (   y â¡  ( t )   | x  )     â  w i    =  k â¢     â¢  Î» â¡  ( t )   â¢   â   t j i  â  x i    â¢   Î± â¡  (  t -  t j i   )   â¢  (  1 -   â   t out  â y   â¢    Î´ d  â¡  (  t -  t out   )    Î â¡  ( t )      )  â¢ Î â¢     â¢ t      ,     (  Eqn .     â¢ 25  )       
+where:
+
+tout denotes the output spike time instances,
+Î± denotes the alpha-function, and
+Î´d (t) is the Kronecker delta.
+State variables q (e.g., probability of firing Î»(t)) associated with the control model may be provided to the learning block 420 via the pathway 405. The learning block 420 of the neuron 430 may receive the output spike train y(t) via the pathway 408_1.
+In order to determine the score function, a derivative
+     â  Î» â¡  ( t )     â  w i      
+of the instantaneous probability density with respect to a learning parameter wi of the i-th neuron may be utilized. Without loss of generality, two cases of learning are considered below: input weights learning (synaptic plasticity) and stochastic threshold tuning (intrinsic plasticity). In one or more implementations, a derivative of other parameters of the neuron model (e.g., membrane, synaptic dynamic, and/or other constants) may be utilized.
+
+The neuron may receive n input spiking channels. External current to the neuron Iext in the neuron's dynamic equation may be modeled as a sum of filtered and weighted input spikes from all input channels:
+        I ext  =   â i n  â¢   â   t j i  â  x i    â¢   w i  â¢  É â¡  (  t -  t j i   )          (  Eqn .     â¢ 26  )       
+where: i is the index of the input channel; xi is the stream of input spikes on the i-th channel; tj i is the times of input spikes in the i-th channel; wi is the weight of the i-th channel; and Îµ(t) is a generic function that models post-synaptic currents from input spikes. In some implementations, the post-synaptic current function may be configured as: Îµ(t)â¡Î´(t), and/or Îµ(t)â¡Îµât/t  s  H(t), where Î´(t) is a delta function, H(t) is a Heaviside function, and ts is a synaptic time constant for an input spike at time t=0.
+
+A derivative of instantaneous probability density with respect to the i-th channel's weight may be taken using the chain rule:
+         â Î»   â  w i    =   â j  â¢  (    â  Î» i    â  q j    Â·   â wi  â¢  q j    )       (  Eqn .     â¢ 27  )       
+where
+
+     â Î»   â  q ->      
+is a vector of derivatives of instantaneous probability density with respect to the state variable; and
+
+S i(t)=âw  i  {right arrow over (q)}ââ(Eqn. 28)
+
+is the gradient of the neuron internal state with respect to the ith weight (also referred to as the i-th state eligibility trace). In order to determine the state eligibility trace of Eqn. 28 for generalized neuronal model, such as, for example, described by Eqn. 4 and Eqn. 7, derivative with respect to the learning weight wi may be determined as:
+
+
+
+
+
+
+
+
+
+
+â
+
+â
+
+w
+i
+
+
+
+â¢
+
+(
+
+
+â
+
+q
+->
+
+
+
+â
+t
+
+
+)
+
+
+=
+
+
+
+â
+
+â
+
+w
+i
+
+
+
+â¢
+
+(
+
+V
+â¡
+
+(
+
+q
+->
+
+)
+
+
+)
+
+
++
+
+
+â
+
+â
+
+w
+i
+
+
+
+â¢
+
+(
+
+
+â
+
+t
+out
+
+
+â¢
+
+
+R
+â¡
+
+(
+
+q
+->
+
+)
+
+
+â¢
+
+Î´
+â¡
+
+(
+
+t
+-
+
+t
+out
+
+
+)
+
+
+
+
+)
+
+
++
+
+
+â
+
+â
+
+w
+i
+
+
+
+â¢
+
+(
+
+
+G
+â¡
+
+(
+
+q
+->
+
+)
+
+
+â¢
+
+I
+ext
+
+
+)
+
+
+
+
+
+
+
+(
+
+Eqn
+.
+
+ 
+
+â¢
+29
+
+)
+
+
+
+
+
+
+
+The order in which the derivatives in the left side of the equation Eqn. 29 are taken may be changed, and then the chain rule may be used to obtain the following expressions (arguments of evolution functions are omitted):
+          â   S i  â¡  ( t )     â t   =    (    J V  â¡  (  q ->  )   +    J G  â¡  (  q ->  )   Â·  I ext    )  Â·  S i   +   â  t out   â¢    J R  â¡  (  q ->  )   Â·  S i      â£    Â·  Î´ â¡  (  t -  t out   )    +   G â¡  (  q ->  )   â¢   â   t j i  â  x j    â¢  É â¡  (  t -  t j i   )      ,      (  Eqn .     â¢ 30  )       
+where JF, JR, JG are Jacobian matrices of the respective evolution functions V,R,G.
+
+As an example, evaluating Jacobean matrices for the IF neuron may produce:
+
+J v =âC;J R=â1;G({right arrow over (q)})=1;J G=0,ââ(Eqn. 31)
+
+Accordingly, Eqn. 30 for the i-th state eligibility trace may take the following form:
+
+         â  â u   â¢  u  w i    =   -  C  u  w i     -   â  t out   â¢   u  w i   Â·  Î´ â¡  (  t -  t out   )     +   â   t j i  â  x j    â¢  É â¡  (  t -  t j i   )         (  Eqn .     â¢ 32  )       
+where uw  j  denotes derivative of the state variable (e.g., voltage) with respect to the i-th weight.
+
+A solution of Eqn. 32 may represent the post-synaptic potential for the i-th unit and may be determined as a sum of all received input spikes at the unit (e.g., a neuron), where the unit is reset to zero after each output spike:
+        u  w i   =    â   t j i  â  x i    â¢   â«  - â  t  â¢   e   -  (  t - Ï  )   â¢ C   â¢  É â¡  (  Ï -  t j i   )      =   â   t j i  â  x i    â¢  Î± â¡  (  t -  t j i   )         (  Eqn .     â¢ 33  )       
+where Î±(t) is the post-synaptic potential (PSP) from the jth input spike.
+
+Applying the framework of Eqn. 30-Eqn. 33 to a previously described neuronal (hereinafter IZ neuron), the Jacobian matrices of the respective evolution functions F,R,G may be expressed as:
+          J V  =  (      0.08 â¢     â¢  v â¡  ( t )    + 5     - 1      ab   a    )   ;  â¢  
+  â¢    J R  =  (     - 1    0     0   0    )   ;   G â¡  (  q ->  )   =  (    1     0    )   ;   J G  =   (    0     0    )  .        (  Eqn .     â¢ 34  )       
+The IZ neuronal model may further be characterized using two first-order nonlinear differential equations describing time evolution of synaptic weights associated with each input interface (e.g., pre-synaptic connection) of a neuron, in the following form:
+
+          â  â t   â¢  v  w i    =    (   0.08 â¢ v  + 5  )  â¢  v  w i    -  u  w i   -   â  t out   â¢   u  w i   Â·  Î´ â¡  (  t -  t out   )     +   â   t j i  â  x i    â¢  É â¡  (  t -  t j i   )      â¢  
+  â¢     â¢    â  â t   â¢  u  w i    =   abv  w i   -  a â¢     â¢   u  w i   .         (  Eqn .     â¢ 35  )       
+When using the exponential stochastic threshold configured as:
+
+Î»=Î»0 e Îº(v(t)-Î¸)ââ(Eqn. 36)
+
+then the derivative of the instantaneous probability for IZ neuronal neuron may be expressed as:
+
+
+
+
+
+
+
+
+
+
+â
+Î»
+
+
+â
+
+w
+i
+
+
+
+=
+
+
+v
+
+w
+i
+
+
+â¢
+k
+â¢
+
+ 
+
+â¢
+
+
+Î»
+â¡
+
+(
+t
+)
+
+
+.
+
+
+
+
+
+
+(
+
+Eqn
+.
+
+ 
+
+â¢
+37
+
+)
+
+
+
+
+
+
+
+Using the exponential stochastic threshold Eqn. 11, the expression for the derivative of instantaneous probability
+     â  Î» â¡  ( t )     â w     
+for IZ neuron may be written as:
+
+         â Î»   â  w i    =     â Î»   â u   â¢   â u   â  w i     =  k â¢     â¢  Î» â¡  ( t )   â¢   â   t j i  â  x i    â¢   Î± â¡  (  t -  t j i   )   .         (  Eqn .     â¢ 38  )       
+Combining Eqn. 38 with Eqn. 24 we obtain score function values for the stochastic Integrate-and-Fire neuron in continuous time-space as:
+
+        g i  =    â  h â¡  (   y â¡  ( t )   | x  )     â  w i    =  Îº â¢   â   t j i  â  x i    â¢   Î± â¡  (  t -  t j i   )   â¢  (   Î» â¡  ( t )   -   â   t out  â y   â¢  Î´ â¡  (  t -  t out   )     )          (  Eqn .     â¢ 39  )       
+and in discrete time:
+
+
+
+
+
+
+
+
+
+g
+i
+
+=
+
+
+
+â
+
+
+h
+
+Î
+â¢
+
+ 
+
+â¢
+t
+
+
+â¡
+
+(
+
+
+y
+â¡
+
+(
+t
+)
+
+
+|
+x
+
+)
+
+
+
+
+â
+
+w
+i
+
+
+
+=
+
+Îº
+â¢
+
+ 
+
+â¢
+
+Î»
+â¡
+
+(
+t
+)
+
+
+â¢
+
+
+â
+
+
+t
+j
+i
+
+â
+
+x
+i
+
+
+
+â¢
+
+
+Î±
+â¡
+
+(
+
+t
+-
+
+t
+j
+i
+
+
+)
+
+
+â¢
+
+(
+
+1
+-
+
+
+â
+
+
+t
+out
+
+â
+y
+
+
+â¢
+
+
+
+Î´
+d
+
+â¡
+
+(
+
+t
+-
+
+t
+out
+
+
+)
+
+
+
+Î
+â¡
+
+(
+t
+)
+
+
+
+
+
+)
+
+â¢
+Î
+â¢
+
+ 
+
+â¢
+
+t
+.
+
+
+
+
+
+
+
+
+
+(
+
+Eqn
+.
+
+ 
+
+â¢
+40
+
+)
+
+
+
+
+
+
+
+In one or more implementations, the input interfaces (e.g., the connections 414 of the network 400 of FIG. 4) may be operated according a linear dynamic process that may be expressed as:
+           â    S ->  i  â¡  ( t )     â t   +   A â¡  (  q , t ,  t out   )   â¢    S ->  i  â¡  ( t )     =     k ->  i  â¢   â j  â¢  Î´ â¡  (  t -  t j  i â¢     â¢ n    )     +   â  t out   â¢   Rs â¡  ( t )   â¢  Î´ â¡  (  t -  t out   )       ,  
+  â¢     â¢ and     (  Eqn .     â¢ 41  )           â¢     â   e i  â¡  ( t )     â t   +    e i  â¡  ( t )   Ï   =   Q â¡  ( t )   â¢    S i  â¡  ( t )   .        (  Eqn .     â¢ 42  )       
+where:
+    A(t) is a stable matrix, dependent on the state q of the neuron, output spike time tout, and/or time; Î£j Î´(tâtj in) is the term describing the input spike train; {right arrow over (k)}i is vector coefficient characterizing individual synapses and effect of the presynaptic spikes on it; and Rs(t) describes resetting the synapse state vector {right arrow over (S)}1 after the output spikes at tout.   
+It will be appreciated by those skilled in the arts that neural network dynamics represented by Eqn. 41 and Eqn. 42 may comprise some implementations and the framework of the innovation is not so limited and may be utilized with any network synaptic dynamics that may be described using linear and stable process so that superposition principle may be used.
+The controller 520 may determine changes of the learning parameters Îwi according to a predetermined learning algorithm, based on the performance function F and the gradient g.
+In some implementations, the control parameter adjustment Îw may be determined using an accumulation of the score function gradient and the performance function values, and applying the changes at a predetermined time instance (corresponding to, e.g., the end of the learning epoch):
+         Î â¢     â¢   w ->  â¡  ( t )    =   Î³  N 2   Â·   â  i = 0   N - 1   â¢   F â¡  (  t -  i â¢     â¢ Î â¢     â¢ t   )   Â·   â  i = 0   N - 1   â¢   g ->  â¡  (  t -  i â¢     â¢ Î â¢     â¢ t   )        ,     (  Eqn .     â¢ 43  )       
+where: T is a finite interval over which the summation occurs; N is the number of steps; and Ît is the time step determined as T/N.
+
+The summation interval T in Eqn. 43 may be configured based on the specific requirements of the control application. By way of illustration, in a control application where a robotic arm is configured to reaching for an object, the interval may correspond to a time from the start position of the arm to the reaching point and, in some implementations, may be about 1 s-50 s. In a speech recognition application, the time interval T may match the time required to pronounce the word being recognized (typically less than 1 s-2 s). In some implementations of spiking neuronal networks, Ît may be configured in range between 1 ms and 20 ms, corresponding to 50 steps (N=50) in one second interval.
+The method of Eqn. 43 may be computationally expensive and may not provide timely updates. Hence, it may be referred to as the non-local in time due to the summation over the interval T. However, it may lead to unbiased estimation of the gradient of the performance function.
+In some implementations, the control parameter adjustment Îwi may be determined by calculating the traces of the score function ei(t) for individual parameters wi. In some implementations, the traces may be computed using a convolution with an exponential kernel Î² as follows:
+
+{right arrow over (e)}(t+Ît)=Î²{right arrow over (e)}(t)+{right arrow over (g)}(t),ââ(Eqn. 44)
+
+where Î² is the decay coefficient. In some implementations, the traces may be determined using differential equations:
+
+         â  â t   â¢   e ->  â¡  ( t )    =    - Ï  â¢     â¢   e ->  â¡  ( t )    +    g ->  â¡  ( t )   .       (  Eqn .     â¢ 45  )       
+The control parameter w may then be adjusted according to Eqn. 19. The method of Eqn. 44-Eqn. 45 may be appropriate when a performance function depends on current and past values of the inputs and outputs and may be referred to as the OLPOMDP algorithm. While it may be local in time and computationally simple, it may lead to biased estimate of the performance function. By way of illustration, the methodology described by Eqn. 44-Eqn. 45 may be used, in some implementations, in a rescue robotic device configured to locate resources (e.g., survivors, or unexploded ordinance) in a building. The input x may correspond to the robot current position in the building. The reward r (e.g., the successful location events) may depend on the history of inputs and on the history of actions taken by the agent (e.g., left/right turns, up/down movement, and/or other actions).
+
+In some implementations, the control parameter adjustment Îw determined using methodologies of the Eqns. 16, 17, 19 may be further modified using, in one variant, gradient with momentum according to:
+
+Î{right arrow over (w)}(t)Î¼Î{right arrow over (w)}(tâÎt)+Î{right arrow over (w)}(t),ââ(Eqn. 46)
+
+where Î¼ is the momentum coefficient. In some implementations, the sign of gradient may be used to perform learning adjustments as follows:
+
+            Î â¢     â¢   w i  â¡  ( t )    â    Î â¢     â¢   w i  â¡  ( t )     ï  Î â¢     â¢   w i  â¡  ( t )    ï   .      (  Eqn .     â¢ 47  )       
+In some implementations, gradient descend methodology may be used for learning coefficient adaptation.
+
+In some implementations, the gradient signal g, determined by the learning process may be subsequently modified according to another gradient algorithm, as described in detail below. In some implementations, these modifications may comprise determining natural gradient, as follows:
+
+Î{right arrow over (w)}=  {right arrow over (g)}Â·{right arrow over (g)} T  x,y â1 Â·  {right arrow over (g)}Â·F  x,yââ(Eqn. 48)
+
+where {right arrow over (g)}{right arrow over (g)}T  z,y is the Fisher information metric matrix. Applying the following transformation to Eqn. 21:
+
+ {right arrow over (g)}({right arrow over (g)} T Î{right arrow over (w)}âF) x,y=0,ââ(Eqn. 49)
+
+    The natural gradient from linear regression task may be obtained as follows:
+
+GÎ{right arrow over (w)}={right arrow over (F)},ââ(Eqn. 50)
+
+where G=[{right arrow over (g0 T)}, . . . , {right arrow over (gn T)}] is a matrix comprising n samples of the score function g, {right arrow over (FT)}=[F0, . . . , Fn] is the a vector of performance function samples, and n is a number of samples that should be equal or greater of the number of the parameters wi. While the methodology of Eqn. 48-Eqn. 50 may be computationally expensive, it may help dealing with âplateauâ-like landscapes of the performance function.
+
+In some implementations, a plasticity mechanism may comprise adjusting one or more intrinsic parameters (e.g., (Î»0, Îº, uth), in Eqn. 11). The intrinsic plasticity may comprise modifying a probabilistic parameter Kâ¡1/Îº which may be expressed as the inverse of the stochastic parameter Îº and/or other parameters.
+In some implementations, learning based solely on intrinsic plasticity mechanism may be more efficient and effective than learning based on synaptic connection plasticity (e.g. weight plasticity). When the number of parameters per neuron is smaller compared to number of synaptic connection parameters, an intrinsic plasticity based learning may converge faster compared to the synaptic connection plasticity.
+In some implementations, intrinsic plasticity based learning may be combined with synaptic plasticity learning. In one or more implementations, such plasticity combination may increase learning rate. Convergence to a solution may be attainable with fewer parameter changes since changes of one or more intrinsic parameters (e.g. the stochastic parameter in FIG. 12) may more effectively modify the response of the neuron compared to, for example, the same number of changes in one and/or different synaptic connectivity parameters (e.g. weights).
+In some implementations, combining intrinsic plasticity and synaptic plasticity may improve the probability of converging to a solution due to an increased exploration of the space of possible responses of the neuron.
+In some implementations, combining intrinsic plasticity and synaptic plasticity may increase the probability of learning process convergence to a target outcome. The neuron output spike distribution may be restricted by the intrinsic parameters to emulate a target response distribution which is to be obtained by synaptic connectivity plasticity. In one or more implementations, the target response distribution may comprise e.g., a sparse distribution and/or a Poisson distribution. The intrinsic plasticity may aid to set the response of the neuron in a particular configuration. Such configuration may act as teaching signal and/or exemplary signals for synaptic connectivity adaptation. Through this process, the intrinsic plasticity may be used in obtaining sparse representations. The sparse representations, may lead to, for example, formation of edges from visual images. The sparse representations may be used in maximizing information transmission and in learning independent component analysis with neurons, among possible applications.
+In some implementations, the intrinsic plasticity may be implemented using performance function F, as described below. The score function g for an arbitrary intrinsic parameter Î¸ of the neuron may be expressed as:
+         g Ï  â¡   â  h â¡  (  y | x  )     â Ï   â¡   â Ï  â¢  h â¡  (   y | x  , Ï  )     ,  
+  â¢   h â¡  (   y | x  , Ï  )   =  -  ln â¡  (  p â¡  (   y | x  , Ï  )   )     ,     (  Eqn .     â¢ 51  )       
+and may be utilized in order to determine changes for a particular parameter Î¸ of individual spiking neuron (e.g., the neuron 430 in FIG. 4). By way of illustration, score functions of the stochastic neuron characterized by the exponential stochastic threshold of Eqn. 11 may be expressed in continuous-time domain as:
+
+         â  Î» o   â¢   h p  â¡  (  y | x  )    =  -   1  Î» o   â¡  [    â  t f   â¢ 1  -   â« 0 T  â¢   Î» â¡  (  u â¡  ( Ï )   )   â¢  â Ï     ]        (  Eqn .     â¢ 52  )         â K  â¢   h p  â¡  (  y | x  )    =  -  [    â  t f   â¢  (   y â¡  (  t f  )   -  u th   )   -   â« 0 T  â¢   Î» â¡  (  u â¡  ( Ï )   )   â¢  (   u â¡  ( Ï )   -  u th   )  â¢  â Ï     ]       (  Eqn .     â¢ 53  )         â  u th   â¢   h p  â¡  (  y | x  )    =  -  K â¡  [    â  t f   â¢ 1  -   â« 0 T  â¢   Î» â¡  (  u â¡  ( Ï )   )   â¢  â Ï     ]        (  Eqn .     â¢ 54  )       
+where tf are the times of neuron output spike generation and
+
+h p(y|x)=âln p(y|x).ââ(Eqn. 55)
+
+Similarly, in discrete time-domain, the score functions of the stochastic neuron characterized by the exponential stochastic threshold of Eqn. 11 may become:
+
+         â  Î» o   â¢   h p  â¡  (  y | x  )    =  -    Î â¢     â¢ Ï   Î» o   â¡  [    â  t f   â¢    [  1 -  Î â¡  (  u â¡  (  t f  )   )    ]   Î â¡  (  u â¡  (  t f  )   )    â¢ Î» â¢  (  u â¡  (  t f  )   )    -   â  Ï = 0  T  â¢  Î» â¡  (  u â¡  ( Ï )   )     ]        (  Eqn .     â¢ 56  )         â K  â¢   h p  â¡  (  y | x  )    =   - Î  â¢     â¢  Ï â¡  [    â  t f   â¢    [  1 -  Î â¡  (  u â¡  (  t f  )   )    ]   Î â¡  (  u â¡  (  t f  )   )    â¢  (   u â¡  (  t f  )   -  u th   )    -   â  Ï = 0  T  â¢   Î» â¡  (  u â¡  ( Ï )   )   â¢  (   u â¡  ( Ï )   -  u th   )     ]        (  Eqn .     â¢ 57  )         â  u th   â¢   h p  â¡  (  y | x  )    =  Ks â¢     â¢ Î â¢     â¢  Ï [    â  t f   â¢    [  1 -  Î â¡  (  u â¡  (  t f  )   )    ]   Î â¡  (  u â¡  (  t f  )   )    â¢  Î» â¡  (  u â¡  (  t f  )   )     +   â  Ï = 0  T  â¢  Î» â¡  (  u â¢  ( Ï )   )           (  Eqn .     â¢ 58  )       
+where
+
+uj(tf)=Î£j w jiÎ±(t j f ât i) for the spike response model,
+ti are the times of the input spikes in to the neuron from i-th synapse,
+Î±(â¢) is the response of the neuron to the input spike, and
+wji are the synaptic weights.
+In some implementations, the neuron response Î±(s), may be described using an exponential function as:
+         Î± â¡  ( s )   =    Î± o   Ï s   â¢  e  -  (  s  Ï s   )    â¢  Î â¡  ( s )     ,     (  Eqn .     â¢ 59  )       
+where:
+
+Î±o/Ïs is the maximum response of the neuron to the input spike,
+Ïs is the time constant of the exponential decay, and
+Î(s) is the Heaviside step function.
+For a finite rise time Ïr and a transmission delay Î the neuron response may be described as:
+         Î± â¡  ( s )   =     Î± o    Ï s  -  Ï r    â¡  [   e  -  (   s - Î   Ï s   )    -  e  -  (   s - Î   Ï r   )     ]   â¢  Î â¡  (  s - Î  )     ,     (  Eqn .     â¢ 60  )       
+and in the limit ÏrâÏs,
+
+         Î± â¡  ( s )   =      Î± o  â¡  (  s - Î  )    Ï s 2   â¡  [  e  -  (   s - Î   Ï s   )    ]   â¢  Î â¡  (  s - Î  )     ,     (  Eqn .     â¢ 61  )       
+which is a common form for the alpha function.
+
+In some implementations, the degree of stochasticity (i.e. the intrinsically non-deterministic behavior or the probabilistic response) of the neuron 430 may be modified during learning and/or during operation after learning. In some implementations, the stochasticity may be adjusted by changing one or more intrinsic plasticity parameters of the stochastic neuron model presented above: the stochasticity parameter Îº of Eqn. 11 above. In some implementations, the stochasticity may be altogether removed after learning thereby obtaining a deterministic controller apparatus. In some implementations, the stochasticity removal may be achieved, for example, by setting the stochasticity parameter Îº to a very small value, e.g., 0.01 and/or smaller. In one or more implementations, the stochasticity parameter K may be regulated according to the performance function F, described for example, by Eqn. 13.
+ FIG. 12 illustrates the effects of changes of the neuron stochasticity level on a probability of response generation by the neuron, in accordance with some implementations. The panel 1200 of FIG. 12 presents data detailing the instantaneous probability density (PD) of a response by a neuron as a function of neuron excitability (e.g., parameterized by the membrane potential u in FIG. 12). The panel 1220 of FIG. 12 presents data detailing the probability of the response as a function of excitability u. Different curves denoted (1202, 1222), (1204, 1224), and (1206, 1226) correspond to the following values of the stochasticity parameter Îº, in, for example, Eqn. 22: 100, 10, 0.03 respectively. The deterministic threshold uth is denoted by the line 1208 in FIG. 12.
+Highly stochastic neurons (as depicted by the curves 1202, 1222 in FIG. 12, corresponding to Îº=100) may exhibit firing substantially independent on their excitability (membrane potential). Such neurons may be equally likely to respond to one or more stimuli.
+Neurons with low stochasticity (as depicted by the curves 1206, 1226 in FIG. 12, corresponding to Îº=0.03.) may exhibit firing, with substantially bi-modal behavior characterized by an area of near-zero probability of firing when u<uth and an area where the probability of firing is near unity for u>uth. The two areas (e.g., pË0, and pË1) may be separated by a narrow transition zone, as shown in the panel 1220 FIG. 12. The neuron behavior, depicted by the curves 1206, 1226, may be characterized as (near)-deterministic as the neuron response state (i.e., firing and/or non-firing) may be predicted with a high degree of certainty based on the value of the neuron excitability (e.g., membrane potential in FIG. 12).
+When the stochasticity parameter is in between the two regimes (as illustrated by the curves 1204, 1224 in FIG. 12, corresponding to Îº=10), the firing rate of the neuron may be a function of the input stimulus (excitability). Varying the stochasticity parameter enables adaptive adjustment of the neuron response. In some implementations, adjusting the stochasticity parameter may enable control of exploration by the network. By way of illustration, during initial stages of learning, (e.g., when the current outcome may be far from the target outcome) the stochasticity parameter may be increased to allow for rapid exploration of various solutions in order to arrive at the target outcome. As the current outcome learns to approach the target (e.g., a robotic manipulator arm approaches the target) the stochasticity level may be reduced. In some implementations, reduced stochasticity may be further used for reducing computational load, power consumption (and or cost) associated with operating a robotic device after learning has commenced.
+In some implementations, stochasticity adjustment may be used to control degree of exploration by the spiking network controller during learning.
+In some implementations, at initial stages of learning (e.g., the stages denoted 920, 922 in FIG. 9C) stochasticity of some or all neurons within the network may be set to a high level (by setting K to a large value, e.g., 100 in FIG. 12). Highly stochastic neurons may more likely respond to a wide range of inputs, as depicted by the curve 1222 in FIG. 12, thereby facilitating exploration of alternate routes towards the target outcome. When the target outcome is reached (e.g., the pendulum is stabilized as illustrated by the segment 924 in FIG. 9C) the stochasticity level may be reduced. In some implementations, when the target outcome is reached the stochasticity level may be reduced sufficiently in order to transition to deterministic neuron network.
+In some implementations, the stochasticity may be gradually reduced as the network performance (e.g., indicated by the position error of the stage 922 in FIG. 9C) improves. In one implementation, the learning rate (e.g., as described by Eqn. 19) may be gradually reduced as well during learning as the network performance improves. When learning is complete, the weight adaptation (e.g., of Eqn. 19) may be turned off altogether during subsequent network operation. Upon completion of training, the network (e.g., the network of the controller 620 in FIG. 6A) may be operated in a deterministic mode (e.g., low stochasticity) without learning.
+In one or more implementations, the network stochasticity level may be adjusted in accordance with network performance measure (e.g., the performance function Eqn. 13). In one implementation, the stochasticity may be set to an initial value (e.g., high, low, or moderate) at the beginning of learning. During network operation, when learning process performance improves, the stochasticity level may be decreased. When the performance does not improve (e.g., gets worse) and/or does not improve rapidly enough (e.g., the rate of change of performance is below a target level) the stochasticity may be increased to, inter alia, increase exploration.
+It will be recognized by those skilled in the arts that stochasticity adjustments may be effectuated on all neurons of the network or portions of the network neurons. In some implementations, stochasticity adjustment parameter may be used to tune stochasticity of individual neurons, as may be required by the control application.
+As seen from FIG. 12, high stochasticity levels may cause higher spike rates, particularly when neuron excitability is sub-threshold. Such extraneous spiking activity may cause excessive energy use by the network processing apparatus, cause additional processing load, and/or add unwanted noise to the control process during operation. While the adaptive stochasticity control may advantageously be utilized to increase learning speed of the network when required, subsequent lowering of the stochasticity may reduce energy use and/or spiking noise when, for example, the target performance is attained.
+In some implementations, a robotic device may utilize additional processing resources (e.g., processing and/or memory cells 1140 of FIG. 11C and/or 1152 of FIG. 11D) in order to enable rapid exploration and learning using stochasticity level control described supra. Upon commencement of learning, the network (or a portion thereof) may be reconfigured to operate in a deterministic mode with or without weight adaptation as described above. Processing resources, which may become available due to network reconfiguration, may be retargeted at other applications and/or powered off to save energy. In one application, rapid learning described above may be implemented on a high-performance platform (for example at a manufacturing facility fabricating robots and/or controllers). During subsequent operation, the robotic controller may employ a lower-performance version of the controller hardware (e.g., comprising fewer processing and/or memory cells) so as to reduce controller cost, size, and/or energy use.
+As used herein, the controller inputs 502, 504, the output 508 and the reinforcement signal 514 may comprise real-world signals, such as continuous analog and/or digitized signals (e.g., temperature, velocity, position, and/or other parameters) and/or discrete signals (image pixel arrays, servo motor position index, engine power states (e.g., high, medium, low), logic states (positive, negative reinforcement), and/or any other signal types that may describe real-world pant and/or environment.
+As the controller comprises a network of spiking neurons communicating via spikes, the input signals need to be converted (encoded) into spikes and neuron output needs to be converted from spikes into real-world continuous signal. In one or more implementations, encoding of the input (e.g., the input 502, 506 in FIG. 5) may be achieved using Kernel Expansion (KE) methodology. This technique, also referred to, as the âkernel trickâ in machine learning arts, is described in detail with respect to FIGS. 6A-7C below.
+ FIG. 7A illustrates conversion of a non-spiking input {X} into spiking output S. The input 700 may comprise a time varying sample vector X={x1, x2, x3, . . . , xn}. The input signal may be coupled to encoding neuron layer 720 (e.g., the layer 624 of FIG. 6A) comprising neurons 722, shown in FIG. 7. Each neuron may be characterized by a respective receptive field 712, comprising a region in the input space X in which the presence of a stimulus may alter the response of the neuron. Accordingly, such neuron may selectively respond to input (in the signal space) that matches its receptive field, thereby enabling the transformation of the physical variable into a spike output.
+In some implementations, the basis function may comprise operators with spatial and/or temporal components. The operator examples may include one or both of a linear operator (e.g., derivative, 2nd derivative) and/or a nonlinear operator (e.g., a Fourier or a Laplace transform). In some implementations, the neuron (e.g., the neuron 630) comprising basis function with an operator may respond to inputs comprising a particular pattern (in time) in addition to the variability along the X-dimension (e.g., the dimension 714 in FIG. 7). For example, when the operator comprises a derivative operation, the activity pattern that may activate the neuron may comprise a change of input values in time or along the X-dimension.
+In some implementations, the receptive fields of the encoder neurons (e.g., the neurons 722 in FIG. 7A) may be used to represent a layout of physical and/or virtual sensors in a physical and/or virtual substrate, for example, sensitivity of range sensors and or camera les aperture. In such implementations, the individual sensors may be insensitive to spatial variations of the physical signal, since the sensors may be localized in physical space and may not have access to this information. Such neurons will thus have to be sensitive by construction to the amplitude of the physical signal, as presented above, and/or in addition, may be sensitive to the time variations of the incoming physical or virtual signal.
+In some implementations, such as for skin receptors, the encoder neurons may respond to the curvature of the skin deformation, which is a local reading of a spatial variation of the physical signal (e.g., skin deformation).
+The panel 710 in FIG. 7 depicts exemplary response of the receptive fields 712 to input X 700. As shown in FIG. 7, the input values {x1, x2, . . . , xn} may cause input {I1, I2, . . . In] into neurons 720 (e.g., the input Iext of Eqn. 1). As illustrated in the implementation of FIG. 7, input signal 700 varying along the y-axis is mapped onto the horizontal axis of the basis function input space. The basis function input sensitivity may cause transformation of the input x-value into the y-value corresponding to the input current for the neuron process. The input current I of a neuron may be based on the value of that neuron basis function when the input x value falls within the neuron receptive field.
+Spatially variable receptive field sensitivity effectuated by the neurons 720 (shown by the curves 712 in FIG. 7A) may enable the transformation of the input X into the neuron input current Iest. The sensitivity of the neuron receptive fields 710 may form a set of basis functions configured to enable representation of the input as a superposition of a plurality of basis components 720. In some implementations, the basis components may comprise linear, nonlinear and/or a complex valued component combination.
+ FIG. 7B illustrates various exemplary realizations of basis component responses useful with the disclosure. The panels 740, 750 illustrate radial basis function (RBF) characterized by Gaussian and linear responses, respectively. The RBF shown in FIG. 7B are centered at equally spaced interval along the signal dimension (the horizontal dimension in FIG. 7B). In some implementations, basis function response may comprise responses of different spatial frequency (signal extent), as illustrated by the curves 742, 744 in FIG. 7B.
+The panels 760, 762 illustrate sigmoid basis function responses. Further to the exemplary implementation illustrated in FIG. 7B, the basis function responses may comprise a combination, of different basis function types (e.g., linear, and/or Gaussian, and/or other). In some implementations, different basis function types (e.g., Gaussian, linear) may be used to convert input signals having different signal characteristics. By way of illustration, sigmoid basis functions may be used to convert classification input (e.g., comprising two or more states).
+In some implementations, basis function response (e.g., such as the curves 710 shown in FIG. 7A) may comprise the same gains (maximum amplitude). In some implementations, basis function response may comprise responses of different (e.g., modulated) gains.
+The neurons of the encoding layer 720 may be operable in accordance with a neuron response process (e.g., stochastic neuron process described supra). In some implementations, the neurons may generate one or more output spikes 730 in FIG. 7A in response to the input current stimulus 710.
+In one or more implementations, the output of the neurons 720 may comprise output firing rate deterministically configured to be inversely proportional to the input IN of the respective basis component (e.g., the component 712 in FIG. 7A). In some implementations, the neuron output 730 may comprise firing rate of a Poisson process configured proportional to the input IN of the respective basis component. In one or more implementations, the neurons 720 may be operable in accordance with an integrate and fire (IF) and/or Izhikevich (IZ) neuron model, described for example, in U.S. patent application Ser. No. 13/487,533, entitled âSYSTEMS AND APPARATUS FOR IMPLEMENTING TASK-SPECIFIC LEARNING USING SPIKING NEURONSâ, incorporated supra.
+The radial basis function and the linear encodings are both examples of two specific classes: unimodal concave and monotonic encoding. In a unimodal concave encoding, the output may increase to reach a maximum and decreases to a minimum. In the monotonic encoding, the output may increase and/or decrease monotonically as a function of the input. In some implementations, a sigmoid basis function set may be used.
+In one or more implementations, a unimodal convex encoding may be used. The unimodal convex encoding may be considered as the reverse of the concave encoding: the output decreases, reaching a minimum and increases to a maximum. One example of concave encoding may comprise an RBF (e.g., the curve 742 in FIG. 7B) turned upside-down. Encoding implementing the unimodal convex and the concave encoding may be useful in situation where high sensitivity of output to small changes in the input is required. By way of example, a neuron receiving both input types, convex and concave, will receive a total input change larger than if it received one type only.
+ FIG. 7C illustrates one exemplary realization of two-dimensional basis component responses useful with the disclosure. The panel 770 depicts a two-dimensional space (e.g., X-Y position) comprising several basis functions (receptive fields) 772. In some implementations, the sensitivity of the receptive fields 772 may be described using a two-dimensional (x-y) Gaussian dependence illustrated by the curves 774, 776, 778 in FIG. 7C. In some implementations, the basis functions 772 may comprise concave shape so that the gain is increasing from the curve 778 to the curve 774. In various implementations, the two-dimensional basis function set 770 may comprise an overlapping or a non-overlapping set of basis functions 772 
+One or more types of unimodal concave, unimodal convex, and/or monotonic increasing and decreasing functions may be used. The current disclosure is not limited to the examples of RBFs, sigmoid, and linear functions provided.
+Some situations may benefit from functions others than unimodal concave and/or convex functions and monotonic functions, so that multimodal functions and combinations of multimodal and monotonic functions may be used, in addition to periodic functions and other types of functions.
+In order to optimize neural representation of a (physical) variable, information maximization may be used. Encoding of non-spiking input into spiking output may comprise a sparse (e.g., as compact as possible) encoding which may provide an over-complete representation of the input range of the input. For example, for an input varying in time in a harmonic fashion, a Fourier basis provides a compact representation. For a decaying oscillatory input, a Laplace basis provides an appropriate representation. For an input with sudden increases and/or falls, a Gabor basis may be a good choice.
+In selecting one particular representation, the representation may be required to be able to represent the global variations of the variable over a large range of normal and abnormal (or common and uncommon) sensory activities of the system. That is, in order to provide the system the ability to adapt, the sensory representation may be required to be general enough to encode all situations that may arise. This may require using functions for the transformation that are more local in space and time than if the focus was only on mapping the normal operations of the system. Hence, the more general type of functions, like unimodal and monotonic functions, may provide better categorization and learning over many different situations.
+In some implementations, the adaptive controller 520 of FIG. 5 may be configured, for example, to stabilize an unmanned vehicle (a drone) to hover at a location and/or to control a drone to fly around a target location.
+The controller 520 may be configured to receive sensory input x(t) 502 and a reference input (e.g., input 514 in FIG. 5). In some implementations, the reference signal may comprise the desired drone position and/or velocity of the drone, which may be used to form error signals to drive learning in the controller.
+In some implementations, the reference signal may comprise an implicit condition, such a desired zero velocity, which may be implemented internally. The learning may then be driven by a reinforcement signal, formed by using sensory variables (502) and internal state variables utilized in reinforcement learning by the controller spiking network, as described in detail below. For example, a reinforcement signal may be constructed from the computation of optic flow from visual sensory inputs for a task requiring that the drone may not move.
+The inputs 502 may comprise a noise component and a signal component relevant to drone operation. The control apparatus 520 operable in accordance with the reinforcement process of the disclosure, may advantageously be capable of automatically extracting and combines the relevant components of x(t) in order to produce the control output 508.
+In some implementations, the controller 520 of FIG. 5 may comprise a spiking neuron network 622, shown in FIG. 6. The network 620 may comprise a plurality of spiking neurons 630, 640 configured such as the neuron 430 described with respect to FIG. 4 supra. In some implementations, the neurons 630 may be configured to operate in a deterministic mode, as described above.
+The network 620 may be configured using a two-layer feed-forward topology. The two-layer feed-forward topology may comprise the input layer 624 (also referred to as the encoding layer and/or encoding block) and the output layer 634 (also referred to as the processing layer, and/or control layer), denoted by dashed rectangles 624, 634 in FIG. 6, respectively.
+The input layer 624 may receive multidimensional inputs {X(t)}. In one or more implementations, the inputs 626 may comprise sensory signals from the drone (e.g., the plant) (e.g., the signal 502 in FIG. 5) and/or the reference signal (e.g., the signal 514 in FIG. 5). The sensory signals may provide data related to the drone estimated position, velocity, and/or other information associated with the drone. In some implementations, the input 626 may comprise drone motion components provided, for example, by an inertial sensor package, and comprising drone orientation (e.g., heading, pitch, roll, yaw, and/or other orientation information), velocity, acceleration, and/or other information associated with the drone. In one or more implementations, the input 626 may comprise visual input. The visual input may comprise, for example, optic flow. It will be appreciated by those skilled in the arts that various other sensor data may be included in the input 626, such as, proximity data, elevation, temperature, wind speed, drone weight, and/or other data that may be relevant to drone navigation. In one or more implementations, the input {X(t)} may comprise non-spiking signal, such as analog and/or digital data stream that may be represented using non-binary (e.g., floating-point and/or fixed point) data stream.
+The network 622 may generate output 608 (e.g., motor control commands) configured to drive drone motor actuators. In one or more implementations, the non-spiking output 608 may be referred to as the âanalogâ output.
+The input layer 624 may encode the input 626 into spiking output {Y2} 638. In one or more implementations, the output 638 may comprise a plurality of spikes 642. The spikes 642 may be communicated to the output layer control layer 634 over one or more connections 644.
+In some implementations, the input encoding by the encoding block 624 may be comprise non-spiking (e.g., analog)-to-spiking signal conversion using the KE technique, as denoted by the curves 628 in FIG. 6A and described in detail above with respect to FIG. 7A.
+In one or more implementations, the encoding functionality of the input layer 624 may be implemented using a computer library implementing analog to binary encoding via the kernel expansion.
+In some implementations, the kernel expansion technique of the encoder block 624 may be implemented using the spiking neurons 630. A set of neurons 630 may be used to form a respective set of receptive fields. The set of receptive fields may correspond to the basis functions of the KE. In some implementations, such as described with respect to FIGS. 8A-9 below, a set of 40 to 400 neurons may be used to characterize each analog variable X 626. The use of a number of receptive fields that is larger, compared to the number of the analog inputs {X}, may allow to implement mapping of observations from a general set S onto an inner product space V (equipped with its natural norm), without ever having to compute the mapping explicitly. A large number of basis functions may allow to obtain an over-complete representation of the input information which facilitates learning in the neural network. Projecting into high dimensions using a nonlinear mapping may facilitate learning in the neural network.
+ FIG. 8A presents performance results, obtained during simulation and testing by the Assignee hereof, of exemplary computerized spiking network apparatus configured to implement generalized UAV controller 600 described above with respect to FIGS. 6-6A.
+For the implementation illustrated in FIG. 8A, 40 overlapping equally spaced (in the input dimension 714 in FIG. 7) Radial Basis Functions were used to âtileâ the dimension of the respective input variable to be encoded. As described with respect to FIG. 7A above, RBF encoding may be used to transform real-value physical input (e.g., the input 626) variations along the x-axis (the axis 714 in FIG. 7A) into input currents (along the y-axis 716 in FIG. 7) for the population of neurons of the encoding layer (e.g., the neurons 630 in FIG. 6). The input currents reflect the value of that neuron radial basis function when the variable value falls within its receptive field.
+The panel 800 in FIG. 8A illustrates one of the inputs 626 of FIG. 6A, comprising the drone trajectory (e.g., horizontal position as a function of time). Panel 810 in FIG. 8A present output of the receptive fields of the encoding layer (e.g., the layer 628 in FIG. 6A), with darker colors corresponding to larger values of the input into the encoder neurons (e.g., the neurons 630 in FIG. 6). Panel 820 depicts output activity (e.g., the spikes 642) of the encoder neurons (e.g., the neurons 630 in FIG. 6), while the curve 822 depicts the input 622 (the drone trajectory). As seen from the panel 820, encoder neurons 630 activity is well correlated with the input thereby confirming ability of the encoder block to successfully encode time-varying real-valued (e.g., non-spiking) input 626 into spikes 642 of the spiking output 638.
+The number of neurons in the encoding layer 624 may determine, in some implementations, the maximum width of the individual RBF.
+In some implementations, the spatial encoding of the input (e.g., the input 626 in FIG. 6A along the dimension 714 FIG. 7A) may be achieved using a combination of RBF, sigmoid basis functions (e.g., the curves 760, 762 in FIG. 7B) and linear basis functions (e.g., the curves 750 in FIG. 7B) with threshold, as described below.
+In one or more implementations, the spatial encoding of the input (e.g., the input 626 in FIG. 6) may be achieved using different combination of different convex and/or concave functions tiling the dimension 714 (FIG. 7A). The radial basis functions, shown in FIG. 7B, are examples of concave functions (740, 742, 744).
+Given one analog input x, the output of neurons different receptive field types of is presented in Table 1. The input x is scaled between zero and one. The range for the parameters k and xo for the sigmoid and RBF receptive field type may be adjusted depending on the number of neurons in the encoding layer 624, as shown in Table 2. For small number of neurons (1 to 24) only the linear and/or a combination of linear and RBF receptive field types was used in the simulations described blow with respect to FIGS. 8-9B. In the implementation shown in Table 1, since the receptive fields are spaced equally, the value of the step (âstep for xoâ), as shown in Table 2. For each value of xo, each value of k was iterated over to form the receptive fields of the neural population.
+
+
+
+ 
+ 
+ 
+
+
+
+ 
+TABLE 1
+
+
+ 
+ 
+
+
+ 
+Receptive field type
+Output
+
+
+ 
+ 
+
+
+
+
+ 
+Linear basis function
+I = x
+
+
+ 
+Sigmoid basis function
+I = 1/eâk(xâ0.5) 
+
+
+ 
+Radial basis function
+I = eâk(xâx 0)2 
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+
+
+
+ 
+TABLE 2
+
+
+
+
+ 
+ 
+
+
+ 
+Sigmoid
+Radial basis function (RBF)
+
+
+
+
+Number of neurons
+set of k values
+step for x0 
+set of k values
+
+
+ 
+
+
+1
+â
+â
+â
+
+
+2 to 9
+â
+â
+â
+
+
+10 to 24
+â
+0.2
+400
+
+
+25 to 49
+7, 30
+0.2
+30, 400
+
+
+50 to 99
+7, 15, 30
+0.2
+20, 50, 100, 500
+
+
+100 to 199
+7, 10, 15, 30
+0.1
+5, 15, 30, 100, 400
+
+
+200 to 400
+7, 10, 15, 30
+0.05
+4, 10, 20, 50, 100, 500
+
+
+ 
+
+
+
+
+
+In some implementations, the output layer 636 may comprise a plurality of stochastic spiking neurons 640. The neurons 640 (also referred to as the motor neurons), in one or more implementations, may be operable similarly to the neuron 430 of FIG. 4. In some implementations, the neurons 640 may distinct comprise dynamic process, such as for example, stochastic process of Eqn. 9-Eqn. 42 described above. The neurons 640 may receive spiking input 638 and generate spiking output. The output 636 of the neurons 640 may be further processed by the processing block 658 to produce the network output 608. The processing block may include other spiking neurons or may include spiking-to-analog conversion or may, for example, specify the connectivity from neurons 640 to actuator(s). Some examples are provided below. The output 608 in one or more implementations may comprise non spiking output, such as motor control commands to, for example, drive drone actuators. In some implementations, the output 608 of the network may be adapted by a signal conditioning block (not show) in order to, for example, match the specific actuator requirements. Such output conditioning may comprise spike to current conversion, spike-to pulse-width-modulation conversion, and/or any other appropriate signal conditioning implementation.
+In one or more implementations, such as described with respect to FIG. 8A, the layer 634 may comprise 8 motor neurons per actuator. Individual motor neurons may receive inputs from one or more neurons 630, thus from all receptive fields 628. The adaptive parameters of the connections 644 may comprise synaptic weights or synaptic strengths. In some implementations the connection parameters may be used in order to control output activity (e.g., the motor commands) of the neurons 640 of the output layer 634. These parameters may be subject to adaptation as described below. Sample activity of a set of selected motor neurons is shown in panel 830 of FIG. 8A. Individual rows in panel 830 may represent activity of a single neuron 640. Individual dots (e.g., 832) may indicate the occurrence of a spike at the time indicated on the time axis, in accordance with some implementations.
+In some implementation, individual motor spikes (e.g., the spike 832 in FIG. 8A) may cause brief pulse of current that may be used to directly drive drone motors actuators. In the implementation described with respect to FIG. 8A, the neurons 640 may be divided into two groups: positive drive and negative drive. The output of the positive drive group may increase actuator drive. Conversely, the output of the negative drive group may decrease actuator drive. Individual groups may comprise 4 neurons 640.
+The learning rules used were stochastic gradient descent methods to estimate weight changes that minimized an average cost received by the system. This optimization problem was solved using online partially observable Markov decision process. In the drone stabilization task the cost corresponded to the error between target and drone positions and/or velocities. The learning method may be configured according to Eqn. 51
+The performance function (e.g., the cost) may be determined as:
+
+c=Î±d+(1âÎ±)v,ââ(Eqn. 62)
+
+where the proportionality factor Î± may be configured as a constant in the range [0,1], d may describe the distance to the target(s) and v may correspond to the speed of the drone, obtained, in on implementation, from optic flow. In one or more implementations, the parameter Î± may be used to configure controller performance function as follows: Î±=1 may be used to configure the controller to minimize position error. Such configuration may be employed at the beginning of learning. When Î±<<1, the controller may learn to maintain position and velocity of an UAV. Velocity stabilization may reduce plant movements at target position at later stages of learning. The distance may be computed as the sum of the distances computed, in individual images, from the center of the visual target to the center of the camera visual field from multiples cameras oriented in different directions.
+
+Exemplary results of learning with improvement in performance are shown in FIG. 8B for velocity stabilization and in FIG. 8C for position stabilization both visually-guided.
+In one or more implementations, the learning may be effectuated via a reinforcement indication (e.g., the reinforcement signal 614 in FIG. 6). In one or more implementations, the reinforcement indication may comprise an auditory indication such as, for example, a voice command, and/or a whistle. In some implementations, the reinforcement indication may comprise a pulsed signal, such as a proximity beacon marking operational boundary, and/or a clicker button push. As indicated above, the reinforcement indication may comprise a subset of the total sensory input x(t), which may form one or multiple reinforcement signals r(t), as described above.
+In one or more implementation, the reinforcement signal may be configured based on a squared error:
+        r =   (  1 -  a  a max    )  2   ,     (  Eqn .     â¢ 63  )       
+where a is the present outcome (e.g., a distance to the target position of the drone) and Î±max is maximum possible distance (e.g., the size of the test area). The reinforcement indication may be encoded from a real value (e.g., Eqn. 63) into a spike train to form spiking reinforcement signal 654 in FIG. 6, such as, for example described by Eqn. 9. The encoding may be effectuated by a conversion block 650. In some implementations, the conversion block 650 may comprise spiking neuron operable in accordance with a deterministic and/or stochastic process. In the deterministic implementation, the neuron output corresponding to positive reinforcement may be configured as follows. The inter-spike interval (ISI) of the positive spike train of Eqn. 9 may be defined as:
+
+
+
+
+
+
+
+
+
+ISI
++
+
+=
+
+
+1
+
+1
+-
+r
+
+
+.
+
+
+
+
+
+(
+
+Eqn
+.
+
+ 
+
+â¢
+64
+
+)
+
+
+
+
+
+
+
+Similarly, the ISI of the neuron output corresponding to negative reinforcement may be configured as follows.
+        ISI -  =   1 r  .      (  Eqn .     â¢ 65  )       
+It is noteworthy, that the ISI of Eqn. 64-Eqn. 65 is normalized in the range from 0 to 1, thereby comprising a relative measure and not an absolute time interval measure.
+
+In some implementations, the positive reinforcement indication may be based, for example, on prior network behavior that caused a reduction in the squared error of Eqn. 63. In one or more implementations, the negative reinforcement indication may be based, for example, on prior network behavior that caused an increase in the squared error of Eqn. 63.
+Correspondingly, the block 650 may evaluate at time interval since most recent reinforcement spike (Ît+, Îtâ) at each time step associated with operation of the network 620. When (Ît+, Îtâ) exceed (ISI+, ISIâ), a positive and/or negative reinforcement spike may be generated, respectively, and the intervals (Ît+, Îtâ) may be reset.
+In stochastic implementations, the positive and the negative reinforcement spike trains may be described in terms of spike generation probability p(t+), p(tâ) as
+
+p(t +)â1âr,p(t â)Î¸r.ââ(Eqn. 66)
+
+It will be appreciated by those skilled in the arts, that transformation of the reinforcement signal into 614 spiking signal 654 may be achieved by any other applicable analog-to-spike transformation.
+ FIGS. 8B-8C illustrate exemplary performance of the adaptive controller operation described above. The panels 850, 860 present the mean and variance of the distance of the drone to the target as a function of time during the following phases: (i) an initial learning stage, during which the drone may have to learn to perform a take-off in order to reach the desired position; (ii) training, where the drone controller continues to be provided with reinforcement signal while adjusting the learning parameters of the network to further refine the stabilization of the drone position; (iii) operation after learning where the drone may maintain its position without requiring farther reinforcement indication; and/or other phases.
+The panels 830 and 840 may depict the mean and variance of the drone velocity as a function of time during the three phases of operation described above for velocity stabilization. Data presented in FIGS. 8B-8C confirm that the adaptive controller, configured in accordance with signal conversion and reinforcement learning methodology described herein is capable of learning control of drone without requiring detailed knowledge of the drone plant dynamics.
+A robotic double inverted pendulum 900, shown in FIG. 9A, was stabilized in the upward unstable position using the methods described above. The pendulum comprises two motors, one at each joint 904, 906, equipped with position encoders. The position encoders may provide feedback signals to the spiking network controller in the form of rotation angle given in relative coordinates. The rotation angle from each motor was encoded by 200 sensory neurons, using Table 1 and 2 above. Individual motors 904, 906 may receive motor commands from separate neuron pools, comprising eight motor neurons. The reinforcement signal was the deviation of the pendulum arms 902, 908 from the upright position, encoded by an integrate-and-fire spiking neuron. The encoding neuron may receive an input proportional to the pendulum deviation from the vertical, which defined the task to learn for the controller.
+ FIG. 9B presents data illustrating pendulum position during three phases of operation. Individual rows 910, 912, 914 in FIG. 9B illustrate a separate 100 ms interval, where the double inverted pendulum configuration is shown every six seconds interval.
+The pendulum controller performance (shown as the position error) is presented in FIG. 9C. The position error is shown as a function of time during the following phases of operation: (i) initialization, where the pendulum motors may be activated and controller network initial weights assigned; (ii) training, where the pendulum controller may be provided with reinforcement signal while adjusting learning parameters of the network in order to stabilize pendulum orientation; (iii) operation after learning where the controller may maintain pendulum position without requiring farther reinforcement indication; and/or other phases of operation.
+Data presented in FIG. 9C illustrate that prior to learning, position error is fairly large; fluctuates and decreases during learning, with some phases having large and small changes in error as the system explores different regions of its dynamical space. Subsequent to learning, the controller is capable of maintaining pendulum in the upright position without being provided further reinforcement.
+ FIGS. 10A-10C illustrate methods of efficient connection updates for a neuron of a neural network in accordance with one or more implementations. The operations of methods 1000, 1020, 1040 presented below may be intended to be illustrative. In some implementations, methods 1000, 1020, 1040 may be accomplished with one or more additional operations not described, and/or without one or more of the operations discussed. Additionally, the order in which the operations of methods 1000, 1020, 1040 are illustrated in FIGS. 10A-10C and described below is not intended to be limiting.
+In some embodiments, methods of FIGS. 10A-10C may be implemented in one or more processing devices (e.g., a digital processor, an analog processor, a digital circuit designed to process information, an analog circuit designed to process information, a state machine, and/or other mechanisms for electronically processing information). The one or more processing devices may include one or more devices executing some or all of the operations of method 1000, 1020, 1040 in response to instructions stored electronically on an electronic storage medium. The one or more processing devices may include one or more devices configured through hardware, firmware, and/or software to be specifically designed for execution of one or more of the operations of method 1000, 1020, 1040.
+Referring now to FIG. 10A one exemplary implementation of the reinforcement learning method of the disclosure for use with, for example, the robotic system 500 of FIG. 5 is described in detail.
+At step 1002 of method 1000 sensor input may be received. In some implementations, sensor input comprise a stream of raw sensor data, generated, for example, by the sensor block 516 in FIG. 5, (e.g., proximity, inertial, terrain imaging, and/or other raw sensor data) and/or preprocessed data (e.g., velocity, extracted from accelerometers, distance to obstacle, positions, and/or other preprocessed data). In some implementations, such as those involving object recognition, the signal x(t) may comprise an array of pixel values (e.g., RGB, CMYK, HSV, HSL, grayscale, and/or other pixel values) in the input image, or preprocessed data (e.g., levels of activations of Gabor filters for face recognition, contours, optic flow and/or other preprocessed data). In one or more implementations, the input signal may comprise desired motion trajectory, for example, in order to predict future state of the robot on the basis of current state and desired motion. In some implementations, the encoding may comprise KE analog-to spiking conversion effectuated by, for example, the conversion block 624 described with respect to FIG. 6A.
+At step 1004, spiking neuron network of the controller may be adapted using reinforcement learning process. In one or more implementations, the adaptation may be based on a reference input (e.g., the signal 514 in FIG. 5) that may comprise reinforcement and/or a reward signal. In some implementations, the reinforcement signal may be provided by an operator via, for example, remote commands when the drone approaches the target and/or an area of danger (an obstacle) and/or by a programing the controller to perform certain safety checks (e.g., speed less than 5 m/s). In some implementations, the reinforcement signal may comprise a sensor input from the environment (e.g., a perimeter beacon alarm) and/or robot sensor (e.g., a proximity alarm). In one or more implementations, the adaptation may comprise adjustment of connection weights between the encoder block and the controller block (e.g., the connections 644 in FIG. 6A). Accordingly, connection adaptation may âselectâ relevant input component from the input data encoded at step 1002.
+At step 1006, the selected (via adaptation) input components may be applied to the control process in order to a target outcome. A target outcome may include the robotic apparatus reaching a target destination.
+At step 1008, the target outcome may be achieved. The target outcome may be characterized by the controller maximizing the performance function of the control process (e.g., determined using Eqn. 13, Eqn. 15).
+ FIG. 10B illustrates some implementations of a controller operation method comprising reinforcement learning and KE encoding.
+At step 1022, of method 1020 input may be received. In one or more implementations, the input may comprise sensory input described with respect to step 1002 of method 1000.
+At step 1024, the input may be encoded using kernel expansion basis function methodology. In some implementations, the KE encoding may be effectuated using methodology described with respect to FIG. 7A. In one or more implementations, the basis function set may comprise one or more linear, radial, sigmoid, and/or a combination thereof. In some implementations, the KE basis function may comprise one or more operators. In some implementations, the KE basis functions may comprise two or more dimensions, such as the two-dimensional basis functions illustrated in FIG. 7C.
+At step 1026, spiking neuron network of the controller (e.g., the controller 620 of FIG. 6) may be trained using reinforcement learning. In some implementations, the training may be based on a reinforcement signal (described with respect to FIG. 10C, below) provided to the controller.
+When training is complete, as determined at step 1028, the method may proceed to step 1030. Subsequently, the controller may be operated using trained network without receiving reinforcement signal.
+Various implementations of the decision-making process of step 1028 are anticipated comprising, for example, a time-constraint base (e.g., train network for a period of time); performance based (e.g., train the network until an error measure (e.g., an absolute error and/or an error rate/derivative drops below a threshold; and/or an energy constraint (e.g., train network until a certain amount of energy (kWh) is consumed by the controller. It will be appreciated by those skilled in the arts that may other decision making approaches may be equally compatible and useful with the disclosure (e.g., a combination of time and error constraints, and/or other metrics).
+ FIG. 10C illustrates some implementations of a reinforcement indication generation for use with, for example, controller 520 of FIG. 5.
+At step 1042 of the method 1040, performance of the adaptive controller (or the adaptive network) is evaluated using any of a number of applicable methodologies. In some implementations, the performance evaluation may comprise interpolating performance measure history, as described in detail in co-owned U.S. patent application Ser. No. 13/238,932 filed Sep. 21, 2011, and entitled âADAPTIVE CRITIC APPARATUS AND METHODSâ, which issued on Oct. 13, 2015 as U.S. Pat. No. 9,156,165, U.S. patent application Ser. No. 13/313,826, entitled âAPPARATUS AND METHODS FOR IMPLEMENTING LEARNING FOR ANALOG AND SPIKING SIGNALS IN ARTIFICIAL NEURAL NETWORKSâ, filed Dec. 7, 2011, incorporated by reference supra. In one or more implementations, the performance evaluation may comprise the use of averaged error of a stochastic neural network, as described in detail in co-owned U.S. patent application Ser. No. 13/487,499, entitled âSTOCHASTIC APPARATUS AND METHODS FOR IMPLEMENTING GENERALIZED LEARNING RULESâ, incorporated supra. In some implementations the performance evaluation may be based on evaluating performance function of Eqn. 13.
+At step 1044, the performance measure is compared to a criterion (e.g., a threshold describing a minimum acceptable level of controller performance). In some implementations, the threshold may correspond to the maximum deviation of the control trajectory, as expressed for example by the maximum position error of a robotic manipulator, or by the deviation from a desired template in recognition tasks.
+In some implementations, steps 1042, 1044 of the method 1040 may be performed by a trainer external to the controller apparatus (e.g., an operator providing reinforcement signal during recognition/classification tasks).
+If the performance is above the threshold, a mode 1 reinforcement signal may be generated at step 1046. If the performance is below the threshold, a mode 2 reinforcement signal may be generated at step 1048. In some implementations, the mode 1, 2 signals may correspond to the positive and negative reinforcement, respectively. In some implementations, the mode 1 signal may not be generated, and only mode 2 signal (e.g., negative reinforcement) may be generated. In some implementations, the mode 2 signal may not be generated, and only mode 1 signal (e.g., positive reinforcement) may be generated.
+Various exemplary spiking network apparatus comprising one or more of the methods set forth herein (e.g., using the reinforcement learning and KE encoding mechanisms explained above) are now described with respect to FIGS. 11A-11D.
+One particular implementation of the computerized neuromorphic processing system, for operating a computerized spiking network (and implementing the exemplary KE encoding methodology described supra), is illustrated in FIG. 11A. The computerized system 1100 of FIG. 11A may comprise an input interface 1110, such as for example an image sensor, a computerized spiking retina, an audio array, a touch-sensitive input device, and/or other input interface. The input interface 1110 may be coupled to the processing block (e.g., a single or multi-processor block) via the input communication interface 1114. The system 1100 may comprise a random access memory (RAM) 1108, configured to store neuronal states and connection parameters (e.g., weights 526 in FIG. 5), and to facilitate KE encoding through learning.
+In some implementations, the memory 1108 may be coupled to the processor 1102 via a direct connection (memory bus) 1116. The memory 1108 may also be coupled to the processor 1102 via a high-speed processor bus 1112).
+The system 1100 may comprise a nonvolatile storage device 1106. The nonvolatile storage device 1106 may comprise, inter alia, computer readable instructions configured to implement various aspects of spiking neuronal network operation. The various aspects of spiking neuronal network operation may include one or more of sensory input encoding, connection plasticity, operation model of neurons, and/or other aspects of spiking neuronal network operation. In one or more implementations, the nonvolatile storage 1106 may be used to store state information of the neurons and connections when, for example, saving/loading network state snapshot, or implementing context switching. In some implementations, the context switching may comprise, for example, saving current network configuration for later use, and/or loading of a previously stored network configuration. In one or more implementations, the network configuration may comprise, inter alia, connection weights and update rules, neuronal states and learning rules, and or other data.
+In some implementations, the computerized apparatus 1100 may be coupled to one or more external processing/storage/input devices via an I/O interface 1120, such as a computer I/O bus (PCI-E), wired (e.g., Ethernet) or wireless (e.g., Wi-Fi) network connection.
+In some implementations, the input/output interface may comprise a speech input (e.g., a microphone) and a speech recognition module configured to receive and recognize user commands.
+It will be appreciated by those skilled in the arts that various processing devices may be used with computerized system 1100, including but not limited to, a single core/multicore CPU, DSP, FPGA, GPU, ASIC, combinations thereof, and/or other processors. Various user input/output interfaces may be similarly applicable to embodiments of the invention including, for example, an LCD/LED monitor, touch-screen input and display device, speech input device, stylus, light pen, trackball, and/or other user I/O interfaces
+Referring now to FIG. 11B, some implementations of neuromorphic computerized system configured to implement efficient connection plasticity update mechanism in a spiking network is described in detail. The neuromorphic processing system 1130 of FIG. 11B may comprises a plurality of processing blocks (micro-blocks) 1140 where individual micro cores may comprise a computing logic core 1132 and a memory block 1134. The logic core 1132 may be configured to implement various aspects of neuronal node operation, such as the node model, and synaptic update and/or other tasks relevant to network operation. The memory block may be configured to store, inter alia, neuronal state variables and connection parameters (e.g., weights, delays, I/O mapping) of connections 1138.
+The micro-blocks 1140 may be interconnected with one another using connections 1138 and routers 1136. As it is appreciated by those skilled in the arts, the connection layout in FIG. 11B is exemplary, and many other connection implementations (e.g., one to all, all-to-all, and/or other mapping) are compatible with the disclosure.
+The neuromorphic apparatus 1130 may be configured to receive input (e.g., visual input) via the interface 1142. In one or more implementations, applicable for example to interfacing with computerized spiking retina, or image array, the apparatus 1130 may provide feedback information via the interface 1142 to facilitate encoding of the input signal.
+The neuromorphic apparatus 1130 may be configured to provide output via the interface 1144. In some implementations, the output may comprise an indication of recognized object or a feature, or a motor command to zoom/pan the image array.
+The apparatus 1130, in one or more implementations, may interface to external fast response memory (e.g., RAM) via high bandwidth memory interface 1148, thereby enabling storage of intermediate network operational parameters (e.g., spike timing, and/or other parameters.). The apparatus 1130 may also interface to external slower memory (e.g., Flash, or magnetic (hard drive)) via lower bandwidth memory interface 1146, in order to facilitate program loading, operational mode changes, and retargeting, where network node and connection information for a current task is saved for future use and flushed, and previously stored network configuration is loaded in its place.
+ FIG. 11C, illustrates one or more implementations of shared bus neuromorphic computerized system comprising micro-blocks, described with respect to FIG. 11B, supra., architecture coupled to a shared 1140. The apparatus 1145 of FIG. 11C utilized one o (or more) shared bus 1146 in order to interconnect micro-blocks 1140 with one another.
+ FIG. 11D, illustrates some implementations of cell-based neuromorphic computerized system architecture configured to implement efficient connection plasticity update mechanism in a spiking network is described in detail. The neuromorphic system 1150 of FIG. 11D may comprise a hierarchy of processing blocks (cells block). In some implementations, the lowest level L1 cell 1152 of the apparatus 1150 may comprise logic and memory and may be configured similar to the micro block 1140 of the apparatus shown in FIG. 11B. A number of cell blocks may be arranges in a cluster and communicate with one another a local interconnects 1162, 1164. Individual ones of such clusters may form higher level cell, e.g., cell L2, denoted as 1154 in FIG. 11d . Similarly several L2 clusters may communicate with one another via a second level interconnect 1166 and form a super-cluster L3, denoted as 1156 in FIG. 11D. The super-clusters 1154 may communicate via a third level interconnect 1168 and may form a next level cluster, and so on. It will be appreciated by those skilled in the arts that the hierarchical structure of the apparatus 1150, comprising four cells-per-level, is merely one exemplary implementation, and other implementations may comprise more or fewer cells per level, and/or fewer or more levels.
+Different cell levels (e.g., L1, L2, L3) of the apparatus 1150 may be configured to perform functionality various levels of complexity. In some implementations, different L1 cells may process in parallel different portions of the visual input (e.g., encode different frame macro-blocks), with the L2, L3 cells performing progressively higher level functionality (e.g., edge detection, object detection). Different L2, L3, cells may also perform different aspects of operating, for example, a robot, with one or more L2/L3 cells processing visual data from a camera, and other L2/L3 cells operating motor control block for implementing lens motion what tracking an object or performing lens stabilization functions.
+The neuromorphic apparatus 1150 may receive input (e.g., visual input) via the interface 1160. In one or more implementations, applicable for example to interfacing with computerized spiking retina, or image array, the apparatus 1150 may provide feedback information via the interface 1160 to facilitate encoding of the input signal. In one or more implementations, the feedback may comprise an indication of recognized object or a feature, or a motor command, e.g., to zoom/pan the image array.
+The neuromorphic apparatus 1150 may provide output via the interface 1170. In some implementations, the apparatus 1150 may perform all of the I/O functionality using single I/O block (not shown).
+The apparatus 1150, in one or more implementations, may interface to external fast response memory (e.g., RAM) via high bandwidth memory interface (not shown), thereby enabling storage of intermediate network operational parameters (e.g., spike timing, number of spikes, and/or other parameters.). In one or more implementations, the apparatus 1150 may also interface to external slower memory (e.g., flash, or magnetic (hard drive)) via lower bandwidth memory interface (not shown), in order to facilitate program loading, operational mode changes, and retargeting, where network node and connection information for a current task may be saved for future use and flushed, and previously stored network configuration may be loaded in its place.
+Existing control systems may need to treat sensory inputs (e.g., the inputs 502, 504 in FIG. 5) differently depending on their origin, type, dynamic range, noise signature, and/or other characteristics. In contrast, a reinforcement learning controller (e.g., the controller 634 of FIG. 6A described herein) may process an array of spike inputs, where spikes are interchangeable digital signals that are all alike, and thus are not labeled, will be robust to many changes, including inadvertently mixing the sensory input types to the controller, particularly before training. The learning controller may also learn to combine signals of different types, and different modalities, in order to reach a better performance function.
+The advantage of the method described herein is to combine the advantage of sensory and state encoding in high dimension by a multitude of linear and nonlinear kernel functions and operators with a reinforcement learning controller, which can efficiently learn to make use of all the distributed and parallel input signals to construct a controller realizing an optimization of a performance function.
+In one or more implementations, the learning spiking network apparatus of the disclosure may be implemented as a software library configured to be executed by a computerized neural network apparatus (e.g., containing a digital processor). In some implementations, the learning apparatus may comprise a specialized hardware module (e.g., an embedded processor or controller). In some implementations, the spiking network apparatus may be implemented in a specialized or general purpose integrated circuit (e.g., ASIC, FPGA, and/or PLD). Myriad other implementations may exist that will be recognized by those of ordinary skill given the present disclosure.
+Advantageously, the reinforcement learning according to the present disclosure can be used to simplify and improve control tasks for a wide assortment of control applications including, without limitation, industrial control, adaptive signal processing, navigation, and robotics. Exemplary implementations of the present disclosure may be useful in a variety of devices including without limitation prosthetic devices (such as artificial limbs), industrial control, autonomous and robotic apparatus, HVAC, and other electromechanical devices requiring accurate stabilization, set-point control, trajectory tracking functionality or other types of control. Examples of such robotic devices may include manufacturing robots (e.g., automotive), military devices, and medical devices (e.g., for surgical robots). Examples of autonomous navigation may include rovers (e.g., for extraterrestrial, underwater, hazardous exploration environment), unmanned air vehicles, underwater vehicles, smart appliances (e.g., ROOMBAÂ®), and/or robotic toys. The present disclosure can advantageously be used in other applications of adaptive signal processing systems (comprising for example, artificial neural networks) including, for example, one or more or machine vision, pattern detection and pattern recognition, object classification, signal filtering, data segmentation, data compression, data mining, optimization and scheduling, complex mapping, and/or other adaptive signal processing systems.
+It will be recognized that while certain aspects of the disclosure are described in terms of a specific sequence of steps of a method, these descriptions are only illustrative of the broader methods of the invention, and may be modified as required by the particular application. Certain steps may be rendered unnecessary or optional under certain circumstances. Additionally, certain steps or functionality may be added to the disclosed implementations, or the order of performance of two or more steps permuted. All such variations are considered to be encompassed within the disclosure disclosed and claimed herein.
+While the above detailed description has shown, described, and pointed out novel features of the disclosure as applied to various implementations, it will be understood that various omissions, substitutions, and changes in the form and details of the device or process illustrated may be made by those skilled in the art without departing from the disclosure. The foregoing description is of the best mode presently contemplated of carrying out the invention. This description is in no way meant to be limiting, but rather should be taken as illustrative of the general principles of the invention. The scope of the disclosure should be determined with reference to the claims.

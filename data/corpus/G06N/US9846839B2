@@ -1,0 +1,1389 @@
+Systems and methods for real-time forecasting and predicting of electrical peaks and managing the energy, health, reliability, and performance of electrical power systems based on an artificial adaptive neural network 
+US-9846839-B2
+Power Analytics Corporation
+2017-12-19
+https://patents.google.com/patent/US9846839B2/en
+CROSS-REFERENCE TO RELATED APPLICATIONS
+This application claims the benefit under 35 U.S.C. Â§119(e) of U.S. Provisional Application Ser. No. 60/986,139 filed Nov. 7, 2007. This application also claims priority as a Continuation of U.S. patent application Ser. No. 14/575,446, filed Dec. 18, 2014, which claims priority as a Continuation of U.S. patent application Ser. No. 12/267,346, filed Nov. 7, 2008, and a Continuation-In-Part under 35 U.S.C. Â§120 to U.S. patent application Ser. No. 11/734,706, filed Apr. 12, 2007 and entitled âSystems and Methods for Predictive Monitoring Including Real-Time Strength and Security Analysis in an Electrical Power Distribution System,â which in turn claims priority as a Continuation-In-Part under 35 U.S.C. Â§120 to U.S. patent application Ser. No. 11/717,378, filed Mar. 12, 2007 and entitled âSystems and Methods for Real-Time Protective Device Evaluation in an Electrical Power Distribution System.â and to U.S. Provisional Patent Application Ser. No. 60/792,175 filed Apr. 12, 2006. The disclosures of the above-identified applications are incorporated herein by reference as if set forth in full.
+BACKGROUND OF THE INVENTION
+I. Field of Use
+The present invention relates generally to computer modeling and management of systems and, more particularly, to computer simulation techniques with real-time system monitoring and prediction of electrical system performance.
+II. Background
+Computer models of complex systems enable improved system design, development, and implementation through techniques for off-line simulation of the system operation. That is, system models can be created that computers can âoperateâ in a virtual environment to determine design parameters. All manner of systems can be modeled, designed, and operated in this way, including machinery, factories, electrical power and distribution systems, processing plants, devices, chemical processes, biological systems, and the like. Such simulation techniques have resulted in reduced development costs and superior operation.
+Design and production processes have benefited greatly from such computer simulation techniques, and such techniques are relatively well developed, but such techniques have not been applied in real-time, e.g., for real-time operational monitoring and management. In addition, predictive failure analysis techniques do not generally use real-time data that reflect actual system operation. Greater efforts at real-time operational monitoring and management would provide more accurate and timely suggestions for operational decisions, and such techniques applied to failure analysis would provide improved predictions of system problems before they occur. With such improved techniques, operational costs could be greatly reduced.
+For example, mission critical electrical systems, e.g., for data centers or nuclear power facilities, must be designed to ensure that power is always available. Thus, the systems must be as failure proof as possible, and many layers of redundancy must be designed in to ensure that there is always a backup in case of a failure. It will be understood that such systems are highly complex, a complexity made even greater as a result of the required redundancy. Computer design and modeling programs allow for the design of such systems by allowing a designer to model the system and simulate its operation. Thus, the designer can ensure that the system will operate as intended before the facility is constructed.
+Once the facility is constructed, however, the design is typically only referred to when there is a failure. In other words, once there is failure, the system design is used to trace the failure and take corrective action; however, because such design are so complex, and there are many interdependencies, it can be extremely difficult and time consuming to track the failure and all its dependencies and then take corrective action that doesn't result in other system disturbances.
+Moreover, changing or upgrading the system can similarly be time consuming and expensive, requiring an expert to model the potential change, e.g., using the design and modeling program. Unfortunately, system interdependencies can be difficult to simulate, making even minor changes risky.
+For example, no reliable means exists for predicting in real-time the withstand capabilities, or bracing of protective devices, e.g., low voltage, medium voltage and high voltage circuit breakers, fuses, and switches, and the health of an electrical power system that takes into consideration a virtual model that âagesâ with the actual facility. Conventional systems use a rigid simulation model that does not take the actual power system alignment and aging effects into consideration when computing predicted electrical values.
+A model that can align itself in real-time with the actual power system configuration and ages with a facility is critical in obtaining predictions that are reflective of, e.g., a protective device's ability to withstand faults and the power system's health and performance in relation to the life cycle of the system, the operational reliability and stability of the system when subjected to contingency conditions, the various operational parameters associated with an alternating current (AC) arc flash incident, etc. Likewise, real-time data feed(s) from sensor(s) placed throughout the power facility can be supplied to a neural network based processing engine that can utilize the patterns âlearnedâ from the data to make inferences (i.e., predictions) that are more accurate and reflective of the actual operational performance of the power system.
+Without real-time synchronization between the virtual system model and the actual power facility and a modeling engine that can âlearnâ from real-time data feed(s), predictions become of little value as they are not reflective of the actual power system facility's operational status and may lead to false conclusions.
+SUMMARY
+Systems and methods for utilizing a neural network to make real-time predictions about the health, reliability, and performance of a monitored system are disclosed.
+In one aspect, a system for utilizing a neural network algorithm utilized to make real-time predictions about the health, reliability, and performance of a monitored system is disclosed. The system includes a data acquisition component, a power analytics server, and a client terminal. The data acquisition component is communicatively connected to a sensor configured to acquire real-time data output from the electrical system. The power analytics server is communicatively connected to the data acquisition component and is comprised of a virtual system modeling engine, an analytics engine, an adaptive prediction engine.
+The virtual system modeling engine is configured to generate predicted data output for the electrical system utilizing a virtual system model of the electrical system. The analytics engine is configured to monitor the real-time data output and the predicted data output of the electrical system initiating a calibration and synchronization operation to update the virtual system model when a difference between the real-time data output and the predicted data output exceeds a threshold. The adaptive prediction engine can be configured to forecast an aspect of the monitored system using a neural network algorithm. The adaptive prediction engine is further configured to process the real-time data output and automatically optimize the neural network algorithm by minimizing a measure of error between the real-time data output and an estimated data output predicted by the neural network algorithm.
+The client terminal is communicatively connected to the power analytics server and configured to display the forecasted aspect.
+In another aspect, a method for utilizing a neural network algorithm utilized to make real-time predictions about the health, reliability, and performance of a monitored system is disclosed. Real-time data output is received from one or more sensors interfaced to the monitored system. Predicted data output is generated for the one or more sensors interfaced to the monitored system utilizing a virtual system model of the monitored system. The virtual system model of the monitored system is calibrated when a difference between the real-time data output and the predicted data output exceeds a threshold. The real-time data output is processed using a neural network algorithm. The neural network algorithm is optimized by minimizing a measure of error between the real-time data output and an estimated data output predicted by the neural network algorithm. An aspect of the monitored system is forecasted using the neural network algorithm.
+These and other features, aspects, and embodiments are described below in the section entitled âDetailed Description.â
+
+BRIEF DESCRIPTION OF THE DRAWINGS
+For a more complete understanding of the principles disclosed herein, and the advantages thereof, reference is now made to the following descriptions taken in conjunction with the accompanying drawings, in which:
+ FIG. 1 is an illustration of a system for utilizing real-time data for predictive analysis of the performance of a monitored system, in accordance with one embodiment.
+ FIG. 2 is a diagram illustrating a detailed view of an analytics server included in the system of FIG. 1, in accordance with one embodiment.
+ FIG. 3 is a diagram illustrating how the system of FIG. 1 operates to synchronize the operating parameters between a physical facility and a virtual system model of the facility, in accordance with one embodiment.
+ FIG. 4 is an illustration of the scalability of a system for utilizing real-time data for predictive analysis of the performance of a monitored system, in accordance with one embodiment.
+ FIG. 5 is a block diagram that shows the configuration details of the system illustrated in FIG. 1, in accordance with one embodiment.
+ FIG. 6 is an illustration of a flowchart describing a method for real-time monitoring and predictive analysis of a monitored system, in accordance with one embodiment.
+ FIG. 7 is an illustration of a flowchart describing a method for managing real-time updates to a virtual system model of a monitored system, in accordance with one embodiment.
+ FIG. 8 is an illustration of a flowchart describing a method for synchronizing real-time system data with a virtual system model of a monitored system, in accordance with one embodiment.
+ FIG. 9 is a flow chart illustrating an example method for updating the virtual model, in accordance with one embodiment.
+ FIG. 10 is a diagram illustrating an example process for monitoring the status of protective devices in a monitored system and updating a virtual model based on monitored data, in accordance with one embodiment.
+ FIG. 11 is a flowchart illustrating an example process for determining the protective capabilities of the protective devices being monitored, in accordance with one embodiment.
+ FIG. 12 is a diagram illustrating an example process for determining the protective capabilities of a High Voltage Circuit Breaker (HVCB), in accordance with one embodiment.
+ FIG. 13 is a flowchart illustrating an example process for determining the protective capabilities of the protective devices being monitored, in accordance with another embodiment.
+ FIG. 14 is a diagram illustrating a process for evaluating the withstand capabilities of a MVCB, in accordance with one embodiment
+ FIG. 15 is a flow chart illustrating an example process for analyzing the reliability of an electrical power distribution and transmission system, in accordance with one embodiment.
+ FIG. 16 is a flow chart illustrating an example process for analyzing the reliability of an electrical power distribution and transmission system that takes weather information into account, in accordance with one embodiment.
+ FIG. 17 is a diagram illustrating an example process for predicting in real-time various parameters associated with an alternating current (AC) arc flash incident, in accordance with one embodiment.
+ FIG. 18 is a flow chart illustrating an example process for real-time analysis of the operational stability of an electrical power distribution and transmission system in accordance with one embodiment.
+ FIG. 19 is a diagram illustrating how the HTM Pattern Recognition and Machine Learning Engine works in conjunction with the other elements of the analytics system to make predictions about the operational aspects of a monitored system, in accordance with one embodiment.
+ FIG. 20 is an illustration of the various cognitive layers that comprise the neocortical catalyst process used by the HTM Pattern Recognition and Machine Learning Engine to analyze and make predictions about the operational aspects of a monitored system, in accordance with one embodiment.
+ FIG. 21 is a logical representation of how a three-layer feed-forward neural network functions, in accordance with one embodiment.
+ FIG. 22 is a logical representation of a compact form of the three-layer feed-forward neural network, in accordance with one embodiment.
+ FIG. 23 is an illustration of a matrices depicting how a three-layer feed-forward neural network can be trained using known inputs and output values, in accordance with one embodiment.
+ FIG. 24 illustrates an example of how training patterns can be used to train and validate the accuracy of a neural network, in accordance to one embodiment.
+ FIG. 25 is a table summarizing the SSE values resulting from the validation of a neural network using a set of validation patterns, in accordance with one embodiment.
+ FIG. 26 is an illustration of a flow chart describing a method for utilizing a neural network algorithm utilized to make real-time predictions about the health, reliability, and performance of an electrical system, in accordance with one embodiment.
+
+DETAILED DESCRIPTION OF EXEMPLARY EMBODIMENTS
+Systems and methods for utilizing a neural network to make real-time predictions about the health, reliability, and performance of a monitored system are disclosed. It will be clear, however, that the present invention may be practiced without some or all of these specific details. In other instances, well known process operations have not been described in detail in order not to unnecessarily obscure the present invention.
+As used herein, a system denotes a set of components, real or abstract, comprising a whole where each component interacts with or is related to at least one other component within the whole. Examples of systems include machinery, factories, electrical systems, processing plants, devices, chemical processes, biological systems, data centers, aircraft carriers, and the like. An electrical system can designate a power generation and/or distribution system that is widely dispersed (i.e., power generation, transformers, and/or electrical distribution components distributed geographically throughout a large region) or bounded within a particular location (e.g., a power plant within a production facility, a bounded geographic area, on board a ship, a factory, a data center, etc.).
+A network application is any application that is stored on an application server connected to a network (e.g., local area network, wide area network, etc.) in accordance with any contemporary client/server architecture model and can be accessed via the network. In this arrangement, the network application programming interface (API) resides on the application server separate from the client machine. The client interface would typically be a web browser (e.g. INTERNET EXPLORERâ¢, FIREFOXâ¢, NETSCAPEâ¢, etc) that is in communication with the network application server via a network connection (e.g., HTTP, HTTPS, RSS, etc.).
+ FIG. 1 is an illustration of a system for utilizing real-time data for predictive analysis of the performance of a monitored system, in accordance with one embodiment. As shown herein, the system 100 includes a series of sensors (i.e., Sensor A 104, Sensor B 106, Sensor C 108) interfaced with the various components of a monitored system 102, a data acquisition hub 112, an analytics server 116, and a thin-client device 128. In one embodiment, the monitored system 102 is an electrical power generation plant. In another embodiment, the monitored system 102 is an electrical power transmission infrastructure. In still another embodiment, the monitored system 102 is an electrical power distribution system. In still another embodiment, the monitored system 102 includes a combination of one or more electrical power generation plant(s), power transmission infrastructure(s), and/or an electrical power distribution system. It should be understood that the monitored system 102 can be any combination of components whose operations can be monitored with conventional sensors and where each component interacts with or is related to at least one other component within the combination. For a monitored system 102 that is an electrical power generation, transmission, or distribution system, the sensors can provide data such as voltage, frequency, current, power, power factor, and the like.
+The sensors are configured to provide output values for system parameters that indicate the operational status and/or âhealthâ of the monitored system 102. For example, in an electrical power generation system, the current output or voltage readings for the various components that comprise the power generation system is indicative of the overall health and/or operational condition of the system. In one embodiment, the sensors are configured to also measure additional data that can affect system operation. For example, for an electrical power distribution system, the sensor output can include environmental information, e.g., temperature, humidity, etc., which can impact electrical power demand and can also affect the operation and efficiency of the power distribution system itself.
+Continuing with FIG. 1, in one embodiment, the sensors are configured to output data in an analog format. For example, electrical power sensor measurements (e.g., voltage, current, etc.) are sometimes conveyed in an analog format as the measurements may be continuous in both time and amplitude. In another embodiment, the sensors are configured to output data in a digital format. For example, the same electrical power sensor measurements may be taken in discrete time increments that are not continuous in time or amplitude. In still another embodiment, the sensors are configured to output data in either an analog or digital format depending on the sampling requirements of the monitored system 102.
+The sensors can be configured to capture output data at split-second intervals to effectuate âreal timeâ data capture. For example, in one embodiment, the sensors can be configured to generate hundreds of thousands of data readings per second. It should be appreciated, however, that the number of data output readings taken by a sensor may be set to any value as long as the operational limits of the sensor and the data processing capabilities of the data acquisition hub 112 are not exceeded.
+Still with FIG. 1, each sensor is communicatively connected to the data acquisition hub 112 via an analog or digital data connection 110. The data acquisition hub 112 may be a standalone unit or integrated within the analytics server 116 and can be embodied as a piece of hardware, software, or some combination thereof. In one embodiment, the data connection 110 is a âhard wiredâ physical data connection (e.g., serial, network, etc.). For example, a serial or parallel cable connection between the sensor and the hub 112. In another embodiment, the data connection 110 is a wireless data connection. For example, a radio frequency (RF), BLUETOOTHâ¢, infrared or equivalent connection between the sensor and the hub 112.
+The data acquisition hub 112 is configured to communicate âreal-timeâ data from the monitored system 102 to the analytics server 116 using a network connection 114. In one embodiment, the network connection 114 is a âhardwiredâ physical connection. For example, the data acquisition hub 112 may be communicatively connected (via Category 5 (CAT5), fiber optic or equivalent cabling) to a data server (not shown) that is communicatively connected (via CAT5, fiber optic or equivalent cabling) through the Internet and to the analytics server 116 server. The analytics server 116 being also communicatively connected with the Internet (via CAT5, fiber optic, or equivalent cabling). In another embodiment, the network connection 114 is a wireless network connection (e.g., Wi-Fi, WLAN, etc.). For example, utilizing an 802.11b/g or equivalent transmission format. In practice, the network connection utilized is dependent upon the particular requirements of the monitored system 102.
+Data acquisition hub 112 can also be configured to supply warning and alarms signals as well as control signals to monitored system 102 and/or sensors 104, 106, and 108 as described in more detail below.
+As shown in FIG. 1, in one embodiment, the analytics server 116 hosts an analytics engine 118, virtual system modeling engine 124 and several databases 126, 130, and 132. The virtual system modeling engine can, e.g., be a computer modeling system, such as described above. In this context, however, the modeling engine can be used to precisely model and mirror the actual electrical system. Analytics engine 118 can be configured to generate predicted data for the monitored system and analyze difference between the predicted data and the real-time data received from hub 112.
+ FIG. 2 is a diagram illustrating a more detailed view of analytic server 116. As can be seen, analytic server 116 is interfaced with a monitored facility 102 via sensors 202, e.g., sensors 104, 106, and 108. Sensors 202 are configured to supply real-time data from within monitored facility 102. The real-time data is communicated to analytic server 116 via a hub 204. Hub 204 can be configure to provide real-time data to server 116 as well as alarming, sensing and control featured for facility 102.
+The real-time data from hub 204 can be passed to a comparison engine 210, which can form part of analytics engine 118. Comparison engine 210 can be configured to continuously compare the real-time data with predicted values generated by simulation engine 208. Based on the comparison, comparison engine 210 can be further configured to determine whether deviations between the real-time and the expected values exists, and if so to classify the deviation, e.g., high, marginal, low, etc. The deviation level can then be communicated to decision engine 212, which can also comprise part of analytics engine 118.
+Decision engine 212 can be configured to look for significant deviations between the predicted values and real-time values as received from the comparison engine 210. If significant deviations are detected, decision engine 212 can also be configured to determine whether an alarm condition exists, activate the alarm and communicate the alarm to Human-Machine Interface (HMI) 214 for display in real-time via, e.g., thin client 128. Decision engine 212 can also be configured to perform root cause analysis for significant deviations in order to determine the interdependencies and identify the parent-child failure relationships that may be occurring. In this manner, parent alarm conditions are not drowned out by multiple children alarm conditions, allowing the user/operator to focus on the main problem, at least at first.
+Thus, in one embodiment, and alarm condition for the parent can be displayed via HMI 214 along with an indication that processes and equipment dependent on the parent process or equipment are also in alarm condition. This also means that server 116 can maintain a parent-child logical relationship between processes and equipment comprising facility 102. Further, the processes can be classified as critical, essential, non-essential, etc.
+Decision engine 212 can also be configured to determine health and performance levels and indicate these levels for the various processes and equipment via HMI 214. All of which, when combined with the analytic capabilities of analytics engine 118 allows the operator to minimize the risk of catastrophic equipment failure by predicting future failures and providing prompt, informative information concerning potential/predicted failures before they occur. Avoiding catastrophic failures reduces risk and cost, and maximizes facility performance and up time.
+Simulation engine 208 operates on complex logical models 206 of facility 102. These models are continuously and automatically synchronized with the actual facility status based on the real-time data provided by hub 204. In other words, the models are updated based on current switch status, breaker status, e.g., open-closed, equipment on/off status, etc. Thus, the models are automatically updated based on such status, which allows simulation engine to produce predicted data based on the current facility status. This in turn, allows accurate and meaningful comparisons of the real-time data to the predicted data.
+Example models 206 that can be maintained and used by server 116 include power flow models used to calculate expected kW, kVAR, power factor values, etc., short circuit models used to calculate maximum and minimum available fault currents, protection models used to determine proper protection schemes and ensure selective coordination of protective devices, power quality models used to determine voltage and current distortions at any point in the network, to name just a few. It will be understood that different models can be used depending on the system being modeled.
+In certain embodiments, hub 204 is configured to supply equipment identification associated with the real-time data. This identification can be cross referenced with identifications provided in the models.
+In one embodiment, if the comparison performed by comparison engine 210 indicates that the differential between the real-time sensor output value and the expected value exceeds a Defined Difference Tolerance (DDT) value (i.e., the âreal-timeâ output values of the sensor output do not indicate an alarm condition) but below an alarm condition (i.e., alarm threshold value), a calibration request is generated by the analytics engine 118. If the differential exceeds, the alarm condition, an alarm or notification message is generated by the analytics engine 118. If the differential is below the DTT value, the analytics engine does nothing and continues to monitor the real-time data and expected data.
+In one embodiment, the alarm or notification message is sent directly to the client (i.e., user) 128, e.g., via HMI 214, for display in real-time on a web browser, pop-up message box, e-mail, or equivalent on the client 128 display panel. In another embodiment, the alarm or notification message is sent to a wireless mobile device (e.g., BLACKBERRYâ¢, laptop, pager, etc.) to be displayed for the user by way of a wireless router or equivalent device interfaced with the analytics server 116. In still another embodiment, the alarm or notification message is sent to both the client 128 display and the wireless mobile device. The alarm can be indicative of a need for a repair event or maintenance to be done on the monitored system. It should be noted, however, that calibration requests should not be allowed if an alarm condition exists to prevent the models form being calibrated to an abnormal state.
+Once the calibration is generated by the analytics engine 118, the various operating parameters or conditions of model(s) 206 can be updated or adjusted to reflect the actual facility configuration. This can include, but is not limited to, modifying the predicted data output from the simulation engine 208, adjusting the logic/processing parameters utilized by the model(s) 206, adding/subtracting functional elements from model(s) 206, etc. It should be understood, that any operational parameter of models 206 can be modified as long as the resulting modifications can be processed and registered by simulation engine 208.
+Referring back to FIG. 1, models 206 can be stored in the virtual system model database 126. As noted, a variety of conventional virtual model applications can be used for creating a virtual system model, so that a wide variety of systems and system parameters can be modeled. For example, in the context of an electrical power distribution system, the virtual system model can include components for modeling reliability, voltage stability, and power flow. In addition, models 206 can include dynamic control logic that permits a user to configure the models 206 by specifying control algorithms and logic blocks in addition to combinations and interconnections of generators, governors, relays, breakers, transmission line, and the like. The voltage stability parameters can indicate capacity in terms of size, supply, and distribution, and can indicate availability in terms of remaining capacity of the presently configured system. The power flow model can specify voltage, frequency, and power factor, thus representing the âhealthâ of the system.
+All of models 206 can be referred to as a virtual system model. Thus, virtual system model database can be configured to store the virtual system model. A duplicate, but synchronized copy of the virtual system model can be stored in a virtual simulation model database 130. This duplicate model can be used for what-if simulations. In other words, this model can be used to allow a system designer to make hypothetical changes to the facility and test the resulting effect, without taking down the facility or costly and time consuming analysis. Such hypothetical can be used to learn failure patterns and signatures as well as to test proposed modifications, upgrades, additions, etc., for the facility. The real-time data, as well as trending produced by analytics engine 118 can be stored in a real-time data acquisition database 132.
+As discussed above, the virtual system model is periodically calibrated and synchronized with âreal-timeâ sensor data outputs so that the virtual system model provides data output values that are consistent with the actual âreal-timeâ values received from the sensor output signals. Unlike conventional systems that use virtual system models primarily for system design and implementation purposes (i.e., offline simulation and facility planning), the virtual system models described herein are updated and calibrated with the real-time system operational data to provide better predictive output values. A divergence between the real-time sensor output values and the predicted output values generate either an alarm condition for the values in question and/or a calibration request that is sent to the calibration engine 134.
+Continuing with FIG. 1, the analytics engine 118 can be configured to implement pattern/sequence recognition into a real-time decision loop that, e.g., is enabled by a new type of machine learning called associative memory, or hierarchical temporal memory (HTM), which is a biological approach to learning and pattern recognition. Associative memory allows storage, discovery, and retrieval of learned associations between extremely large numbers of attributes in real time. At a basic level, an associative memory stores information about how attributes and their respective features occur together. The predictive power of the associative memory technology comes from its ability to interpret and analyze these co-occurrences and to produce various metrics. Associative memory is built through âexperientialâ learning in which each newly observed state is accumulated in the associative memory as a basis for interpreting future events. Thus, by observing normal system operation over time, and the normal predicted system operation over time, the associative memory is able to learn normal patterns as a basis for identifying non-normal behavior and appropriate responses, and to associate patterns with particular outcomes, contexts or responses. The analytics engine 118 is also better able to understand component mean time to failure rates through observation and system availability characteristics. This technology in combination with the virtual system model can be characterized as a âneocorticalâ model of the system under management.
+This approach also presents a novel way to digest and comprehend alarms in a manageable and coherent way. The neocortical model could assist in uncovering the patterns and sequencing of alarms to help pinpoint the location of the (impending) failure, its context, and even the cause. Typically, responding to the alarms is done manually by experts who have gained familiarity with the system through years of experience. However, at times, the amount of information is so great that an individual cannot respond fast enough or does not have the necessary expertise. An âintelligentâ system like the neocortical system that observes and recommends possible responses could improve the alarm management process by either supporting the existing operator, or even managing the system autonomously.
+Current simulation approaches for maintaining transient stability involve traditional numerical techniques and typically do not test all possible scenarios. The problem is further complicated as the numbers of components and pathways increase. Through the application of the neocortical model, by observing simulations of circuits, and by comparing them to actual system responses, it may be possible to improve the simulation process, thereby improving the overall design of future circuits.
+The virtual system model database 126, as well as databases 130 and 132, can be configured to store one or more virtual system models, virtual simulation models, and real-time data values, each customized to a particular system being monitored by the analytics server 118. Thus, the analytics server 118 can be utilized to monitor more than one system at a time. As depicted herein, the databases 126, 130, and 132 can be hosted on the analytics server 116 and communicatively interfaced with the analytics engine 118. In other embodiments, databases 126, 130, and 132 can be hosted on a separate database server (not shown) that is communicatively connected to the analytics server 116 in a manner that allows the virtual system modeling engine 124 and analytics engine 118 to access the databases as needed.
+Therefore, in one embodiment, the client 128 can modify the virtual system model stored on the virtual system model database 126 by using a virtual system model development interface using well-known modeling tools that are separate from the other network interfaces. For example, dedicated software applications that run in conjunction with the network interface to allow a client 128 to create or modify the virtual system models.
+The client 128 may utilize a variety of network interfaces (e.g., web browser, CITRIXâ¢, WINDOWS TERMINAL SERVICESâ¢, telnet, or other equivalent thin-client terminal applications, etc.) to access, configure, and modify the sensors (e.g., configuration files, etc.), analytics engine 118 (e.g., configuration files, analytics logic, etc.), calibration parameters (e.g., configuration files, calibration parameters, etc.), virtual system modeling engine 124 (e.g., configuration files, simulation parameters, etc.) and virtual system model of the system under management (e.g., virtual system model operating parameters and configuration files). Correspondingly, data from those various components of the monitored system 102 can be displayed on a client 128 display panel for viewing by a system administrator or equivalent.
+As described above, server 116 is configured to synchronize the physical world with the virtual and report, e.g., via visual, real-time display, deviations between the two as well as system health, alarm conditions, predicted failures, etc. This is illustrated with the aid of FIG. 3, in which the synchronization of the physical world (left side) and virtual world (right side) is illustrated. In the physical world, sensors 202 produce real-time data 302 for the processes 312 and equipment 314 that make up facility 102. In the virtual world, simulations 304 of the virtual system model 206 provide predicted values 306, which are correlated and synchronized with the real-time data 302. The real-time data can then be compared to the predicted values so that differences 308 can be detected. The significance of these differences can be determined to determine the health status 310 of the system. The health stats can then be communicated to the processes 312 and equipment 314, e.g., via alarms and indicators, as well as to thin client 128, e.g., via web pages 316.
+ FIG. 4 is an illustration of the scalability of a system for utilizing real-time data for predictive analysis of the performance of a monitored system, in accordance with one embodiment. As depicted herein, an analytics central server 422 is communicatively connected with analytics server A 414, analytics server B 416, and analytics server n 418 (i.e., one or more other analytics servers) by way of one or more network connections 114. Each of the analytics servers is communicatively connected with a respective data acquisition hub (i.e., Hub A 408, Hub B 410, Hub n 412) that communicates with one or more sensors that are interfaced with a system (i.e., Monitored System A 402, Monitored System B 404, Monitored System n 406) that the respective analytical server monitors. For example, analytics server A414 is communicative connected with data acquisition hub A 408, which communicates with one or more sensors interfaced with monitored system A 402.
+Each analytics server (i.e., analytics server A 414, analytics server B 416, analytics server n 418) is configured to monitor the sensor output data of its corresponding monitored system and feed that data to the central analytics server 422. Additionally, each of the analytics servers can function as a proxy agent of the central analytics server 422 during the modifying and/or adjusting of the operating parameters of the system sensors they monitor. For example, analytics server B 416 is configured to be utilized as a proxy to modify the operating parameters of the sensors interfaced with monitored system B 404.
+Moreover, the central analytics server 422, which is communicatively connected to one or more analytics server(s) can be used to enhance the scalability. For example, a central analytics server 422 can be used to monitor multiple electrical power generation facilities (i.e., monitored system A 402 can be a power generation facility located in city A while monitored system B 404 is a power generation facility located in city B) on an electrical power grid. In this example, the number of electrical power generation facilities that can be monitored by central analytics server 422 is limited only by the data processing capacity of the central analytics server 422. The central analytics server 422 can be configured to enable a client 128 to modify and adjust the operational parameters of any the analytics servers communicatively connected to the central analytics server 422. Furthermore, as discussed above, each of the analytics servers are configured to serve as proxies for the central analytics server 422 to enable a client 128 to modify and/or adjust the operating parameters of the sensors interfaced with the systems that they respectively monitor. For example, the client 128 can use the central analytics server 422, and vice versa, to modify and/or adjust the operating parameters of analytics server A 414 and utilize the same to modify and/or adjust the operating parameters of the sensors interfaced with monitored system A 402. Additionally, each of the analytics servers can be configured to allow a client 128 to modify the virtual system model through a virtual system model development interface using well-known modeling tools.
+In one embodiment, the central analytics server 422 can function to monitor and control a monitored system when its corresponding analytics server is out of operation. For example, central analytics server 422 can take over the functionality of analytics server B 416 when the server 416 is out of operation. That is, the central analytics server 422 can monitor the data output from monitored system B 404 and modify and/or adjust the operating parameters of the sensors that are interfaced with the system 404.
+In one embodiment, the network connection 114 is established through a wide area network (WAN) such as the Internet. In another embodiment, the network connection is established through a local area network (LAN) such as the company intranet. In a separate embodiment, the network connection 114 is a âhardwiredâ physical connection. For example, the data acquisition hub 112 may be communicatively connected (via Category 5 (CAT5), fiber optic or equivalent cabling) to a data server that is communicatively connected (via CAT5, fiber optic or equivalent cabling) through the Internet and to the analytics server 116 server hosting the analytics engine 118. In another embodiment, the network connection 114 is a wireless network connection (e.g., Wi-Fi, WLAN, etc.). For example, utilizing an 802.11b/g or equivalent transmission format.
+In certain embodiments, regional analytics servers can be placed between local analytics servers 414, 416, . . . , 418 and central analytics server 422. Further, in certain embodiments a disaster recovery site can be included at the central analytics server 422 level.
+ FIG. 5 is a block diagram that shows the configuration details of analytics server 116 illustrated in FIG. 1 in more detail. It should be understood that the configuration details in FIG. 5 are merely one embodiment of the items described for FIG. 1, and it should be understood that alternate configurations and arrangements of components could also provide the functionality described herein.
+The analytics server 116 includes a variety of components. In the FIG. 5 embodiment, the analytics server 116 is implemented in a Web-based configuration, so that the analytics server 116 includes (or communicates with) a secure web server 530 for communication with the sensor systems 519 (e.g., data acquisition units, metering devices, sensors, etc.) and external communication entities 534 (e.g., web browser, âthin clientâ applications, etc.). A variety of user views and functions 532 are available to the client 128 such as: alarm reports. Active X controls, equipment views, view editor tool, custom user interface page, and XML parser. It should be appreciated, however, that these are just examples of a few in a long list of views and functions 532 that the analytics server 116 can deliver to the external communications entities 534 and are not meant to limit the types of views and functions 532 available to the analytics server 116 in any way.
+The analytics server 116 also includes an alarm engine 506 and messaging engine 504, for the aforementioned external communications. The alarm engine 506 is configured to work in conjunction with the messaging engine 504 to generate alarm or notification messages 502 (in the form of text messages, c-mails, paging, etc.) in response to the alarm conditions previously described. The analytics server 116 determines alarm conditions based on output data it receives from the various sensor systems 519 through a communications connection (e.g., wireless 516, TCP/IP 518, Serial 520, etc.) and simulated output data from a virtual system model 512, of the monitored system, processed by the analytics engines 118. In one embodiment, the virtual system model 512 is created by a user through interacting with an external communication entity 534 by specifying the components that comprise the monitored system and by specifying relationships between the components of the monitored system. In another embodiment, the virtual system model 512 is automatically generated by the analytics engines 118 as components of the monitored system are brought online and interfaced with the analytics server 508.
+Continuing with FIG. 5, a virtual system model database 526 is communicatively connected with the analytics server 116 and is configured to store one or more virtual system models 512, each of which represents a particular monitored system. For example, the analytics server 116 can conceivably monitor multiple electrical power generation systems (e.g., system A, system B, system C, etc.) spread across a wide geographic area (e.g., City A, City B. City C, etc.). Therefore, the analytics server 116 will utilize a different virtual system model 512 for each of the electrical power generation systems that it monitors. Virtual simulation model database 538 can be configured to store a synchronized, duplicate copy of the virtual system model 512, and real-time data acquisition database 549 can store the real-time and trending data for the system(s) being monitored.
+Thus, in operation, analytics server 116 can receive real-time data for various sensors, i.e., components, through data acquisition system 202. As can be seen, analytics server 116 can comprise various drivers configured to interface with the various types of sensors, etc., comprising data acquisition system 202. This data represents the real-time operational data for the various components. For example, the data may indicate that a certain component is operating at a certain voltage level and drawing certain amount of current. This information can then be fed to a modeling engine to generate a virtual system model 612 that is based on the actual real-time operational data.
+Analytics engine 118 can be configured to compare predicted data based on the virtual system model 512 with real-time data received from data acquisition system 202 and to identify any differences. In some instances, analytics engine can be configured to identify these differences and then update, i.e., calibrate, the virtual system model 512 for use in future comparisons. In this manner, more accurate comparisons and warnings can be generated.
+But in other instances, the differences will indicate a failure, or the potential for a failure. For example, when a component begins to fail, the operating parameters will begin to change. This change may be sudden or it may be a progressive change over time. Analytics engine 118 can detect such changes and issue warnings that can allow the changes to be detected before a failure occurs. The analytic engine 118 can be configured to generate warnings that can be communicated via interface 536.
+For example, a user can access information from server 116 using thin client 534. For example, reports can be generated and served to thin client 534 via interface 536. These reports can, for example, comprise schematic or symbolic illustrations of the system being monitored. Status information for each component can be illustrated or communicated for each component. This information can be numerical, i.e., the voltage or current level. Or it can be symbolic, i.e., green for normal, red for failure or warning. In certain embodiments, intermediate levels of failure can also be communicated, i.e., yellow can be used to indicate operational conditions that project the potential for future failure. It should be noted that this information can be accessed in real-time. Moreover, via thin client 534, the information can be accessed from anywhere and anytime.
+Continuing with FIG. 5, the Analytics Engine 118 is communicatively interfaced with a HTM Pattern Recognition and Machine Learning Engine 551. The HTM Engine 551 is configured to work in conjunction with the Analytics Engine 118 and a virtual system model of the monitored system to make real-time predictions (i.e., forecasts) about various operational aspects of the monitored system. The HTM Engine 551 works by processing and storing patterns observed during the normal operation of the monitored system over time. These observations are provided in the form of real-time data captured using a multitude of sensors that are imbedded within the monitored system. In one embodiment, the virtual system model is also updated with the real-time data such that the virtual system model âagesâ along with the monitored system. Examples of a monitored system includes machinery, factories, electrical systems, processing plants, devices, chemical processes, biological systems, data centers, aircraft carriers, and the like. It should be understood that the monitored system can be any combination of components whose operations can be monitored with conventional sensors and where each component interacts with or is related to at least one other component within the combination.
+ FIG. 6 is an illustration of a flowchart describing a method for real-time monitoring and predictive analysis of a monitored system, in accordance with one embodiment. Method 600 begins with operation 602 where real-time data indicative of the monitored system status is processed to enable a virtual model of the monitored system under management to be calibrated and synchronized with the real-time data. In one embodiment, the monitored system 102 is a mission critical electrical power system. In another embodiment, the monitored system 102 can include an electrical power transmission infrastructure. In still another embodiment, the monitored system 102 includes a combination of thereof. It should be understood that the monitored system 102 can be any combination of components whose operations can be monitored with conventional sensors and where each component interacts with or is related to at least one other component within the combination.
+Method 600 moves on to operation 604 where the virtual system model of the monitored system under management is updated in response to the real-time data. This may include, but is not limited to, modifying the simulated data output from the virtual system model, adjusting the logic/processing parameters utilized by the virtual system modeling engine to simulate the operation of the monitored system, adding/subtracting functional elements of the virtual system model, etc. It should be understood, that any operational parameter of the virtual system modeling engine and/or the virtual system model may be modified by the calibration engine as long as the resulting modifications can be processed and registered by the virtual system modeling engine.
+Method 600 proceeds on to operation 606 where the simulated real-time data indicative of the monitored system status is compared with a corresponding virtual system model created at the design stage. The design stage models, which may be calibrated and updated based on real-time monitored data, are used as a basis for the predicted performance of the system. The real-time monitored data can then provide the actual performance over time. By comparing the real-time time data with the predicted performance information, difference can be identified a tracked by, e.g., the analytics engine 118. Analytics engines 118 can then track trends, determine alarm states, etc., and generate a real-time report of the system status in response to the comparison.
+In other words, the analytics can be used to analyze the comparison and real-time data and determine if there is a problem that should be reported and what level the problem may be, e.g., low priority, high priority, critical, etc. The analytics can also be used to predict future failures and time to failure, etc. In one embodiment, reports can be displayed on a conventional web browser (e.g. INTERNET EXPLORERâ¢, FIREFOXâ¢, NETSCAPEâ¢, etc) that is rendered on a standard personal computing (PC) device. In another embodiment, the âreal-timeâ report can be rendered on a âthin-clientâ computing device (e.g., CITRIXâ¢, WINDOWS TERMINAL SERVICESâ¢, telnet, or other equivalent thin-client terminal application). In still another embodiment, the report can be displayed on a wireless mobile device (e.g., BLACKBERRYâ¢, laptop, pager, etc.). For example, in one embodiment, the âreal-timeâ report can include such information as the differential in a particular power parameter (i.e., current, voltage, etc.) between the real-time measurements and the virtual output data.
+ FIG. 7 is an illustration of a flowchart describing a method for managing real-*time updates to a virtual system model of a monitored system, in accordance with one embodiment. Method 700 begins with operation 702 where real-time data output from a sensor interfaced with the monitored system is received. The sensor is configured to capture output data at split-second intervals to effectuate âreal timeâ data capture. For example, in one embodiment, the sensor is configured to generate hundreds of thousands of data readings per second. It should be appreciated, however, that the number of data output readings taken by the sensor may be set to any value as long as the operational limits of the sensor and the data processing capabilities of the data acquisition hub are not exceeded.
+Method 700 moves to operation 704 where the real-time data is processed into a defined format. This would be a format that can be utilized by the analytics server to analyze or compare the data with the simulated data output from the virtual system model. In one embodiment, the data is converted from an analog signal to a digital signal. In another embodiment, the data is converted from a digital signal to an analog signal. It should be understood, however, that the real-time data may be processed into any defined format as long as the analytics engine can utilize the resulting data in a comparison with simulated output data from a virtual system model of the monitored system.
+Method 700 continues on to operation 706 where the predicted (i.e., simulated) data for the monitored system is generated using a virtual system model of the monitored system. As discussed above, a virtual system modeling engine utilizes dynamic control logic stored in the virtual system model to generate the predicted output data. The predicted data is supposed to be representative of data that should actually be generated and output from the monitored system.
+Method 700 proceeds to operation 708 where a determination is made as to whether the difference between the real-time data output and the predicted system data falls between a set value and an alarm condition value, where if the difference falls between the set value and the alarm condition value a virtual system model calibration and a response can be generated. That is, if the comparison indicates that the differential between the âreal-timeâ sensor output value and the corresponding âvirtualâ model data output value exceeds a Defined Difference Tolerance (DDT) value (i.e., the âreal-timeâ output values of the sensor output do not indicate an alarm condition) but below an alarm condition (i.e., alarm threshold value), a response can be generated by the analytics engine. In one embodiment, if the differential exceeds, the alarm condition, an alarm or notification message is generated by the analytics engine 118. In another embodiment, if the differential is below the DTT value, the analytics engine does nothing and continues to monitor the âreal-timeâ data and âvirtualâ data. Generally speaking, the comparison of the set value and alarm condition is indicative of the functionality of one or more components of the monitored system.
+ FIG. 8 is an illustration of a flowchart describing a method for synchronizing real-time system data with a virtual system model of a monitored system, in accordance with one embodiment. Method 800 begins with operation 802 where a virtual system model calibration request is received. A virtual model calibration request can be generated by an analytics engine whenever the difference between the real-time data output and the predicted system data falls between a set value and an alarm condition value.
+Method 800 proceeds to operation 804 where the predicted system output value for the virtual system model is updated with a real-time output value for the monitored system. For example, if sensors interfaced with the monitored system outputs a real-time current value of A, then the predicted system output value for the virtual system model is adjusted to reflect a predicted current value of A.
+Method 800 moves on to operation 806 where a difference between the real-time sensor value measurement from a sensor integrated with the monitored system and a predicted sensor value for the sensor is determined. As discussed above, the analytics engine is configured to receive âreal-timeâ data from sensors interfaced with the monitored system via the data acquisition hub (or, alternatively directly from the sensors) and âvirtualâ data from the virtual system modeling engine simulating the data output from a virtual system model of the monitored system. In one embodiment, the values are in units of electrical power output (i.e., current or voltage) from an electrical power generation or transmission system. It should be appreciated, however, that the values can essentially be any unit type as long as the sensors can be configured to output data in those units or the analytics engine can convert the output data received from the sensors into the desired unit type before performing the comparison.
+Method 800 continues on to operation 808 where the operating parameters of the virtual system model are adjusted to minimize the difference. This means that the logic parameters of the virtual system model that a virtual system modeling engine uses to simulate the data output from actual sensors interfaced with the monitored system are adjusted so that the difference between the real-time data output and the simulated data output is minimized. Correspondingly, this operation will update and adjust any virtual system model output parameters that are functions of the virtual system model sensor values. For example, in a power distribution environment, output parameters of power load or demand factor might be a function of multiple sensor data values. The operating parameters of the virtual system model that mimic the operation of the sensor will be adjusted to reflect the real-time data received from those sensors. In one embodiment, authorization from a system administrator is requested prior to the operating parameters of the virtual system model being adjusted. This is to ensure that the system administrator is aware of the changes that are being made to the virtual system model. In one embodiment, after the completion of all the various calibration operations, a report is generated to provide a summary of all the adjustments that have been made to the virtual system model.
+As described above, virtual system modeling engine 124 can be configured to model various aspects of the system to produce predicted values for the operation of various components within monitored system 102. These predicted values can be compared to actual values being received via data acquisition hub 112. If the differences are greater than a certain threshold, e.g., the DTT, but not in an alarm condition, then a calibration instruction can be generated. The calibration instruction can cause a calibration engine 134 to update the virtual model being used by system modeling engine 124 to reflect the new operating information.
+It will be understood that as monitored system 102 ages, or more specifically the components comprising monitored system 102 age, then the operating parameters, e.g., currents and voltages associated with those components will also change. Thus, the process of calibrating the virtual model based on the actual operating information provides a mechanism by which the virtual model can be aged along with the monitored system 102 so that the comparisons being generated by analytics engine 118 are more meaningful.
+At a high level, this process can be illustrated with the aid of FIG. 9, which is a flow chart illustrating an example method for updating the virtual model in accordance with one embodiment. In step 902, data is collected from, e.g., sensors 104,106, and 108. For example, the sensors can be configured to monitor protective devices within an electrical distribution system to determine and monitor the ability of the protective devices to withstand faults, which is describe in more detail below.
+In step 904, the data from the various sensors can be processed by analytics engine 118 in order to evaluate various parameters related to monitored system 102. In step 905, simulation engine 124 can be configured to generate predicted values for monitored system 102 using a virtual model of the system that can be compared to the parameters generated by analytics engine 118 in step 904. If there are differences between the actual values and the predicted values, then the virtual model can be updated to ensure that the virtual model ages with the actual system 102 in step 906.
+It should be noted that as the monitored system 102 ages, various components can be repaired, replaced, or upgraded, which can also create differences between the simulated and actual data that is not an alarm condition. Such activity can also lead to calibrations of the virtual model to ensure that the virtual model produces relevant predicted values. Thus, not only can the virtual model be updated to reflect aging of monitored system 102, but it can also be updated to reflect retrofits, repairs, etc.
+As noted above, in certain embodiments, a logical model of a facilities electrical system, a data acquisition system (data acquisition hub 112), and power system simulation engines (modeling engine 124) can be integrated with a logic and methods based approach to the adjustment of key database parameters within a virtual model of the electrical system to evaluate the ability of protective devices within the electrical distribution system to withstand faults and also effectively âageâ the virtual system with the actual system.
+Only through such a process can predictions on the withstand abilities of protective devices, and the status, security and health of an electrical system be accurately calculated. Accuracy is important as the predictions can be used to arrive at actionable, mission critical or business critical conclusions that may lead to the re-alignment of the electrical distribution system for optimized performance or security.
+ FIGS. 10-12 are flow charts presenting logical flows for determining the ability of protective devices within an electrical distribution system to withstand faults and also effectively âageâ the virtual system with the actual system in accordance with one embodiment. FIG. 10 is a diagram illustrating an example process for monitoring the status of protective devices in a monitored system 102 and updating a virtual model based on monitored data. First, in step 1002, the status of the protective devices can be monitored in real time. As mentioned, protective devices can include fuses, switches, relays, and circuit breakers. Accordingly, the status of the fuses/switches, relays, and or circuit breakers, e.g., the open/close status, source and load status, and on or off status, can be monitored in step 1002. It can be determined, in step 1004, if there is any change in the status of the monitored devices. If there is a change, then in step 1006, the virtual model can be updated to reflect the status change, i.e., the corresponding virtual components data can be updated to reflect the actual status of the various protective devices.
+In step 1008, predicted values for the various components of monitored system 102 can be generated. But it should be noted that these values are based on the current, real-time status of the monitored system. Real time sensor data can be received in step 1012. This real time data can be used to monitor the status in step 1002 and it can also be compared with the predicted values in step 1014. As noted above, the difference between the predicted values and the real time data can also be determined in step 1014.
+Accordingly, meaningful predicted values based on the actual condition of monitored system 102 can be generated in steps 1004 to 1010. These predicted values can then be used to determine if further action should be taken based on the comparison of step 1014. For example, if it is determined in step 1016 that the difference between the predicted values and the real time sensor data is less than or equal to a certain threshold, e.g., DTT, then no action can be taken e.g., an instruction not to perform calibration can be issued in step 1018. Alternatively, if it is determined in step 1020 that the real time data is actually indicative of an alarm situation, e.g., is above an alarm threshold, then a do not calibrate instruction can be generated in step 1018 and an alarm can be generated as described above. If the real time sensor data is not indicative of an alarm condition, and the difference between the real time sensor data and the predicted values is greater than the threshold, as determined in step 1022, then an initiate calibration command can be generated in step 1024.
+If an initiate calibration command is issued in step 1024, then a function call to calibration engine 134 can be generated in step 1026. The function call will cause calibration engine 134 to update the virtual model in step 1028 based on the real time sensor data. A comparison between the real time data and predicted data can then be generated in step 1030 and the differences between the two computed. In step 1032, a user can be prompted as to whether or not the virtual model should in fact be updated. In other embodiments, the update can be automatic, and step 1032 can be skipped. In step 1034, the virtual model could be updated. For example, the virtual model loads, buses, demand factor, and/or percent running information can be updated based on the information obtained in step 1030. An initiate simulation instruction can then be generated in step 1036, which can cause new predicted values to be generated based on the update of virtual model.
+In this manner, the predicted values generated in step 1008 are not only updated to reflect the actual operational status of monitored system 102, but they are also updated to reflect natural changes in monitored system 102 such as aging. Accordingly, realistic predicted values can be generated in step 1008.
+ FIG. 11 is a flowchart illustrating an example process for determining the protective capabilities of the protective devices being monitored in step 1002. Depending on the embodiment, the protective devices can be evaluated in terms of the International Electrotechnical Commission (IEC) standards or in accordance with the United States or American National Standards Institute (ANSI) standards. It will be understood, that the process described in relation to FIG. 11 is not dependent on a particular standard being used.
+First, in step 1102, a short circuit analysis can be performed for the protective device. Again, the protective device can be any one of a variety of protective device types. For example, the protective device can be a fuse or a switch, or some type of circuit breaker. It will be understood that there are various types of circuit breakers including Low Voltage Circuit Breakers (LVCBs). High Voltage Circuit Breakers (HVCBs), Mid Voltage Circuit Breakers (MVCBs), Miniature Circuit Breakers (MCBs), Molded Case Circuit Breakers (MCCBs), Vacuum Circuit Breakers, and Air Circuit Breakers, to name just a few. Any one of these various types of protective devices can be monitored and evaluated using the processes illustrated with respect to FIGS. 10-12.
+For example, for LVCBs, or MCCBs, the short circuit current, symmetric (Isym) or asymmetric (Iasym), and/or the peak current (Ipeak) can be determined in step 1102. For, e.g., LVCBs that are not instantaneous trip circuit breakers, the short circuit current at a delayed time (Isymdelay) can be determined. For HVCBs, a first cycle short circuit current (Isym) and/or Ipeak can be determined in step 1102. For fuses or switches, the short circuit current, symmetric or asymmetric, can be determined in step 1102. And for MVCBs the short circuit current interrupting time can be calculated. These are just some examples of the types of short circuit analysis that can be performed in Step 1102 depending on the type of protective device being analyzed.
+Once the short circuit analysis is performed in step 1102, various steps can be carried out in order to determine the bracing capability of the protective device. For example, if the protective device is a fuse or switch, then the steps on the left hand side of FIG. 11 can be carried out. In this case, the fuse rating can first be determined in step 1104. In this case, the fuse rating can be the current rating for the fuse. For certain fuses, the X/R can be calculated in step 1105 and the asymmetric short circuit current (Iasym) for the fuse can be determined in step 1106 using equation 1.
+
+I ASYM =I SYMâ{square root over (1+2e â2p/(X/R))}ââEq 1
+
+In other implementations, the inductants/reactants (X/R) ratio can be calculated in step 1108 and compared to a fuse test X/R to determine if the calculated X/R is greater than the fuse test X/R. The calculated X/R can be determined using the predicted values provided in step 1008. Various standard tests X/R values can be used for the fuse test X/R values in step 1108. For example, standard test X/R values for a LVCB can be as follows:
+PCB,ICCB=6.59
+MCCB,ICCB rated<=10,000 A=1.73
+MCCB,ICCB rated 10,001-20,000 A=3.18
+MCCB,ICCB rated>20,000 A=4.9
+If the calculated X/R is greater than the fuse test X/R, then in step 1112, equation 12 can be used to calculate an adjusted symmetrical short circuit current (Iadjsym).
+
+
+
+
+
+
+
+
+I
+ADJSYM
+
+=
+
+
+I
+SYM
+
+â¢
+
+{
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+2
+
+â¢
+
+p
+/
+
+(
+
+CALCX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+2
+
+â¢
+
+p
+/
+
+(
+
+TESTX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+Eq
+â¢
+
+ 
+
+â¢
+12
+
+
+
+
+
+
+
+If the calculated X/R is not greater than the fuse test X/R then Iadjsym can be set equal to Isym in step 1110. In step 1114, it can then be determined if the fuse rating (step 1104) is greater than or equal to Iadjsym or Iasym. If it is, then it can determine in step 1118 that the protected device has passed and the percent rating can be calculated in step 1120 as follows:
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+ADJSYM
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+
+or
+
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+ASYM
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+If it is determined in step 1114 that the device rating is not greater than or equal to Iadjsym, then it can be determined that the device as failed in step 1116. The percent rating can still be calculating in step 1120.
+For LVCBs, it can first be determined whether they are fused in step 1122. If it is determined that the LVCB is not fused, then in step 1124 can be determined if the LVCB is an instantaneous trip LVCB. If it is determined that the LVCB is an instantaneous trip LVCB, then in step 1130 the first cycle fault X/R can be calculated and compared to a circuit breaker test X/R (see example values above) to determine if the fault X/R is greater than the circuit breaker test X/R. If the fault X/R is not greater than the circuit breaker test X/R, then in step 1132 it can be determined if the LVCB is peak rated. If it is peak rated, then Ipeak, can be used in step 1146 below. If it is determined that the LVCB is not peak rated in step 1132, then Iadjsym can be set equal to Isym in step 1140. In step 1146, it can be determined if the device rating is greater or equal to Iadjsym or to Ipeak as appropriate, for the LVCB.
+If it is determined that the device rating is greater than or equal to Iadjsym, then it can be determined that the LVCB has passed in step 1148. The percent rating can then be determined using the equations for Iadjsym defined above (step 1120) in step 1152. If it is determined that the device rating is not greater than or equal to Iadjsym, then it can be determined that the device has failed in step 1150. The percent rating can still be calculated in step 1152.
+If the calculated fault X/R is greater than the circuit breaker test X/R as determined in step 1130, then it can be determined if the LVCB is peak rated in step 1134. If the LVCB is not peak rated, then the Iadjsym can be determined using equation 12 in step 1142. If the LVCB is peak rated, then Ipeak can be determined using equation 11 in step 1144.
+
+I PEAK=â{square root over (2)}I SYM{1.02+0.98e â3i(X/R)}ââEq 11
+
+It can then be determined if the device rating is greater than or equal to Iadjsym or Ipeak as appropriate. The pass/fail determinations can then be made in steps 1148 and 1150 respectively, and the percent rating can be calculated in step 1152.
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+ADJSYM
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+
+or
+
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+PEAK
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+If the LVCB is not an instantaneous trip LVCB as determined in step 1124, then a time delay calculation can be performed at step 1128 followed by calculation of the fault X/R and a determination of whether the fault X/R is greater than the circuit breaker test X/R. If it is not, then Iadjsym can be set equal to Isym in step 1136. If the calculated fault at X/R is greater than the circuit breaker test X/R, then Iadjsymdelay can be calculated in step 1138 using the following equation with, e.g., a 0.5 second maximum delay:
+
+
+
+
+
+
+
+
+I
+
+ADJSYM
+DELAY
+
+
+=
+
+
+I
+
+SYM
+DELAY
+
+
+â¢
+
+{
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+60
+
+â¢
+
+p
+/
+
+(
+
+CALCX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+60
+
+â¢
+
+p
+/
+
+(
+
+TESTX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+Eq
+â¢
+
+ 
+
+â¢
+14
+
+
+
+
+
+
+
+It can then be determined if the device rating is greater than or equal to Iadjsym or Iadjsymdelay. The pass/fail determinations can then be made in steps 1148 and 1150, respectively and the percent rating can be calculated in step 1152.
+If it is determined that the LVCB is fused in step 1122, then the fault X/R can be calculated in step 1126 and compared to the circuit breaker test X/R in order to determine if the calculated fault X/R is greater than the circuit breaker test X/R. If it is greater, then Iadjsym can be calculated in step 1154 using the following equation:
+
+
+
+
+
+
+
+
+I
+ADJSYM
+
+=
+
+
+I
+SYM
+
+â¢
+
+{
+
+
+1.02
++
+
+0.98
+â¢
+
+e
+
+
+-
+3
+
+/
+
+(
+
+CALCX
+/
+R
+
+)
+
+
+
+
+
+
+1.02
++
+
+0.98
+â¢
+
+e
+
+
+-
+3
+
+/
+
+(
+
+TESTX
+/
+R
+
+)
+
+
+
+
+
+
+}
+
+
+
+
+
+
+Eq
+â¢
+
+ 
+
+â¢
+13
+
+
+
+
+
+
+
+If the calculated fault X/R is not greater than the circuit breaker test X/R, then Iadjsym can be set equal to Isym in step 1156. It can then be determined if the device rating is greater than or equal to Iadjsym in step 1146. The pass/fail determinations can then be carried out in steps 1148 and 1150 respectively, and the percent rating can be determined in step 1152.
+ FIG. 12 is a diagram illustrating an example process for determining the protective capabilities of a HVCB. In certain embodiments, X/R can be calculated in step 1157 and a peak current (Ipeak) can be determined using equation 11 in step 1158. In step 1162, it can be determined whether the HVCB's rating is greater than or equal to Ipeak as determined in step 1158. If the device rating is greater than or equal to Ipeak, then the device has passed in step 1164. Otherwise, the device fails in step 1166. In either case, the percent rating can be determined in step 1168 using the following:
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+PEAK
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+In other embodiments, an interrupting time calculation can be made in step 1170. In such embodiments, a fault X/R can be calculated and then can be determined if the fault X/R is greater than or equal to a circuit breaker test X/R in step 1172. For example, the following circuit breaker test X/R can be used;
+50 Hz Test X/R=13.7
+60 Hz Test X/R=16.7
+(DC Time Constant=0.45 ms)
+If the fault X/R is not greater than the circuit breaker test X/R then Iadjintsym can be set equal to Isym in step 1174. If the calculated fault X/R is greater than the circuit breaker test X/R, then contact parting time for the circuit breaker can be determined in step 1176 and equation 15 can then be used to determine Iadjintsym in step 1178.
+
+
+
+
+
+
+
+
+I
+
+ADJINT
+SYM
+
+
+=
+
+
+I
+
+INT
+SYM
+
+
+â¢
+
+{
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+
+4
+p
+
+
+â¢
+
+f
+
+*
+
+t
+/
+
+(
+
+CALCX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+
+
+
+1
++
+
+2
+â¢
+
+e
+
+
+-
+
+4
+p
+
+
+â¢
+
+f
+
+*
+
+t
+/
+
+(
+
+TESTX
+/
+R
+
+)
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+Eq
+â¢
+
+ 
+
+â¢
+15
+
+
+
+
+
+
+
+In step 1180, it can be determined whether the device rating is greater than or equal to Iadjintsym. The pass/fail determinations can then be made in steps 1182 and 1184 respectively and the percent rating can be calculated in step 1186 using the following:
+
+
+
+
+
+%
+â¢
+
+ 
+
+â¢
+rating
+
+=
+
+
+I
+ADJINTSYM
+
+
+Device
+â¢
+
+ 
+
+â¢
+rating
+
+
+
+
+
+
+ FIG. 13 is a flowchart illustrating an example process for determining the protective capabilities of the protective devices being monitored in step 1002 in accordance with another embodiment. The process can start with a short circuit analysis in step 1302. For systems operating at a frequency other than 60 hz, the protective device X/R can be modified as follows:
+
+(X/R)mod=(X/R)*60 H/(system Hz).
+
+For fuses/switches, a selection can be made, as appropriate, between use of the symmetrical rating or asymmetrical rating for the device. The Multiplying Factor (MF) for the device can then be calculated in step 1304. The MF can then be used to determine Iadjsym or Iadjsym. In step 1306, it can be determined if the device rating is greater than or equal to Iadjasym or Iadjsym. Based on this determination, it can be determined whether the device passed or failed in steps 1308 and 1310 respectively, and the percent rating can be determined in step 1312 using the following:
+
+% rating=I adjsym*100/device rating;
+
+or
+
+% rating=I adjsym*100/device rating.
+
+For LVCBs, it can first be determined whether the device is fused in step 1314. If the device is not fused, then in step 1315 it can be determined whether the X/R is known for the device. If it is known, then the LVF can be calculated for the device in step 1320. It should be noted that the LVF can vary depending on whether the LVCB is an instantaneous trip device or not. If the X/R is not known, then it can be determined in step 1317, e.g., using the following:
+PCB,ICCB=6.59
+MCCB,ICCB rated<=10,000 A=1.73
+MCCB,ICCB rated 10,001-20,000 A=3.18
+MCCB,ICCB rated>20,000 A=4.9
+If the device is fused, then in step 1316 it can again be determined whether the X/R is known. If it is known, then the LVF can be calculated in step 1319. If it is not known, then the X/R can be set equal to, e.g., 4.9, in step 1318.
+In step 1321, it can be determined if the LVF is less than 1 and if it is, then the LVF can be set equal to 1. In step 1322Iintadj can be determined using the following:
+MCCB/ICCB/PCB With Instantaneous
+Iint,adj=LVF*Isym,rms
+PCB Without Instantaneous
+Iint,adj=LVFP*Isym,rms(Â½,Cyc)
+int,adj=LVFasym*Isym,rms(3-8 Cyc)
+In step 1323, it can be determined whether the device's symmetrical rating is greater than or equal to Iintadj, and it can be determined based on this evaluation whether the device passed or failed in steps 1324 and 1325 respectively. The percent rating can then be determined in step 1326 using the following:
+
+% rating=I intadj*100/device rating.
+
+ FIG. 14 is a diagram illustrating a process for evaluating the withstand capabilities of a MVCB in accordance with one embodiment. In step 1328, a determination can be made as to whether the following calculations will be based on all remote inputs, all local inputs or on a No AC Decay (NACD) ratio. For certain implementations, a calculation in step 1330 can then be made of the total remote contribution, total local contribution, total contribution (Iintrmssym), and NACD. If the calculated NACD is equal to zero, then it can be determined that all contributions are local. If NACD is equal to 1, then it can be determined that all contributions are remote.
+If all the contributions are remote, then in step 1332 the remote MF (MFr) can be calculated and Iint can be calculated using the following:
+
+I int=MFr*I intrmssym 
+
+If all the inputs are local, then in step 1334 MFl can be calculated and Iint can be calculated using the following:
+
+I int=MFl*I intrmssym 
+
+If the contributions are from NACD, then the NACD, MFr, MFl, and AMFl can be calculated in step 1336. If AMFl is less than 1, then AMFl can be set equal to 1. Iint can then be calculated using the following:
+
+I int=AMFl*I intrmssym /S 
+
+In step 1338, the 3-phase device duty cycle can be calculated and then it can be determined in step 1340, whether the device rating is greater than or equal to Iint. Whether the device passed or failed can then be determined in steps 1342 and 1344, respectively. The percent rating can be determined in step 1346 using the following:
+
+% rating=I int*100/3p device rating.
+
+In other embodiments, it can be determined, in step 1348, whether the user has selected a fixed MF. If so, then in certain embodiments the peak duty (crest) can be determined in step 1349 and MFp can be set equal to 2.7 in step 1354. If a fixed MF has not been selected, then the peak duty (crest) can be calculated in step 1350 and MFp can be calculated in step 1358. In step 1362, the MFp can be used to calculate the following:
+
+I mompeak=MFp*I symrms 
+
+In step 1366, it can be determined if the device peak rating (crest) is greater than or equal to Imompeak. It can then be determined whether the device passed or failed in steps 1368 and 1370 respectively, and the percent rating can be calculated as follows in step 1372:
+
+% rating=I mompeak*100/device peak(crest)rating.
+
+In other embodiments, if a fixed MF is selected, then a momentary duty cycle (C&L) can be determined in step 1351 and MFm can be set equal to, e.g., 1.6, in step 1356. If a fixed MF has not been selected, then a momentary duty cycle (C&L) can be determined in step 1352 and MFm can be calculated in step 1360. MFm can then be used to determine the following in step 1364:
+
+I mompeak=MFm*I symrms 
+
+It can then be determined in step 1374 whether the device C&L, rms rating is greater than or equal to Imomsym. Whether the device passed or failed can then be determined in steps 1376 and 1378 respectively, and the percent rating can be calculated as follows in step 1380:
+
+% rating=I momasym*100/device C&L,rms rating.
+
+Thus, the above methods provide a mean to determine the withstand capability of various protective devices, under various conditions and using various standards, using an aged, up to date virtual model of the system being monitored.
+The influx of massive sensory data, e.g., provided via sensors 104, 106, and 108, intelligent filtration of this dense stream of data into manageable and easily understandable knowledge. For example, as mentioned, it is important to be able to assess the real-time ability of the power system to provide sufficient generation to satisfy the system load requirements and to move the generated energy through the system to the load points. Conventional systems do not make use of an on-line, real-time system snap shot captured by a real-time data acquisition platform to perform real time system availability evaluation.
+ FIG. 15 is a flow chart illustrating an example process for analyzing the reliability of an electrical power distribution and transmission system, in accordance with one embodiment. First, in step 1502, reliability data can be calculated and/or determined. The inputs used in step 1502 can comprise power flow data, e.g., network connectivity, loads, generations, cables/transformer impedances, etc., which can be obtained from the predicted values generated in step 1008, reliability data associated with each power system component, lists of contingencies to be considered, which can vary by implementation including by region, site, etc., customer damage (load interruptions) costs, which can also vary by implementation, and load duration curve information. Other inputs can include failure rates, repair rates, and required availability of the system and of the various components.
+In step 1504 a list of possible outage conditions and contingencies can be evaluated including loss of utility power supply, generators, UPS, and/or distribution lines and infrastructure. In step 1506, a power flow analysis for monitored system 102 under the various contingencies can be performed. This analysis can include the resulting failure rates, repair rates, cost of interruption or downtime versus the required system availability, etc. In step 1510, it can be determined if the system is operating in a deficient state when confronted with a specific contingency. If it is, then is step 1512, the impact on the system, load interruptions, costs, failure duration, system unavailability, etc. can all be evaluated.
+After the evaluation of step 1512, or if it is determined that the system is not in a deficient state in step 1510, then it can be determined if further contingencies need to be evaluated. If so, then the process can revert to step 1506 and further contingencies can be evaluated. If no more contingencies are to be evaluated, then a report can be generated in step 1514. The report can include a system summary, total and detailed reliability indices, system availability, etc. The report can also identify system bottlenecks are potential problem areas.
+The reliability indices can be based on the results of credible system contingencies involving both generation and transmission outages. The reliability indices can include load point reliability indices, branch reliability indices, and system reliability indices. For example, various load/bus reliability indices can be determined such as probability and frequency of failure, expected load curtailed, expected energy not supplied, frequency of voltage violations, reactive power required, and expected customer outage cost. The load point indices can be evaluated for the major load buses in the system and can be used in system design for comparing alternate system configurations and modifications.
+Overall system reliability indices can include power interruption index, power supply average MW curtailment, power supply disturbance index, power energy curtailment index, severity index, and system availability. For example, the individual load point indices can be aggregated to produce a set of system indices. These indices are indicators of the overall adequacy of the composite system to meet the total system load demand and energy requirements and can be extremely useful for the system planner and management, allowing more informed decisions to be made both in planning and in managing the system.
+The various analysis and techniques can be broadly classified as being either Monte Carlo simulation or Contingency Enumeration. The process can also use AC, DC and fast linear network power flow solutions techniques and can support multiple contingency modeling, multiple load levels, automatic or user-selected contingency enumeration, use a variety of remedial actions, and provides sophisticated report generation.
+The analysis of step 1506 can include adequacy analysis of the power system being monitored based on a prescribed set of criteria by which the system must be judged as being in the success or failed state. The system is considered to be in the failed state if the service at load buses is interrupted or its quality becomes unacceptable, i.e., if there are capacity deficiency, overloads, and/or under/over voltages
+Various load models can be used in the process of FIG. 15 including multi-step load duration curve, curtailable and Firm, and Customer Outage Cost models. Additionally, various remedial actions can be proscribed or even initiated including MW and MVAR generation control, generator bus voltage control, phase shifter adjustment, MW generation rescheduling, and load curtailment (interruptible and firm).
+In other embodiments, the effect of other variables, such as the weather and human error can also be evaluated in conjunction with the process of FIG. 15 and indices can be associated with these factors. For example, FIG. 16 is a flow chart illustrating an example process for analyzing the reliability of an electrical power distribution and transmission system that takes weather information into account in accordance with one embodiment. Thus, in step 1602, real-time weather data can be received, e.g., via a data feed such as an XML feed from National Oceanic and Atmosphere Administration (NOAA). In step 1604, this data can be converted into reliability data that can be used in step 1502.
+It should also be noted that National Fire Protection Association (NFPA) and the Occupational Safety and Health Association (OSHA) have mandated that facilities comply with proper workplace safety standards and conduct Arc Flash studies in order to determine the incident energy, protection boundaries and PPE levels needed to be worn by technicians. Unfortunately, conventional approaches/systems for performing such studies do not provide a reliable means for the real-time prediction of the potential energy released (in calories per centimeter squared) for an arc flash event. Moreover, no real-time system exists that can predict the required personal protective equipment (PPE) required to safely perform repairs as required by NFPA 70E and IEEE 1584.
+When a fault in the system being monitored contains an arc, the heat released can damage equipment and cause personal injury. It is the latter concern that brought about the development of the heat exposure programs referred to above. The power dissipated in the arc radiates to the surrounding surfaces. The further away from the arc the surface is, the less the energy is received per unit area.
+As noted above, conventional approaches are based on highly specialized static simulation models that are rigid and non-reflective of the facilities operational status at the time a technician may be needed to conduct repairs on electrical equipment. But the PPE level required for the repair, or the safe protection boundary may change based on the actual operational status of the facility and alignment of the power distribution system at the time repairs are needed. Therefore, a static model does not provide the real-time analysis that can be critical for accurate PPE level determination. This is because static systems cannot adjust to the many daily changes to the electrical system that occur at a facility, e.g., motors and pumps may be on or off, on-site generation status may have changed by having diesel generators on-line, utility electrical feed may also change, etc., nor can they age with the facility to accurately predict the required PPE levels.
+Accordingly, existing systems rely on exhaustive studies to be performed off-line by a power system engineer or a design professional/specialist. Often the specialist must manually modify a simulation model so that it is reflective of the proposed facility operating condition and then conduct a static simulation or a series of static simulations in order to come up with recommended safe working distances, energy calculations and PPE levels. But such a process is not timely, accurate nor efficient, and as noted above can be quite costly.
+Using the systems and methods described herein a logical model of a facility electrical system can be integrated into a real-time environment, with a robust AC Arc Flash simulation engine (system modeling engine 124), a data acquisition system (data acquisition hub 112), and an automatic feedback system (calibration engine 134) that continuously synchronizes and calibrates the logical model to the actual operational conditions of the electrical system. The ability to re-align the simulation model in real-time so that it mirrors the real facility operating conditions, coupled with the ability to calibrate and age the model as the real facility ages, as described above, provides a desirable approach to predicting PPE levels, and safe working conditions at the exact time the repairs are intended to be performed. Accordingly, facility management can provide real-time compliance with, e.g., NFPA 70E and IEEE 1584 standards and requirements.
+ FIG. 17 is a diagram illustrating an example process for predicting in real-time various parameters associated with an alternating current (AC) arc flash incident, in accordance with one embodiment. These parameters can include for example, the arc flash incident energy, arc flash protection boundary, and required Personal Protective Equipment (PPE) levels, e.g., in order to comply with NFPA-70E and IEEE-1584. First, in step 1702, updated virtual model data can be obtained for the system being model, e.g., the updated data of step 1006, and the operating modes for the system can be determined. In step 1704, an AC 3-phase short circuit analysis can be performed in order to obtain bolted fault current values for the system. In step 1706, e.g., IEEE 1584 equations can be applied to the bolted fault values and any corresponding arcing currents can be calculated in step 1708.
+The ratio of arc current to bolted current can then be used, in step 1710, to determine the arcing current in a specific protective device, such as a circuit breaker or fuse. A coordinated time-current curve analysis can be performed for the protective device in step 1712. In step 1714, the arcing current in the protective device and the time current analysis can be used to determine an associated fault clearing time, and in step 1716 a corresponding arc energy can be determined based on, e.g., IEEE 1584 equations applied to the fault clearing time and arcing current.
+In step 1718, the 100% arcing current can be calculated and for systems operating at less than 1 kV the 85% arcing current can also be calculated. In step 1720, the fault clearing time in the protective device can be determined at the 85% arcing current level. In step 1722, e.g., IEEE 1584 equations can be applied to the fault clearing time (determined in step 1720) and the arcing current to determine the 85% arc energy level, and in step 1724 the 100% arcing current can be compared with the 85% arcing current, with the higher of the two being selected. IEEE 1584 equations, for example, can then be applied to the selected arcing current in step 1726 and the PPE level and boundary distance can be determined in step 1728. In step 1730, these values can be output, e.g., in the form of a display or report.
+In other embodiments, using the same or a similar procedure as illustrated in FIG. 17, the following evaluations can be made in real-time and based on an accurate, e.g., aged, model of the system:
+    Arc Flash Exposure based on IEEE 1584; Arc Flash Exposure based on NFPA 70E; Network-Based Arc Flash Exposure on AC Systems/Single Branch Case; Network-Based Arc Flash Exposure on AC Systems/Multiple Branch Cases; Network Arc Flash Exposure on DC Networks; Exposure Simulation at Switchgear Box, MCC Box, Open Area and Cable Grounded and Ungrounded; Calculate and Select Controlling Branch(s) for Simulation of Arc Flash; Test Selected Clothing; Calculate Clothing Required; Calculate Safe Zone with Regard to User Defined Clothing Category; Simulated Art Heat Exposure at User Selected locations; User Defined Fault Cycle for 3-Phase and Controlling Branches; User Defined Distance for Subject; 100% and 85% Arcing Current; 100% and 85% Protective Device Time; Protective Device Setting Impact on Arc Exposure Energy; User Defined Label Sizes; Attach Labels to One-Line Diagram for User Review; Plot Energy for Each Bus; Write Results into Excel; View and Print Graphic Label for User Selected Bus(s); and Work permit.   
+With the insight gained through the above methods, appropriate protective measures, clothing and procedures can be mobilized to minimize the potential for injury should an arc flash incident occur. Facility owners and operators can efficiently implement a real-time safety management system that is in compliance with NFPA 70E and IEEE 1584 guidelines.
+ FIG. 18 is a flow chart illustrating an example process for real-time analysis of the operational stability of an electrical power distribution and transmission system, in accordance with one embodiment. The ability to predict, in real-time, the capability of a power system to maintain stability and/or recover from various contingency events and disturbances without violating system operational constraints is important. This analysis determines the real-time ability of the power system to: 1. sustain power demand and maintain sufficient active and reactive power reserve to cope with ongoing changes in demand and system disturbances due to contingencies, 2. operate safely with minimum operating cost while maintaining an adequate level of reliability, and 3. provide an acceptably high level of power quality (maintaining voltage and frequency within tolerable limits) when operating under contingency conditions.
+In step 1802, the dynamic time domain model data can be updated to re-align the virtual system model in real-time so that it mirrors the real operating conditions of the facility. The updates to the domain model data coupled with the ability to calibrate and age the virtual system model of the facility as it ages (i.e., real-time condition of the facility), as described above, provides a desirable approach to predicting the operational stability of the electrical power system operating under contingency situations. That is, these updates account for the natural aging effects of hardware that comprise the total electrical power system by continuously synchronizing and calibrating both the control logic used in the simulation and the actual operating conditions of the electrical system.
+The domain model data includes data that is reflective of both the static and non-static (rotating) components of the system. Static components are those components that are assumed to display no changes during the time in which the transient contingency event takes place. Typical time frames for disturbance in these types of elements range from a few cycles of the operating frequency of the system up to a few seconds. Examples of static components in an electrical system include but are not limited to transformers, cables, overhead lines, reactors, static capacitors, etc. Non-static (rotating) components encompass synchronous machines including their associated controls (exciters, governors, etc), induction machines, compensators, motor operated valves (MOV), turbines, static var compensators, fault isolation units (Flu), static automatic bus transfer (SABT) units, etc. These various types of non-static components can be simulated using various techniques. For example:
+    For Synchronous Machines: thermal (round rotor) and hydraulic (salient pole) units can be both simulated either by using a simple model or by the most complete two-axis including damper winding representation. For Induction Machines: a complete two-axis model can be used. Also it is possible to model them by just providing the testing curves (current, power factor, and torque as a function of speed). For Motor Operated Valves (MOVs): Two modes of MOV operation are of interest, namely, opening and closing operating modes. Each mode of operation consists of five distinct stages, a) start, b) full speed, c) unseating, d) travel, and e) stall. The system supports user-defined model types for each of the stages. That is, âstartâ may be modeled as a constant current while âfull speedâ may be modeled by constant power. This same flexibility exists for all five distinct stages of the closing mode. For AVR and Excitation Systems: There are a number of models ranging from rotating (DC and AC) and analogue to static and digital controls. Additionally, the system offers a user-defined modeling capability; which can be used to define a new excitation model. For Governors and Turbines: The system is designed to address current and future technologies including but not limited to hydraulic, diesel, gas, and combined cycles with mechanical and/or digital governors. For Static Var Compensators (SVCs): The system is designed to address current and future technologies including a number of solid-state (thyristor) controlled SVC's or even the saturable reactor types. For Fault Isolation Units (FIUs): The system is designed to address current and future technologies of FIUs also known as Current Limiting Devices, are devices installed between the power source and loads to limit the magnitude of fault currents that occur within loads connected to the power distribution networks. For Static Automatic Bus Transfers (SABT): The system is designed to address current and future technologies of SABT (i.e., solid-state three phase, dual position, three-pole switch, etc.)   
+In one embodiment, the time domain model data includes âbuilt-inâ dynamic model data for exciters, governors, transformers, relays, breakers, motors, and power system stabilizers (PSS) offered by a variety of manufactures. For example, dynamic model data for the electrical power system may be OEM manufacturer supplied control logic for electrical equipment such as automatic voltage regulators (AVR), governors, under load tap changing transformers, relays, breakers motors, etc. In another embodiment, in order to cope with recent advances in power electronic and digital controllers, the time domain model data includes âuser-definedâ dynamic modeling data that is created by an authorized system administrator in accordance with user-defined control logic models. The user-defined models interacts with the virtual system model of the electrical power system through âInterface Variablesâ 1816 that are created out of the user-defined control logic models. For example, to build a user-defined excitation model, the controls requires that generator terminal voltage to be measured and compared with a reference quantity (voltage set point). Based on the specific control logic of the excitation and AVR, the model would then compute the predicted generator field voltage and return that value back to the application. The user-defined modeling supports a large number of pre-defined control blocks (functions) that are used to assemble the required control systems and put them into action in a real-time environment for assessing the strength and security of the power system. In still another embodiment, the time domain model data includes both built-in dynamic model data and user-defined model data.
+Moving on to step 1804, a contingency event can be chosen out of a diverse list of contingency events to be evaluated. That is, the operational stability of the electrical power system can be assessed under a number of different contingency event scenarios including but not limited to a singular event contingency or multiple event contingencies (that are simultaneous or sequenced in time). In one embodiment, the contingency events assessed are manually chosen by a system administrator in accordance with user requirements. In another embodiment, the contingency events assessed are automatically chosen in accordance with control logic that is dynamically adaptive to past observations of the electrical power system. That is the control logic âlearnsâ which contingency events to simulate based on past observations of the electrical power system operating under various conditions.
+Some examples of contingency events include but are not limited to:
+    Application/removal of three-phase fault. Application/removal of phase-to-ground fault Application/removal of phase-phase-ground fault. Application/removal of phase-phase fault. Branch Addition. Branch Tripping Starting Induction Motor. Stopping Induction Motor Shunt Tripping. Shunt Addition (Capacitor and/or Induction) Generator Tripping. SVC Tripping. Impact Loading (Load Changing Mechanical Torque on Induction Machine. With this option it is actually possible to turn an induction motor to an induction generator) Loss of Utility Power Supply/Generators/LPS/Distribution Lines/System Infrastructure Load Shedding   
+In step 1806, a transient stability analysis of the electrical power system operating under the various chosen contingencies can be performed. This analysis can include identification of system weaknesses and insecure contingency conditions. That is, the analysis can predict (forecast) the system's ability to sustain power demand, maintain sufficient active and reactive power reserve, operate safely with minimum operating cost while maintaining an adequate level of reliability, and provide an acceptably high level of power quality while being subjected to various contingency events. The results of the analysis can be stored by an associative memory engine 1818 during step 1814 to support incremental learning about the operational characteristics of the system. That is, the results of the predictions, analysis, and real-time data may be fed, as needed, into the associative memory engine 1818 for pattern and sequence recognition in order to learn about the logical realities of the power system. In certain embodiments, engine 1818 can also act as a pattern recognition engine or a Hierarchical Temporal Memory (HTM) engine. Additionally, concurrent inputs of various electrical, environmental, mechanical, and other sensory data can be used to learn about and determine normality and abnormality of business and plant operations to provide a means of understanding failure modes and give recommendations.
+In step 1810, it can be determined if the system is operating in a deficient state when confronted with a specific contingency. If it is, then in step 1812, a report is generated providing a summary of the operational stability of the system. The summary may include general predictions about the total security and stability of the system and/or detailed predictions about each component that makes up the system.
+Alternatively, if it is determined that the system is not in a deficient state in step 1810, then step 1808 can determine if further contingencies needs to be evaluated. If so, then the process can revert to step 1806 and further contingencies can be evaluated.
+The results of real-time simulations performed in accordance with FIG. 18 can be communicated in step 1812 via a report, such as a print out or display of the status. In addition, the information can be reported via a graphical user interface (thick or thin client) that illustrated the various components of the system in graphical format. In such embodiments, the report can simply comprise a graphical indication of the security or insecurity of a component, subsystem, or system, including the whole facility. The results can also be forwarded to associative memory engine 1818, where they can be stored and made available for predictions, pattern/sequence recognition and ability to imagine, e.g., via memory agents or other techniques, some of which are describe below, in step 1820.
+The process of FIG. 18 can be applied to a number of needs including but not limited to predicting system stability due to: Motor starting and motor sequencing, an example is the assessment of adequacy of a power system in emergency start up of auxiliaries; evaluation of the protections such as under frequency and under-voltage load shedding schemes, example of this is allocation of required load shedding for a potential loss of a power generation source; determination of critical clearing time of circuit breakers to maintain stability; and determination of the sequence of protective device operations and interactions.
+ FIG. 19 is a diagram illustrating how the HTM Pattern Recognition and Machine Learning Engine works in conjunction with the other elements of the analytics system to make predictions about the operational aspects of a monitored system, in accordance with one embodiment. As depicted herein, the HTM Pattern Recognition and Machine Learning Engine 551 is housed within an analytics server 116 and communicatively connected via a network connection 114 with a data acquisition hub 112, a client terminal 128 and a virtual system model database 526. The virtual system model database 526 is configured to store the virtual system model of the monitored system. The virtual system model is constantly updated with real-time data from the data acquisition hub 112 to effectively account for the natural aging effects of the hardware that comprise the total monitored system, thus, mirroring the real operating conditions of the system. This provides a desirable approach to predicting the operational aspects of the monitored power system operating under contingency situations.
+The HTM Machine Learning Engine 551 is configured to store and process patterns observed from real-time data fed from the hub 112 and predicted data output from a real-time virtual system model of the monitored system. These patterns can later be used by the HTM Engine 551 to make real-time predictions (forecasts) about the various operational aspects of the system.
+The data acquisition hub 112 is communicatively connected via data connections 110 to a plurality of sensors that are embedded throughout a monitored system 102. The data acquisition hub 112 may be a standalone unit or integrated within the analytics server 116 and can be embodied as a piece of hardware, software, or some combination thereof. In one embodiment, the data connections 110 are âhard wiredâ physical data connections (e.g., serial, network, etc.). For example, a serial or parallel cable connection between the sensors and the hub 112. In another embodiment, the data connections 110 are wireless data connections. For example, a radio frequency (RF), BLUETOOTHâ¢, infrared or equivalent connection between the sensor and the hub 112.
+Examples of a monitored system includes machinery, factories, electrical systems, processing plants, devices, chemical processes, biological systems, data centers, aircraft carriers, and the like. It should be understood that the monitored system can be any combination of components whose operations can be monitored with conventional sensors and where each component interacts with or is related to at least one other component within the combination.
+Continuing with FIG. 19, the client 128 is typically a conventional âthin-clientâ or âthick clientâ computing device that may utilize a variety of network interfaces (e.g., web browser, CITRIXâ¢, WINDOWS TERMINAL SERVICESâ¢, telnet, or other equivalent thin-client terminal applications, etc.) to access, configure, and modify the sensors (e.g., configuration files, etc.), analytics engine (e.g., configuration files, analytics logic, etc.), calibration parameters (e.g., configuration files, calibration parameters, etc.), virtual system modeling engine (e.g., configuration files, simulation parameters, etc.) and virtual system model of the system under management (e.g., virtual system model operating parameters and configuration files). Correspondingly, in one embodiment, the data from the various components of the monitored system and the real-time predictions (forecasts) about the various operational aspects of the system can be displayed on a client 128 display panel for viewing by a system administrator or equivalent. In another embodiment, the data may be summarized in a hard copy report 1902.
+As discussed above, the HTM Machine Learning Engine 551 is configured to work in conjunction with a real-time updated virtual system model of the monitored system to make predictions (forecasts) about certain operational aspects of the monitored system when it is subjected to a contingency event. For example, where the monitored system is an electrical power system, in one embodiment the HTM Machine Learning Engine 551 can be used to make predictions about the operational reliability of an electrical power system in response to contingency events such as a loss of power to the system, loss of distribution lines, damage to system infrastructure, changes in weather conditions, etc. Examples of indicators of operational reliability include but are not limited to failure rates, repair rates, and required availability of the power system and of the various components that make up the system.
+In another embodiment, the operational aspects relate to an arc flash discharge contingency event that occurs during the operation of the power system. Examples of arc flash related operational aspects include but are not limited to quantity of energy released by the arc flash event, required personal protective equipment (PPE) for personnel operating within the confines of the system during the arc flash event, and measurements of the arc flash safety boundary area around components comprising the power system. In still another embodiment, the operational aspect relates to the operational stability of the system during a contingency event. That is, the system's ability to sustain power demand, maintain sufficient active and reactive power reserve, operate safely with minimum operating cost while maintaining an adequate level of reliability, and provide an acceptably high level of power quality while being subjected to a contingency event.
+ FIG. 20 is an illustration of the various cognitive layers that comprise the neocortical catalyst process used by the HTM Pattern Recognition and Machine Learning Engine to analyze and make predictions about the operational aspects of a monitored system, in accordance with one embodiment. As depicted herein, the neocortical catalyst process is executed by a neocortical model 2002 that is encapsulated by a real-time sensory system layer 2004, which is itself encapsulated by an associative memory model layer 2006. Each layer is essential to the operation of the neocortical catalyst process but the key component is still the neocortical model 2002. The neocortical model 2002 represents the âidealâ state and performance of the monitored system and it is continually updated in real-time by the sensor layer 2004. The sensory layer 2004 is essentially a data acquisition system comprised of a plurality of sensors imbedded within the monitored system and configured to provide real-time data feedback to the neocortical model 2002. The associative memory layer observes the interactions between the neocortical model 2002 and the real-time sensory inputs from the sensory layer 2004 to learn and understand complex relationships inherent within the monitored system. As the neocortical model 2002 matures over time, the neocortical catalyst process becomes increasingly accurate in making predictions about the operational aspects of the monitored system. This combination of the neocortical model 2002, sensory layer 2004 and associative memory model layer 2006 works together to learn, refine, suggest and predict similarly to how the human neocortex operates.
+As discussed above, the HTM Pattern Recognition and Machine Learning Engine operates by storing and processing patterns observed from real-time power system operational data and mimicking the neocortical catalyst process of the human neocortex to make forecasts/predictions about the future operational aspects of the power system. Although, HTM-based forecasting is a highly accurate âmemory-basedâ method for processing historical system output data to make predictions about future system operational output, the power analytics server can also utilized other equally accurate methods for inferring (i.e., predicting) future state system outputs from past system observations. For example, the power analytics server can be configured to employ an adaptive neural network predictive engine that utilizes a statistics-based method to produce (i.e., make forecasts) predictive system output(s), which it has never seen before, by learning (through statistical analyses) how to âmapâ between the historical inputs and outputs (i.e., a training set of data).
+ FIG. 21 is a logical representation of how a three-layer feed-forward neural network functions, in accordance with one embodiment. In general, neural network systems can be âtrainedâ to produce predicted/forecasted output(s) (which have never been seen before) using historical (known) inputs and outputs. That is, a neural network can be taught (i.e., learn) how to map between the known inputs and outputs (i.e. training set) and therefore have the ability to process ânewâ inputs to arrive at a predicted output. There are many different types and forms of neural networks. However, one particularly common and useful type is the three-layer feed-forward neural network.
+ FIG. 21 shows the three-layer feed-forward neural network where âLayer 0â 2102 can be the input layer, âLayer 1â 2104 can be the hidden layer, and âLayer 2â 2106 can be the output layer. The vector x=[x1 . . . xi]T can represent the input data sequence, the matrix w01 can be the weight matrix from the input layer to the hidden layer, the matrix w12 can be the weight matrix from the hidden layer to the output layer, H1 and Ok can be the bias for the hidden and output layers, and outputk  2108 can by the neural network output value(s). As known input and output value(s) are fed into the neural network, the matrix weights (w01 and w12) and bias values (H1 and Ok) for the input, hidden, and output layers can be continually and automatically adjusted (i.e., learning) to allow the neural network to make more accurate predictions/forecasts about the resulting output value(s) when new input value(s) are fed into it.
+ FIG. 21 can also be described in a more compact form, as depicted in FIG. 22, where it is assumed that âLayer 2â 2104 has k number of neurons. Each neuron in âLayer 1â 2104 and âLayer 2â 2106 can consist of a summing junction (E) and an activation function (f). In one embodiment, the three-layer neural network can be trained utilizing a âback-propagationâ algorithm by continually adjusting the network weights (wij and Wjk) in order to minimize the sum-squared error function using the following:
+
+
+
+
+
+E
+â¡
+
+(
+
+w
+ij
+
+)
+
+
+=
+
+
+1
+2
+
+â¢
+
+
+â
+p
+
+â¢
+
+
+â
+j
+
+â¢
+
+
+(
+
+
+target
+i
+p
+
+-
+
+out
+j
+
+(
+2
+)
+
+
+
+)
+
+2
+
+
+
+
+
+
+
+
+This can be carried out by a series of gradient descent weight updates as follows:
+
+
+
+
+
+Î
+â¢
+
+ 
+
+â¢
+
+w
+kl
+
+(
+m
+)
+
+
+
+=
+
+
+-
+Î·
+
+â¢
+
+
+â
+
+E
+â¡
+
+(
+
+w
+ij
+
+)
+
+
+
+
+â
+
+w
+kl
+
+(
+m
+)
+
+
+
+
+
+
+
+
+
+It should be noted, that it is only the outputs outj (2) of the final layer (i.e., âLayer 2â 2106) that appears in the error function. However, the final layer outputs will depend on all the earlier layers of weights, and this learning algorithm can adjust them all. That is, the learning algorithm can automatically adjust the outputs outy (n) of the earlier (hidden) layers so that they can form appropriate intermediate (hidden) representations.
+For a three-layer network, the final outputs can be written as follows:
+
+
+
+
+
+out
+k
+
+(
+2
+)
+
+
+=
+
+
+f
+(
+
+
+â
+j
+
+â¢
+
+
+out
+j
+
+(
+1
+)
+
+
+â¢
+
+w
+jk
+
+(
+2
+)
+
+
+
+
+)
+
+=
+
+f
+(
+
+
+â
+j
+
+â¢
+
+
+f
+(
+
+
+â
+i
+
+â¢
+
+i
+â¢
+
+ 
+
+â¢
+
+n
+i
+
+â¢
+
+w
+ij
+
+(
+1
+)
+
+
+
+
+)
+
+â¢
+
+w
+jk
+
+(
+2
+)
+
+
+
+
+)
+
+
+
+
+
+
+Finally, the weight update equations between the output layer (i.e., âLayer 2â 2106) and the hidden layer (i.e., âLayer 1â 2104) as well as the input layer (i.e., âLayer 0â 2102) can be represented as follows:
+For the neuron in the output layer:
+     Î â¢     â¢   w hl  ( 2 )   â¡  ( t )    =   Î· â¢   â p  â¢    delta l  ( 2 )   â¡  ( t )   â¢   out h  ( 1 )   â¡  ( t )      +  Î± â¢     â¢ Î â¢     â¢   w hl  ( 2 )   â¡  (  t - 1  )        
+For the neuron in the hidden layer:
+
+
+
+
+
+
+Î
+â¢
+
+ 
+
+â¢
+
+
+w
+hl
+
+(
+1
+)
+
+
+â¡
+
+(
+l
+)
+
+
+
+=
+
+
+Î·
+â¢
+
+
+â
+p
+
+â¢
+
+
+(
+
+
+â
+k
+
+â¢
+
+
+
+delta
+k
+
+(
+2
+)
+
+
+â¡
+
+(
+t
+)
+
+
+â¢
+
+
+w
+lk
+
+(
+2
+)
+
+
+â¡
+
+(
+t
+)
+
+
+
+
+)
+
+â¢
+
+
+out
+l
+
+(
+1
+)
+
+
+â¡
+
+(
+t
+)
+
+
+â¢
+
+(
+
+1
+-
+
+
+out
+t
+
+(
+1
+)
+
+
+â¡
+
+(
+t
+)
+
+
+
+)
+
+â¢
+i
+â¢
+
+ 
+
+â¢
+
+
+n
+h
+
+â¡
+
+(
+t
+)
+
+
+
+
+
++
+
+Î±
+â¢
+
+ 
+
+â¢
+Î
+â¢
+
+ 
+
+â¢
+
+
+w
+hl
+
+(
+1
+)
+
+
+â¡
+
+(
+
+t
+-
+1
+
+)
+
+
+
+
+
+
+
+
+As such, the weight whl (2) between neurons h and l can be changed in proportion to the output of neuron h and the delta of neuron l. The weight changes at âLayer 1â 2104 can then take on the same form as âLayer 2â 2106, but the error at each neuron is âback-propagatedâ from each of the output neurons k via the weights wlk (2). It should be noted that t stands for sequence and usually eta (Î·) is decreased as alpha (Î±) is increased so that the total step size does not get too large.
+Within the context of the various embodiments of the power analytics server described previously, the three-layer feed-forward neural network can be applied as an âadaptiveâ power analytics prediction engine. For example, a training set of known input/output data would typically be supplied by sensors that are interfaced to the various components that comprise the monitored system. As known input/output data is continually fed into the neural network in real-time, the various weighting factors in the neural network automatically self-adjusts (i.e., learns) to allow the power analytics prediction engine to make more accurate predictions/forecasts about the health, reliability, and performance of the monitored system.
+ FIG. 23 is an illustration of a matrices depicting how a three-layer feed-forward neural network can be trained using known inputs and output values, in accordance with one embodiment. As depicted, each row of patterns 2302 represents a discrete training data set containing pairs of one or more input (i.e., Input 1 . . . . Input i) and output values (i.e., Target 1 . . . Target 3). In one embodiment, the neural network 2304 can learn by minimizing some measure of the error of the target outputs (i.e., the actual measured output values) as compared to network's estimated output values. For example, the measure of error can be the sum squared error (SSE) percentage between the target and estimated output values. As more âteaching patternsâ are fed into the network, the various weights of the internal neural network algorithm can iteratively self-adjust to minimize the resulting SSE percentage between the target and estimated output values.
+ FIGS. 24 and 25 illustrate an example of how training patterns can be used to train and validate the accuracy of a neural network, in accordance to one embodiment. As depicted, the training set is comprised of 110 patterns each containing thirty input values and one target peak output value. Each of the input values 2402 within the pattern 2401 represents data received from one of the components within an electrical power system and the target peak output value 2404 represents the actual measured âDay-Ahead Daily-Load Peak-Valueâ for the power system. The estimated peak output value 2406 is the âDay-Ahead Daily-Load Peak-Valueâ that was predicted/forecasted using the neural network algorithm and the error 2408 represents the SSE percentage between the target 2404 and estimated peak 2406 output values. As discussed above, the internal weighting values of the neural network algorithm is continually adjusted as each training pattern 2401 is fed into the neural network to train it. Upon the completion of the processing of the training patterns, the neural network can be validated to see if the resulting SSE percentage values it generates exceeds a threshold value when the neural network is subjected to an additional set of validation patterns.
+ FIG. 26 is an illustration of a flow chart describing a method for utilizing a neural network algorithm utilized to make real-time predictions about the health, reliability, and performance of an electrical system, in accordance with one embodiment.
+Method 2600 begins with operation 2602 where the analytics engine receives real-time data output from one or more sensors that are interfaced with the electrical system (i.e., monitored system). Typically, the sensors are communicatively connected to a data acquisition hub via an analog or digital data connection. The data acquisition hub can be a standalone unit or integrated within the analytics server and embodied as a piece of hardware, software, or some combination thereof. In one embodiment, the data connection can be a âhard wiredâ physical data connection (e.g., serial, network, etc.). For example, a serial or parallel cable connection between the sensor and the hub. In another embodiment, the data connection can be a wireless data connection. For example, a radio frequency (RF), BLUETOOTHâ¢, infrared or equivalent connection between the sensor and the hub.
+The data acquisition hub can be configured to communicate âreal-timeâ data from the electrical system to an analytics server using a network connection. In one embodiment, the network connection can be a âhardwiredâ physical connection. For example, the data acquisition hub can be communicatively connected (via Category 5 (CAT5), fiber optic or equivalent cabling) to a data server (not shown) that can be communicatively connected (via CAT5, fiber optic or equivalent cabling) through the Internet and to the analytics server. The analytics server being also communicatively connected with the Internet (via CAT5, fiber optic, or equivalent cabling). In another embodiment, the network connection can be a wireless network connection (e.g., Wi-Fi, WLAN, etc.). For example, utilizing an 802.11b/g or equivalent transmission format. In practice, the network connection utilized is dependent upon the particular requirements of the electrical system.
+In operation 2604, predicted data output for the one or more sensors interfaced to the monitored system utilizing can be generated utilizing a virtual system model of the electrical system. That is, the power analytics server can include a virtual system modeling engine that utilizes dynamic control logic stored in the virtual system model to generate the predicted output data. The predicted data is supposed to be representative of data that should actually be generated and output from the monitored system.
+In operation 2606, the virtual system model of the monitored system is calibrated if a difference between the real-time data output and the predicted data output exceeds a threshold. That is, a determination is made as to whether the difference between the real-time data output and the predicted data output falls between a set value and an alarm condition value, where if the difference falls between the set value and the alarm condition value a virtual system model calibration operation can be initiated.
+In step 2608, the real-time data output is processed by the neural network algorithm. That is, the portion of the real-time data output that represents the input data values for the adaptive neural network prediction engine can be fed into the neural network algorithm thereby generating one or more predicted/estimated data output values corresponding to the input values.
+In step 2610, the neural network algorithm is optimized by minimizing a measure of error between the real-time data output and an estimated data output predicted by the neural network algorithm. That is, the internal weighting factors of the neural network algorithm automatically self-adjusts to minimize the measure of error between the known monitored system output values (i.e., target output values) measured in real-time by sensors dispersed throughout the monitored system and the estimated/predicted output values that the neural network algorithm generates based on the same given set of input values. For example, in a scenario where the real-time data sensors measure input value A and target output value B; the neural network algorithm receives input value A and then generates an estimated output value C. Target output value B and estimated output value C can then be compared to determine a measure of error. In one embodiment, the measure of error can be the sum squared error (SSE) percentage between the target and estimated output values. It should be appreciated, however, that SSE is but one statistical measure of error between target and estimated output values and that essentially any statistical measure of error can be utilized by the neural network algorithm as long as the measurement is reproducible.
+In operation 2612, an aspect of the monitored system is forecast using the neural network algorithm. For example, the neural network algorithm can forecast aspects relating to:
+    Power System Health and Performance Variations or deviations of electrical system performance from the power system design parameters. That is, the ability of the electrical system to resist system output variations or deviations from defined tolerance limits of the electrical system Incorporation of performance and behavioral specifications for all the equipment and components that comprise the electrical system into a real-time management environment System Reliability and Availability As a function of different system, process and load point reliability indices Implementation of different technological solutions to achieve reliability centered maintenance targets and goals Power System Capacity levels As-designed total power capacity of the power system. How much of the total power capacity remains or is available (ability of the electrical system to maintain availability of its total power capacity) Present utilized power capacity. Power System Strength and Resilience Dynamic stability predictions across all contingency events Determination of protection system stress and withstand status Determination of system security and stability   
+The embodiments described herein, can be practiced with other computer system configurations including hand-held devices, microprocessor systems, microprocessor-based or programmable consumer electronics, minicomputers, mainframe computers and the like. The embodiments can also be practiced in distributing computing environments where tasks are performed by remote processing devices that are linked through a network.
+It should also be understood that the embodiments described herein can employ various computer-implemented operations involving data stored in computer systems. These operations are those requiring physical manipulation of physical quantities. Usually, though not necessarily, these quantities take the form of electrical or magnetic signals capable of being stored, transferred, combined, compared, and otherwise manipulated. Further, the manipulations performed are often referred to in terms, such as producing, identifying, determining, or comparing.
+Any of the operations that form part of the embodiments described herein are useful machine operations. The invention also relates to a device or an apparatus for performing these operations. The systems and methods described herein can be specially constructed for the required purposes, such as the carrier network discussed above, or it may be a general purpose computer selectively activated or configured by a computer program stored in the computer. In particular, various general purpose machines may be used with computer programs written in accordance with the teachings herein, or it may be more convenient to construct a more specialized apparatus to perform the required operations.
+The embodiments described herein can also be embodied as computer readable code on a computer readable medium. The computer readable medium is any data storage device that can store data, which can thereafter be read by a computer system. Examples of the computer readable medium include hard drives, network attached storage (NAS), read-only memory, random-access memory, CD-ROMs, CD-Rs, CD-RWs, magnetic tapes, and other optical and non-optical data storage devices. The computer readable medium can also be distributed over a network coupled computer systems so that the computer readable code is stored and executed in a distributed fashion.
+Although a few embodiments of the present invention have been described in detail herein, it should be understood, by those of ordinary skill, that the present invention may be embodied in many other specific forms without departing from the spirit or scope of the invention. Therefore, the present examples and embodiments are to be considered as illustrative and not restrictive, and the invention is not to be limited to the details provided therein, but may be modified and practiced within the scope of the appended claims.
