@@ -1,6 +1,6 @@
 # Don't track these folders
 .ipynb_checkpoints
-./notebooks/ipynb_checkpoints
+./notebooks/.ipynb_checkpoints
 
 # Other Sources
 *.pyc
