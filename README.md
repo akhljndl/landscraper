@@ -14,11 +14,7 @@ It's difficult to make IP decisions for newly developed technologies, especially
 * How many and what kinds of 'key players' are practicing in this technology area?
   * Licensors?
   * Competitors?
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> c9b3d870c2ffc2f0e41bda036dc3ddf1b4397a39
 * Can we forecast any roadblocks in securing protection and enforceability?
 
 * Which aspects of our technology should we focus on for IP protection, and which require further development?
