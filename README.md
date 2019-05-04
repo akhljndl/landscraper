@@ -2,7 +2,7 @@
 
 See the [wiki](https://github.com/akhil-jindal/landscraper/wiki) for more information on ___landscraper___ and it's current status in development.
 
-# Introduction <a name="introduction"></a>
+## Introduction <a name="introduction"></a>
 
 It's difficult to make IP decisions for newly developed technologies, especially early on.  Currently, IP decision makers include subject matter experts (SMEs), IP attorneys, and business strategists that work together and try to answer questions such as:
 
