@@ -1,6 +1,6 @@
 # landscraper - doing the dirty work for intellectual property (IP) decisions
 
-See the [wiki](https://github.com/akhil-jindal/landscraper/wiki) for more information on ___landscraper___ and it's current status in development.
+See the [wiki](https://github.com/akhil-jindal/landscraper/wiki) for more information on ___landscraper___ and its current status in development.
 
 ## Introduction <a name="introduction"></a>
 
